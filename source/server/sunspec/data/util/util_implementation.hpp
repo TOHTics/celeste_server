@@ -27,7 +27,7 @@
 #include <boost/property_tree/xml_parser.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 
-#include "data.hpp"
+#include "../data.hpp"
 #include "error.hpp"
 #include "sdx_tags.hpp"
 

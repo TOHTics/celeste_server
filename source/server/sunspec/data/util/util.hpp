@@ -21,7 +21,7 @@
 
 #include <boost/property_tree/xml_parser.hpp>
 
-#include "data.hpp"
+#include "../data.hpp"
 
 namespace sunspec {
     namespace data {
