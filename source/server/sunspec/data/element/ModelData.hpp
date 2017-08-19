@@ -21,7 +21,7 @@
 
 
 /**
- * @class
+ * @class ModelData
  * @author Carlos Brito (carlos.brito524@gmail.com)
  * @date 8/17/17.
  * 
@@ -33,8 +33,7 @@
  * # TODO
  * Nothing for the moment.
  */
-class ModelData {
-
+struct ModelData {
 };
 
 

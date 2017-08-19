@@ -27,7 +27,7 @@ namespace sunspec
     namespace data
     {
         /**
-         * @class DataPoint
+         * @class Error
          * @author Carlos Brito (carlos.brito524@gmail.com)
          * @date 8/17/17.
          *
@@ -48,6 +48,14 @@ namespace sunspec
             }
         };
 
+        /**
+         * @class XMLError
+         * @author Carlos Brito (carlos.brito524@gmail.com)
+         * @date 8/17/17.
+         *
+         * @brief Represents an action that went wrong while
+         * parsing XML.
+         */
         class XMLError : public Error
         {
         public:

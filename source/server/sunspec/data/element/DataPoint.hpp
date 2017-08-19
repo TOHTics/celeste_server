@@ -12,7 +12,7 @@
  * @author Carlos Brito (carlos.brito524@gmail.com)
  * @date 8/17/17.
  * 
- * @brief No description available.
+ * @brief Contains class definitions for DataPoint.
  *
  */
 //</editor-fold>
@@ -45,7 +45,7 @@ namespace sunspec {
          * of data are then we would have to look at the SDMX spec and assign
          * the types accordingly.
          */
-        template<class T>
+        template<typename T>
         struct DataPoint {
             string id; /// Name of the data point record (to know what it represents).
             int scale_factor; /// Exponent of multiplier. I.e. $ 10^(scale_factor) $. Defaults to 0.

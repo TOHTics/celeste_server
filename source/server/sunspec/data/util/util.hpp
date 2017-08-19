@@ -33,11 +33,32 @@ namespace sunspec {
          * its syntax is XML.
          * @tparam T Value type of the DataPoint. It can be many things such
          * as `float`, `uint16`, etc.
-         * @param point_element The ptree (XML) element of the point record.
+         * @param point_element The `ptree` (XML) element of the point record.
          * @return Returns a DataPoint object with the same data as the element.
          */
-        template<class T>
+        template<typename T>
         DataPoint<T> from_xml(const ptree &point_element);
+
+        /**
+         * Builds a DataPoint out of a SDX specification. This specification
+         * can be found in the SunSpec Data Model Exchange Specification and
+         * its syntax is XML.
+         * @tparam T Value type of the DataPoint. It can be many things such
+         * as `float`, `uint16`, etc.
+         * @param point_record A `std::string` containing the XML representat-
+         * ion of the point record.
+         * @return Returns a DataPoint object with the same data as the XML
+         * representation passed.
+         */
+        template<typename T>
+        DataPoint<T> from_xml(const string &point_record);
+
+        /**
+         * Converts a RFC3339 formatted string to ptime.
+         * @param rfc3339 RFC3339 formatted timestamp.
+         * @return Returns the `ptime` value.
+         */
+        ptime RFC3339_TO_PTIME(const std::string& rfc3339);
     }
 }
 
