@@ -37,6 +37,17 @@ namespace sunspec
         static const std::string SDX_MODEL_ID         = "id";     /// Device Model Identifier
         static const std::string SDX_MODEL_NAMESPACE  = "ns";     /// Model id namespace
         static const std::string SDX_MODEL_INDEX      = "x";      /// Model index record
+
+        static const std::string SDX_DEVICE = "d";
+        static const std::string SDX_DEVICE_LOGGER_ID = "lid";
+        static const std::string SDX_DEVICE_NAMESPACE = "ns";
+        static const std::string SDX_DEVICE_ID = "id";
+        static const std::string SDX_DEVICE_IFC = "if";
+        static const std::string SDX_DEVICE_MAN = "man";
+        static const std::string SDX_DEVICE_MOD = "mod";
+        static const std::string SDX_DEVICE_SN = "sn";
+        static const std::string SDX_DEVICE_TIME = "t";
+        static const std::string SDX_DEVICE_CORRELATION_ID = "cid";
     }
 }
 

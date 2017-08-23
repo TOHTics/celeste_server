@@ -94,14 +94,7 @@ namespace sunspec
              * meaning that you haven't set the `p.id` field of `PointData p`.
              * @param p `PointData` to add to the list of point records of this model.
              */
-            void add_point(const PointData& p)
-            {
-                if (p.id.empty())
-                    throw PointDataError("PointData's id field must not be empty as"
-                                                 " mandated by the SunSpec Model Data"
-                                                 " Exchange specification.");
-                point_list.push_back(p);
-            }
+            void add_point(const PointData& p);
 
             /**
              * Builds the ModelData out of a SDX specification. This specification
@@ -110,6 +103,8 @@ namespace sunspec
              * @param model_element The `ptree` object (in XML) element of the model
              * record.
              * @return Returns a `ModelData` object with the same data as the element.
+             * @throws XMLError Throws if there was an error parsing the XML. This will mean
+             * that the data contained in the `model_element` is empty or is malformed.
              */
             static ModelData from_xml(const boost::property_tree::ptree &model_element);
 
@@ -121,6 +116,8 @@ namespace sunspec
              * of the model record.
              * @return Returns a `ModelData` object with the same data as the XML
              * representation that was passed.
+             * @throws XMLError Throws if there was an error parsing the XML. This will mean
+             * that the data contained in the `model_record` is empty or is malformed.
              */
             static ModelData from_xml(const std::string &model_record);
         };

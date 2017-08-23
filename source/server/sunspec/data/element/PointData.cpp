@@ -77,9 +77,6 @@ namespace data
             }
             result.value = point_element.data();
 
-            if ( result.id.empty() )
-                throw XMLError("Blank id for point.");
-
             return result;
         }
 

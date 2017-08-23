@@ -38,7 +38,7 @@ namespace sunspec {
             // Get attributes of the subtree model_element
             ptree attr = model_element.get_child("<xmlattr>");
             if ( attr.empty() )
-                throw XMLError("Empty attributes for model. At least the id is mandatory.");
+                throw XMLError("Empty attributes for model.");
 
             // Declare model
             ModelData result;
@@ -61,9 +61,6 @@ namespace sunspec {
                 }
 
             }
-
-            if ( result.id.empty() )
-                throw XMLError("Blank id for model.");
 
             // Get points
             ptree point_elements;
@@ -106,5 +103,15 @@ namespace sunspec {
 
             return result;
         }
+
+        void ModelData::add_point(const PointData &p)
+        {
+            if (p.id.empty())
+                throw PointDataError("PointData's id field must not be empty as"
+                                             " mandated by the SunSpec Model Data"
+                                             " Exchange specification.");
+            point_list.push_back(p);
+        }
+
     }
 }

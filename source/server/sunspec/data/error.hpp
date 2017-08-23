@@ -76,6 +76,21 @@ namespace sunspec
         public:
             PointDataError(std::string message) : Error(message) {}
         };
+
+        /**
+         * @class ModelDataError
+         * @author Carlos Brito (carlos.brito524@gmail.com)
+         * @date 8/23/17.
+         *
+         * @brief Represents an error with respect to some ModelDataError.
+         * Usually this will indicate that the ModelDataError is not formed
+         * correctly.
+         */
+        class ModelDataError : public Error
+        {
+        public:
+            ModelDataError(std::string message) : Error(message) {}
+        };
     }
 }
 
