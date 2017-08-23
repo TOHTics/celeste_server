@@ -25,20 +25,18 @@ namespace sunspec
 {
     namespace data
     {
-        using std::string;
+        static const std::string SDX_POINT            = "p";      /// Point record
+        static const std::string SDX_POINT_ID         = "id";     /// ID of point
+        static const std::string SDX_POINT_INDEX      = "index";  /// Index of sample
+        static const std::string SDX_POINT_SF         = "sf";     /// Scale factor of point record
+        static const std::string SDX_POINT_UNITS      = "u";      /// Measurement units
+        static const std::string SDX_POINT_DESC       = "d";      /// Description of point record
+        static const std::string SDX_POINT_TIME       = "t";      /// Timestamp of point
 
-        string SDX_POINT            = "p";      /// Point record
-        string SDX_POINT_ID         = "id";     /// ID of point
-        string SDX_POINT_INDEX      = "index";  /// Index of sample
-        string SDX_POINT_SF         = "sf";     /// Scale factor of point record
-        string SDX_POINT_UNITS      = "u";      /// Measurement units
-        string SDX_POINT_DESC       = "d";      /// Description of point record
-        string SDX_POINT_TIME       = "t";      /// Timestamp of point
-
-        string SDX_MODEL            = "m";      /// Model record
-        string SDX_MODEL_ID         = "id";     /// Device Model Identifier
-        string SDX_MODEL_NAMESPACE  = "ns";     /// Model id namespace
-        string SDX_MODEL_INDEX      = "x";      /// Model index record
+        static const std::string SDX_MODEL            = "m";      /// Model record
+        static const std::string SDX_MODEL_ID         = "id";     /// Device Model Identifier
+        static const std::string SDX_MODEL_NAMESPACE  = "ns";     /// Model id namespace
+        static const std::string SDX_MODEL_INDEX      = "x";      /// Model index record
     }
 }
 

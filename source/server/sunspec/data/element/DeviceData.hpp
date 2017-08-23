@@ -19,9 +19,6 @@
 #ifndef SERVER_DEVICEDATA_HPP
 #define SERVER_DEVICEDATA_HPP
 
-
-#include "PointData.hpp"
-
 namespace sunspec
 {
     namespace data
@@ -39,7 +36,8 @@ namespace sunspec
          * # TODO
          * Nothing for the moment.
          */
-        class DeviceData {
+        struct DeviceData {
+            std::string cid;
 
         };
 
