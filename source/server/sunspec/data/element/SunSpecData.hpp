@@ -19,6 +19,10 @@
 #ifndef SERVER_SUNSPECDATA_HPP
 #define SERVER_SUNSPECDATA_HPP
 
+#include <vector>
+#include <string>
+#include "DeviceData.hpp"
+
 namespace sunspec
 {
     namespace data
@@ -36,8 +40,38 @@ namespace sunspec
          * # TODO
          * Nothing for the moment.
          */
-        class SunSpecData {
+        struct SunSpecData {
+            typedef std::vector<DeviceData> device_list_type;
 
+            std::string v;                  /// Version number
+            device_list_type device_list;   /// List of device records
+
+            /**
+             * Empty constructor
+             */
+            SunSpecData() = default;
+
+            /**
+             * Copy constructor.
+             * @param other Other `SunSpecData` instance to be copied
+             */
+            SunSpecData(const SunSpecData& other) = default;
+
+            /**
+             * Constructs a `SunSpecData` instance.
+             * @param v Version number of SDX spec
+             * @param d_list Device list
+             */
+            SunSpecData(std::string v, device_list_type d_list) : v(v), device_list(d_list) {}
+
+            /**
+             * Adds a device to the list of device records
+             * @param device `DeviceData` instance to add
+             */
+            void add_device(const DeviceData& device);
+
+            static SunSpecData from_xml(const boost::property_tree::ptree& ss_element );
+            static SunSpecData from_xml(const std::string& ss_record);
         };
     }
 }

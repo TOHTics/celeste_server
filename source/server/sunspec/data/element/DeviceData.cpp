@@ -49,31 +49,31 @@ namespace sunspec
             {
                 std::string attr_tag = n.first;
                 std::string attr_data = n.second.data();
-                if ( attr_tag == SDX_DEVICE_LOGGER_ID )
+                if ( attr_tag == sdx::SDX_DEVICE_LOGGER_ID )
                 {
                     d.lid = attr_data;
-                } else if ( attr_tag == SDX_DEVICE_ID )
+                } else if ( attr_tag == sdx::SDX_DEVICE_ID )
                 {
-                    d.id = SDX_DEVICE_ID;
-                } else if ( attr_tag == SDX_DEVICE_CORRELATION_ID )
+                    d.id = sdx::SDX_DEVICE_ID;
+                } else if ( attr_tag == sdx::SDX_DEVICE_CORRELATION_ID )
                 {
-                    d.cid = SDX_DEVICE_CORRELATION_ID;
-                } else if ( attr_tag == SDX_DEVICE_IFC )
+                    d.cid = sdx::SDX_DEVICE_CORRELATION_ID;
+                } else if ( attr_tag == sdx::SDX_DEVICE_IFC )
                 {
                     d.ifc = attr_data;
-                } else if ( attr_tag == SDX_DEVICE_MAN )
+                } else if ( attr_tag == sdx::SDX_DEVICE_MAN )
                 {
                     d.man = attr_data;
-                } else if ( attr_tag == SDX_DEVICE_MOD )
+                } else if ( attr_tag == sdx::SDX_DEVICE_MOD )
                 {
                     d.mod = attr_data;
-                } else if ( attr_tag == SDX_DEVICE_NAMESPACE )
+                } else if ( attr_tag == sdx::SDX_DEVICE_NAMESPACE )
                 {
                     d.ns = attr_data;
-                } else if ( attr_tag == SDX_DEVICE_SN )
+                } else if ( attr_tag == sdx::SDX_DEVICE_SN )
                 {
                     d.sn = attr_data;
-                } else if ( attr_tag == SDX_DEVICE_TIME )
+                } else if ( attr_tag == sdx::SDX_DEVICE_TIME )
                 {
                     d.t = attr_data;
                 } else
@@ -84,7 +84,7 @@ namespace sunspec
             for ( const node& n : device_element )
             {
                 std::string tag = n.first;
-                if ( tag == SDX_MODEL )
+                if ( tag == sdx::SDX_MODEL )
                 {
                     ptree model_element = n.second;
                     ModelData model = ModelData::from_xml(model_element);
@@ -97,9 +97,6 @@ namespace sunspec
 
         void DeviceData::add_model(const ModelData &model)
         {
-            if ( model.id.empty() )
-                throw ModelDataError("The id of the ModelData being added must be non-empty.");
-
             model_list.push_back(model);
         }
 
@@ -116,7 +113,7 @@ namespace sunspec
             try
             {
                 // Get the child node which represents the model
-                xml = xml.get_child(SDX_DEVICE);
+                xml = xml.get_child(sdx::SDX_DEVICE);
             } catch (ptree_bad_path e)
             {
                 throw XMLError("XML Model record does not contain the <m> tag.");
@@ -124,7 +121,6 @@ namespace sunspec
 
             // Build PointData
             DeviceData result = DeviceData::from_xml(xml);
-
             return result;
         }
     }

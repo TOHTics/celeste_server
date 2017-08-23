@@ -75,8 +75,6 @@ namespace sunspec
              * Adds the `ModelData` instance to the list of
              * models contained by this object.
              * @param model `ModelData` object to be added.
-             * @throws ModelDataError Throws if the model is malformed.
-             * I.e. The `id` of the model is empty.
              */
             void add_model(const ModelData& model);
 
@@ -101,7 +99,6 @@ namespace sunspec
              * that the data contained in the `device_record` is empty or is malformed.
              */
             static DeviceData from_xml(const std::string& device_record);
-
         };
 
     }

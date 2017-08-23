@@ -23,7 +23,7 @@
 
 namespace sunspec
 {
-    namespace data
+    namespace sdx
     {
         static const std::string SDX_POINT            = "p";      /// Point record
         static const std::string SDX_POINT_ID         = "id";     /// ID of point
@@ -48,6 +48,10 @@ namespace sunspec
         static const std::string SDX_DEVICE_SN = "sn";
         static const std::string SDX_DEVICE_TIME = "t";
         static const std::string SDX_DEVICE_CORRELATION_ID = "cid";
+
+        static const std::string SDX_VERSION = "1";
+        static const std::string SDX_SUNSPEC_DATA = "SunSpecData";
+        static const std::string SDX_SUNSPEC_DATA_VERSION = "v";
     }
 }
 

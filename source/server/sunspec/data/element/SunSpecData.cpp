@@ -20,28 +20,34 @@
  */
 //</editor-fold>
 #include <boost/property_tree/xml_parser.hpp>
-#include "ModelData.hpp"
-#include "../error.hpp"
+#include "SunSpecData.hpp"
 #include "../util/sdx_tags.hpp"
 
-namespace sunspec {
-    namespace data {
+namespace sunspec
+{
+    namespace data
+    {
         using namespace boost::property_tree;
         using node = std::pair<std::string, ptree>;
 
-        ModelData ModelData::from_xml(const ptree &model_element)
+        void SunSpecData::add_device(const DeviceData &device)
+        {
+            device_list.push_back(device);
+        }
+
+        SunSpecData SunSpecData::from_xml(const boost::property_tree::ptree &ss_element)
         {
             // Verify that there is data
-            if ( model_element.data().empty() )
+            if ( ss_element.data().empty() )
                 throw XMLError("Empty value for ModelData.");
 
-            // Get attributes of the subtree model_element
-            ptree attr = model_element.get_child("<xmlattr>");
+            // Get attributes of the subtree ss_element
+            ptree attr = ss_element.get_child("<xmlattr>");
             if ( attr.empty() )
                 throw XMLError("Empty attributes for model.");
 
             // Declare model
-            ModelData result;
+            SunSpecData result;
 
             // Get attributes and set them to the result
             for (const node& n : attr)
@@ -49,63 +55,49 @@ namespace sunspec {
                 std::string attr_name = n.first;
                 std::string attr_data = n.second.data();
 
-                if ( attr_name == sdx::SDX_MODEL_ID )
+                if ( attr_name == sdx::SDX_SUNSPEC_DATA_VERSION )
                 {
-                    result.id = attr_data;
-                } else if ( attr_name == sdx::SDX_MODEL_NAMESPACE )
-                {
-                    result.ns = attr_data;
-                } else if ( attr_name == sdx::SDX_MODEL_INDEX )
-                {
-                    result.x = attr_data;
+                    result.v = attr_data;
                 }
-
             }
 
-            // Get points
-            ptree point_elements;
-            for ( const node& pe : model_element)
+            // Get devices
+            ptree device_elements;
+            for ( const node& de : ss_element)
             {
-                std::string element_tag = pe.first;
-                if ( element_tag == sdx::SDX_POINT )
+                std::string element_tag = de.first;
+                if ( element_tag == sdx::SDX_DEVICE )
                 {
-                    ptree point_element = pe.second;
-                    PointData p = PointData::from_xml(point_element);
-                    result.add_point(p);
+                    ptree point_element = de.second;
+                    DeviceData d = DeviceData::from_xml(point_element);
+                    result.add_device(d);
                 }
             }
             return result;
         }
 
-        ModelData ModelData::from_xml(const std::string& model_record)
+        SunSpecData SunSpecData::from_xml(const std::string &ss_record)
         {
-            // Verify if model record is empty
-            if ( model_record.empty() )
-                throw XMLError("Model record is empty.");
+            if ( ss_record.empty() )
+                throw XMLError("SunSpec record must be a non-empty string");
 
             // Parse XML into a ptree
-            std::istringstream iss(model_record);
+            std::istringstream iss(ss_record);
             ptree xml;
             xml_parser::read_xml<ptree>(iss, xml);
 
             try
             {
                 // Get the child node which represents the model
-                xml = xml.get_child(sdx::SDX_MODEL);
-            } catch (boost::property_tree::ptree_bad_path e)
+                xml = xml.get_child(sdx::SDX_SUNSPEC_DATA);
+            } catch (ptree_bad_path e)
             {
                 throw XMLError("XML Model record does not contain the <m> tag.");
             }
 
             // Build PointData
-            ModelData result = ModelData::from_xml(xml);
+            SunSpecData result = SunSpecData::from_xml(xml);
             return result;
         }
-
-        void ModelData::add_point(const PointData &p)
-        {
-            point_list.push_back(p);
-        }
-
     }
 }

@@ -48,27 +48,27 @@ namespace data
             {
                 std::string attr_name = n.first;
                 std::string attr_data = n.second.data();
-                if ( attr_name == SDX_POINT_ID )
+                if ( attr_name == sdx::SDX_POINT_ID )
                 {
                     result.id = attr_data;
                 }
-                else if ( attr_name == SDX_POINT_SF )
+                else if ( attr_name == sdx::SDX_POINT_SF )
                 {
                     result.sf = attr_data;
                 }
-                else if ( attr_name == SDX_POINT_INDEX )
+                else if ( attr_name == sdx::SDX_POINT_INDEX )
                 {
                     result.x = attr_data;
                 }
-                else if ( attr_name == SDX_POINT_DESC )
+                else if ( attr_name == sdx::SDX_POINT_DESC )
                 {
                     result.d = attr_data;
                 }
-                else if ( attr_name == SDX_POINT_UNITS )
+                else if ( attr_name == sdx::SDX_POINT_UNITS )
                 {
                     result.u = attr_data;
                 }
-                else if ( attr_name == SDX_POINT_TIME )
+                else if ( attr_name == sdx::SDX_POINT_TIME )
                 {
                     result.t = attr_data;
                 }
@@ -94,7 +94,7 @@ namespace data
             try
             {
                 // Get the child node which represents the point
-                xml = xml.get_child(SDX_POINT);
+                xml = xml.get_child(sdx::SDX_POINT);
             } catch (ptree_bad_path e)
             {
                 throw XMLError("XML Point Record does not contain the <p> tag.");

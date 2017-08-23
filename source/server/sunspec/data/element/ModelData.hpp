@@ -90,8 +90,6 @@ namespace sunspec
             ModelData(const ModelData& other) = default;
 
             /**
-             * @throws PointDataError The PointData passed was not formed correctly. Usually
-             * meaning that you haven't set the `p.id` field of `PointData p`.
              * @param p `PointData` to add to the list of point records of this model.
              */
             void add_point(const PointData& p);
