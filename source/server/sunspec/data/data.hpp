@@ -19,7 +19,7 @@
 #ifndef SERVER_DATA_HPP
 #define SERVER_DATA_HPP
 
-#include "element/DataPoint.hpp"
+#include "element/PointData.hpp"
 #include "element/DeviceData.hpp"
 #include "element/ModelData.hpp"
 #include "element/SunSpecData.hpp"

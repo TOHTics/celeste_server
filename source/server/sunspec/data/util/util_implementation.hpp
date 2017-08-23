@@ -11,12 +11,12 @@
  * @file ${HEADER_FILENAME}
  * @author Carlos Brito (carlos.brito524@gmail.com)
  * @date 8/18/17.
- * 
+ *
  * @brief No description available.
  *
  * TODO
  * ----
- * - Implement RFC3339 translator.
+ * Nothing.
  */
 //</editor-fold>
 #ifndef SERVER_UTIL_IMPLEMENTATION_HPP
@@ -25,10 +25,11 @@
 #include <string>
 #include <algorithm>
 #include <boost/property_tree/xml_parser.hpp>
+#include <boost/property_tree/exceptions.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 
 #include "../data.hpp"
-#include "error.hpp"
+#include "../error.hpp"
 #include "sdx_tags.hpp"
 
 namespace sunspec {
@@ -40,48 +41,56 @@ namespace sunspec {
             typedef std::pair<std::string, ptree> node;
         }
 
-        template <typename T>
-        DataPoint<T> from_xml(const ptree &point_element) {
+        PointData point_from_xml(const ptree &point_element) {
             // Verify that there is data
             std::string data = point_element.data();
-            if (data.empty())
-                throw XMLError("Empty data value for DataPoint");
+            if ( data.empty() )
+                throw XMLError("Empty data value for PointData");
 
             // Get attributes of point element
             ptree attr = point_element.get_child("<xmlattr>");
-            if (attr.empty())
+            if ( attr.empty() )
                 throw XMLError("Empty attributes for point");
 
-            // Build DataPoint
-            DataPoint<T> result;
-            for (const node &n : attr)
+            // Build PointData
+            PointData result;
+            for ( const node &n : attr )
             {
-                std::cout << n.first << std::endl;
-                if (n.first == SDX_POINT_ID)
-                    result.id = n.second.get_value<std::string>();
-                else if (n.first == SDX_POINT_SF)
-                    result.scale_factor = n.second.get_value<int>();
-                else if (n.first == SDX_POINT_INDEX)
-                    result.record_index = n.second.get_value<std::string>();
-                else if (n.first == SDX_POINT_DESC)
-                    result.description = n.second.get_value<std::string>();
-                else if (n.first == SDX_POINT_UNITS)
-                    result.unit_of_measure = n.second.get_value<std::string>();
-                else if (n.first == SDX_POINT_TIME)
+                string attr_name = n.first;
+                string data = n.second.data();
+                if ( attr_name == SDX_POINT_ID )
                 {
-                    string timestamp_s = n.second.get_value<std::string>();
-                    result.timestamp = RFC3339_TO_PTIME(timestamp_s);
+                    result.id = data;
+                }
+                else if ( attr_name == SDX_POINT_SF )
+                {
+                    result.scale_factor = data;
+                }
+                else if ( attr_name == SDX_POINT_INDEX )
+                {
+                    result.record_index = data;
+                }
+                else if ( attr_name == SDX_POINT_DESC )
+                {
+                    result.description = data;
+                }
+                else if ( attr_name == SDX_POINT_UNITS )
+                {
+                    result.unit_of_measure = data;
+                }
+                else if ( attr_name == SDX_POINT_TIME )
+                {
+                    result.timestamp = data;
                 }
                 else
-                    throw XMLError("Undefined attribute while parsing DataPoint");
+                    throw XMLError("Undefined attribute while parsing PointData");
             }
-            result.value = point_element.get_value<T>();
+            result.value = point_element.get_value<string>();
 
             return result;
         }
 
-        template<typename T>
-        DataPoint<T> from_xml(const std::string &point_record)
+        PointData point_from_xml(const std::string &point_record)
         {
             // Verify point_record isn't empty
             if ( point_record.empty() )
@@ -92,31 +101,67 @@ namespace sunspec {
             ptree xml;
             xml_parser::read_xml<ptree>(iss, xml);
 
-            // Get the child node which represents the point
-            xml = xml.get_child(SDX_POINT);
-
-            // Verify that it is a point record
-            if ( xml.empty() )
+            try
+            {
+                // Get the child node which represents the point
+                xml = xml.get_child(SDX_POINT);
+            } catch (boost::property_tree::ptree_bad_path e)
+            {
                 throw XMLError("XML Point Record does not contain the <p> tag.");
+            }
 
-            // Build DataPoint
-            DataPoint<T> result = from_xml<T>(xml);
+            // Build PointData
+            PointData result = point_from_xml(xml);
 
             return result;
         }
 
-        ptime RFC3339_TO_PTIME(const std::string& rfc3339)
+        ModelData model_from_xml(const ptree &model_element)
         {
+            // Verify that there is data
+            std::string data = model_element.data();
+            if ( data.empty() )
+                throw XMLError("Empty value for ModelData.");
 
-            size_t RFC3339_T_POSITION = 10; // Position of 'T'
-            std::string std_fmt = rfc3339;
+            // Get attributes of the subtree model_element
+            ptree attr = model_element.get_child("<xmlattr>");
+            if ( attr.empty() )
+                throw XMLError("Empty attributes for model. At least the id is mandatory.");
 
-            // Take the 'T' and 'Z' out of the string so
-            // Boost can parse it.
-            std_fmt[RFC3339_T_POSITION] = ' ';
-            std_fmt.pop_back();
+            // Declare model
+            ModelData result;
 
-            return time_from_string(std_fmt);
+            // Get attributes and set them to the result
+            for (const node& n : attr)
+            {
+                string attr_name = n.first;
+                string data = n.second.data();
+
+                if ( attr_name == SDX_MODEL_ID )
+                {
+                    result.id = data;
+                } else if ( attr_name == SDX_MODEL_NAMESPACE )
+                {
+                    result.ns = data;
+                } else if ( attr_name == SDX_MODEL_INDEX )
+                {
+                    result.record_index = data;
+                }
+
+            }
+
+            // Get points
+            ptree point_elements;
+            for ( const node& pe : model_element)
+            {
+                if ( pe.first == SDX_POINT )
+                {
+                    PointData p = point_from_xml(pe.second);
+                    result.add_point(p);
+                }
+            }
+
+            return result;
         }
     }
 }

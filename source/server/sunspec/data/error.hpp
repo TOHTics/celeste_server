@@ -61,6 +61,21 @@ namespace sunspec
         public:
             XMLError(std::string message) : Error(message) {}
         };
+
+        /**
+         * @class PointDataError
+         * @author Carlos Brito (carlos.brito524@gmail.com)
+         * @date 8/22/17.
+         *
+         * @brief Represents an error with respect to some PointData.
+         * Usually this will indicate that the PointData is not formed
+         * correctly.
+         */
+        class PointDataError : public Error
+        {
+        public:
+            PointDataError(std::string message) : Error(message) {}
+        };
     }
 }
 

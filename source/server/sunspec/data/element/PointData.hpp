@@ -45,32 +45,31 @@ namespace sunspec {
          * of data are then we would have to look at the SDMX spec and assign
          * the types accordingly.
          */
-        template<typename T>
-        struct DataPoint {
-            string id; /// Name of the data point record (to know what it represents).
-            int scale_factor; /// Exponent of multiplier. I.e. $ 10^(scale_factor) $. Defaults to 0.
-            string description; /// User friendly description of the data point.
-            string unit_of_measure; /// Unit of measure of the value.
-            string record_index; /// Index of record. If we have multiple records of same type we need to differentiate them.
-            ptime timestamp; /// Time at which the point was obtained in RFC3339 format.
-            T value; /// Value of the data point.
+        struct PointData {
+            string id;                  /// Name of the data point record (to know what it represents).
+            string scale_factor = "0";  /// Exponent of multiplier. I.e. $ 10^(scale_factor) $. Defaults to 0.
+            string description;         /// User friendly description of the data point.
+            string unit_of_measure;     /// Unit of measure of the value.
+            string record_index;        /// Index of record. If we have multiple records of same type we need to differentiate them.
+            string timestamp;           /// Time at which the point was obtained in RFC3339 format.
+            string value;               /// Value of the data point.
 
             /**
              * Empty constructor.
              */
-            DataPoint() = default;
+            PointData() = default;
 
             /**
              * Constructs a DataPoint object.
              * @param id Name of the data point.
              * @param value Value of data point of type `T`.
              */
-            DataPoint(string id, T value) : id(id), value(value) {}
+            PointData(string id, string value) : id(id), value(value) {}
 
             /**
              * Copy constructor.
              */
-            DataPoint(const DataPoint &) = default;
+            PointData(const PointData &) = default;
         };
     }
 }
