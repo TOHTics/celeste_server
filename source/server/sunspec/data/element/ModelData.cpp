@@ -21,7 +21,7 @@
 //</editor-fold>
 #include <boost/property_tree/xml_parser.hpp>
 #include "ModelData.hpp"
-#include "../error.hpp"
+#include "../util/error.hpp"
 #include "../util/sdx_tags.hpp"
 
 namespace sunspec {
@@ -97,7 +97,6 @@ namespace sunspec {
                 throw XMLError("XML Model record does not contain the <m> tag.");
             }
 
-            // Build PointData
             ModelData result = ModelData::from_xml(xml);
             return result;
         }
