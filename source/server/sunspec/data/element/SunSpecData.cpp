@@ -95,7 +95,6 @@ namespace sunspec
                 throw XMLError("XML Model record does not contain the <m> tag.");
             }
 
-            // Build PointData
             SunSpecData result = SunSpecData::from_xml(xml);
             return result;
         }
