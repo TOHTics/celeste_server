@@ -22,7 +22,7 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 #include "PointData.hpp"
-#include "../util/error.hpp"
+#include "../error.hpp"
 #include "../util/sdx_tags.hpp"
 
 namespace sunspec

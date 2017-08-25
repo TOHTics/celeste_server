@@ -1,3 +1,0 @@
-/Users/carlos/Documents/Trabajo/solarpanels/source/server/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/Users/carlos/Documents/Trabajo/solarpanels/source/server/cmake-build-debug/CMakeFiles/edit_cache.dir
-/Users/carlos/Documents/Trabajo/solarpanels/source/server/cmake-build-debug/CMakeFiles/server.dir
