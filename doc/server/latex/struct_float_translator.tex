@@ -1,0 +1,47 @@
+\hypertarget{struct_float_translator}{}\section{Float\+Translator Class Reference}
+\label{struct_float_translator}\index{Float\+Translator@{Float\+Translator}}
+
+
+Translates from {\ttfamily string} to {\ttfamily float} and {\ttfamily float} to {\ttfamily string}.  
+
+
+
+
+{\ttfamily \#include $<$Float\+Translator.\+hpp$>$}
+
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{struct_float_translator_a840fb034e48966a9a95b882d85b30a10}\label{struct_float_translator_a840fb034e48966a9a95b882d85b30a10}} 
+typedef std\+::string {\bfseries internal\+\_\+type}
+\item 
+\mbox{\Hypertarget{struct_float_translator_af69548d24fda6dd74a9e205e8db3908b}\label{struct_float_translator_af69548d24fda6dd74a9e205e8db3908b}} 
+typedef int {\bfseries external\+\_\+type}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{struct_float_translator_abc5c5206c051df622466be2e020eab6e}\label{struct_float_translator_abc5c5206c051df622466be2e020eab6e}} 
+boost\+::optional$<$ external\+\_\+type $>$ {\bfseries get\+\_\+value} (const internal\+\_\+type \&str)
+\item 
+\mbox{\Hypertarget{struct_float_translator_a7ff63264631bcc9fb32e806230b0b952}\label{struct_float_translator_a7ff63264631bcc9fb32e806230b0b952}} 
+boost\+::optional$<$ internal\+\_\+type $>$ {\bfseries put\+\_\+value} (const external\+\_\+type \&f)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Translates from {\ttfamily string} to {\ttfamily float} and {\ttfamily float} to {\ttfamily string}. 
+
+\begin{DoxyAuthor}{Author}
+Carlos Brito (\href{mailto:carlos.brito524@gmail.com}{\tt carlos.\+brito524@gmail.\+com}) 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+8/18/17.
+\end{DoxyDate}
+\subsection*{Description}
+
+We made this class because we will need to translate between {\ttfamily float} and {\ttfamily string} in our application. Using the {\ttfamily boost\+::optional} semantics, this class is well abstracted. Please consult the {\ttfamily boost} docs for more infor-\/ mation\+: \href{http://www.boost.org/doc/libs/1_64_0/libs/optional/doc/html/index.html}{\tt http\+://www.\+boost.\+org/doc/libs/1\+\_\+64\+\_\+0/libs/optional/doc/html/index.\+html} 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+sunspec/data/translator/\hyperlink{_float_translator_8hpp}{Float\+Translator.\+hpp}\end{DoxyCompactItemize}

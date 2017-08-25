@@ -1,0 +1,139 @@
+\hypertarget{structsunspec_1_1data_1_1_point_data}{}\section{sunspec\+:\+:data\+:\+:Point\+Data Class Reference}
+\label{structsunspec_1_1data_1_1_point_data}\index{sunspec\+::data\+::\+Point\+Data@{sunspec\+::data\+::\+Point\+Data}}
+
+
+A record of some measurement.  
+
+
+
+
+{\ttfamily \#include $<$Point\+Data.\+hpp$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{structsunspec_1_1data_1_1_point_data_afdea8403454a3ca201ee16396d5ca325}{Point\+Data} ()=default
+\item 
+\hyperlink{structsunspec_1_1data_1_1_point_data_a8347bc1d6ecb10370320190517a6dde2}{Point\+Data} (std\+::string \hyperlink{structsunspec_1_1data_1_1_point_data_af650254f9eb6b59f4608e69a0470635a}{id}, std\+::string \hyperlink{structsunspec_1_1data_1_1_point_data_a669ad65a5985a90717b48a89bf5efe26}{value})
+\item 
+\hyperlink{structsunspec_1_1data_1_1_point_data_ae23010639c57a83fa97ea4fce9d5ad95}{Point\+Data} (const \hyperlink{structsunspec_1_1data_1_1_point_data}{Point\+Data} \&)=default
+\end{DoxyCompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static \hyperlink{structsunspec_1_1data_1_1_point_data}{Point\+Data} \hyperlink{structsunspec_1_1data_1_1_point_data_a5cd5531342015e5f2a805e6c8ad75a0e}{from\+\_\+xml} (const boost\+::property\+\_\+tree\+::ptree \&point\+\_\+element)
+\item 
+static \hyperlink{structsunspec_1_1data_1_1_point_data}{Point\+Data} \hyperlink{structsunspec_1_1data_1_1_point_data_a7e37d673b7ae49753deb3734c3716caf}{from\+\_\+xml} (const std\+::string \&point\+\_\+record)
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{structsunspec_1_1data_1_1_point_data_af650254f9eb6b59f4608e69a0470635a}\label{structsunspec_1_1data_1_1_point_data_af650254f9eb6b59f4608e69a0470635a}} 
+std\+::string \hyperlink{structsunspec_1_1data_1_1_point_data_af650254f9eb6b59f4608e69a0470635a}{id}
+\begin{DoxyCompactList}\small\item\em Name of the data point record. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structsunspec_1_1data_1_1_point_data_a57c2509e8cb97ee940315742a89288f0}\label{structsunspec_1_1data_1_1_point_data_a57c2509e8cb97ee940315742a89288f0}} 
+std\+::string \hyperlink{structsunspec_1_1data_1_1_point_data_a57c2509e8cb97ee940315742a89288f0}{sf} = \char`\"{}0\char`\"{}
+\begin{DoxyCompactList}\small\item\em The scale factor. I.\+e. $ value \times 10^{sf} $. Defaults to 0. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structsunspec_1_1data_1_1_point_data_a220678c7b1553f3c4331b817429164b0}\label{structsunspec_1_1data_1_1_point_data_a220678c7b1553f3c4331b817429164b0}} 
+std\+::string \hyperlink{structsunspec_1_1data_1_1_point_data_a220678c7b1553f3c4331b817429164b0}{d}
+\begin{DoxyCompactList}\small\item\em User friendly description of the data point. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structsunspec_1_1data_1_1_point_data_acda6af95d18a8526f870df72e0abaa25}\label{structsunspec_1_1data_1_1_point_data_acda6af95d18a8526f870df72e0abaa25}} 
+std\+::string \hyperlink{structsunspec_1_1data_1_1_point_data_acda6af95d18a8526f870df72e0abaa25}{u}
+\begin{DoxyCompactList}\small\item\em Unit of measure of the value. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structsunspec_1_1data_1_1_point_data_a5c7544aa90af8105a9fe0571518f474a}\label{structsunspec_1_1data_1_1_point_data_a5c7544aa90af8105a9fe0571518f474a}} 
+std\+::string \hyperlink{structsunspec_1_1data_1_1_point_data_a5c7544aa90af8105a9fe0571518f474a}{x}
+\begin{DoxyCompactList}\small\item\em Index of record. If we have multiple records of same type we need to differentiate them. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structsunspec_1_1data_1_1_point_data_ab8da416982508faabd9ac09ab407bc5f}\label{structsunspec_1_1data_1_1_point_data_ab8da416982508faabd9ac09ab407bc5f}} 
+std\+::string \hyperlink{structsunspec_1_1data_1_1_point_data_ab8da416982508faabd9ac09ab407bc5f}{t}
+\begin{DoxyCompactList}\small\item\em Time at which the point was obtained in R\+F\+C3339 format. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structsunspec_1_1data_1_1_point_data_a669ad65a5985a90717b48a89bf5efe26}\label{structsunspec_1_1data_1_1_point_data_a669ad65a5985a90717b48a89bf5efe26}} 
+std\+::string \hyperlink{structsunspec_1_1data_1_1_point_data_a669ad65a5985a90717b48a89bf5efe26}{value}
+\begin{DoxyCompactList}\small\item\em Value of the data point. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+A record of some measurement. 
+
+\begin{DoxyAuthor}{Author}
+Carlos Brito (\href{mailto:carlos.brito524@gmail.com}{\tt carlos.\+brito524@gmail.\+com}) 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+8/17/17.
+\end{DoxyDate}
+\subsection*{Description}
+
+A {\ttfamily \hyperlink{structsunspec_1_1data_1_1_point_data}{Point\+Data}} is a record of data that contains information about some measurement (or sample). The measurement is identified with and id and it takes any type of value. We store all fields of data, like the {\ttfamily id} and {\ttfamily description} as {\ttfamily std\+::strings}. This is because we are only interested in getting the data instead of parsing it. To know what the types of data are then we would have to look at the S\+D\+MX spec and assign the types accordingly. 
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{structsunspec_1_1data_1_1_point_data_afdea8403454a3ca201ee16396d5ca325}\label{structsunspec_1_1data_1_1_point_data_afdea8403454a3ca201ee16396d5ca325}} 
+\index{sunspec\+::data\+::\+Point\+Data@{sunspec\+::data\+::\+Point\+Data}!Point\+Data@{Point\+Data}}
+\index{Point\+Data@{Point\+Data}!sunspec\+::data\+::\+Point\+Data@{sunspec\+::data\+::\+Point\+Data}}
+\subsubsection{\texorpdfstring{Point\+Data()}{PointData()}\hspace{0.1cm}{\footnotesize\ttfamily [1/3]}}
+{\footnotesize\ttfamily sunspec\+::data\+::\+Point\+Data\+::\+Point\+Data (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [default]}}
+
+Empty constructor. \mbox{\Hypertarget{structsunspec_1_1data_1_1_point_data_a8347bc1d6ecb10370320190517a6dde2}\label{structsunspec_1_1data_1_1_point_data_a8347bc1d6ecb10370320190517a6dde2}} 
+\index{sunspec\+::data\+::\+Point\+Data@{sunspec\+::data\+::\+Point\+Data}!Point\+Data@{Point\+Data}}
+\index{Point\+Data@{Point\+Data}!sunspec\+::data\+::\+Point\+Data@{sunspec\+::data\+::\+Point\+Data}}
+\subsubsection{\texorpdfstring{Point\+Data()}{PointData()}\hspace{0.1cm}{\footnotesize\ttfamily [2/3]}}
+{\footnotesize\ttfamily sunspec\+::data\+::\+Point\+Data\+::\+Point\+Data (\begin{DoxyParamCaption}\item[{std\+::string}]{id,  }\item[{std\+::string}]{value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Constructs a Data\+Point object. 
+\begin{DoxyParams}{Parameters}
+{\em id} & Name of the data point. \\
+\hline
+{\em value} & Value of data point represented by a {\ttfamily std\+::string} \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{structsunspec_1_1data_1_1_point_data_ae23010639c57a83fa97ea4fce9d5ad95}\label{structsunspec_1_1data_1_1_point_data_ae23010639c57a83fa97ea4fce9d5ad95}} 
+\index{sunspec\+::data\+::\+Point\+Data@{sunspec\+::data\+::\+Point\+Data}!Point\+Data@{Point\+Data}}
+\index{Point\+Data@{Point\+Data}!sunspec\+::data\+::\+Point\+Data@{sunspec\+::data\+::\+Point\+Data}}
+\subsubsection{\texorpdfstring{Point\+Data()}{PointData()}\hspace{0.1cm}{\footnotesize\ttfamily [3/3]}}
+{\footnotesize\ttfamily sunspec\+::data\+::\+Point\+Data\+::\+Point\+Data (\begin{DoxyParamCaption}\item[{const \hyperlink{structsunspec_1_1data_1_1_point_data}{Point\+Data} \&}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [default]}}
+
+Copy constructor. 
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{structsunspec_1_1data_1_1_point_data_a5cd5531342015e5f2a805e6c8ad75a0e}\label{structsunspec_1_1data_1_1_point_data_a5cd5531342015e5f2a805e6c8ad75a0e}} 
+\index{sunspec\+::data\+::\+Point\+Data@{sunspec\+::data\+::\+Point\+Data}!from\+\_\+xml@{from\+\_\+xml}}
+\index{from\+\_\+xml@{from\+\_\+xml}!sunspec\+::data\+::\+Point\+Data@{sunspec\+::data\+::\+Point\+Data}}
+\subsubsection{\texorpdfstring{from\+\_\+xml()}{from\_xml()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily static \hyperlink{structsunspec_1_1data_1_1_point_data}{Point\+Data} sunspec\+::data\+::\+Point\+Data\+::from\+\_\+xml (\begin{DoxyParamCaption}\item[{const boost\+::property\+\_\+tree\+::ptree \&}]{point\+\_\+element }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Builds a \hyperlink{structsunspec_1_1data_1_1_point_data}{Point\+Data} out of a S\+DX specification. This specification can be found in the Sun\+Spec Data Model Exchange Specification and its syntax is X\+ML. 
+\begin{DoxyParams}{Parameters}
+{\em point\+\_\+element} & The {\ttfamily ptree} object (in X\+ML) element of the point record. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns a {\ttfamily \hyperlink{structsunspec_1_1data_1_1_point_data}{Point\+Data}} object with the same data as the element. 
+\end{DoxyReturn}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em \hyperlink{classsunspec_1_1data_1_1_x_m_l_error}{X\+M\+L\+Error}} & Throws if there was an error parsing the X\+ML. This will mean that the data contained in the {\ttfamily point\+\_\+element} is empty or is malformed. \\
+\hline
+\end{DoxyExceptions}
+\mbox{\Hypertarget{structsunspec_1_1data_1_1_point_data_a7e37d673b7ae49753deb3734c3716caf}\label{structsunspec_1_1data_1_1_point_data_a7e37d673b7ae49753deb3734c3716caf}} 
+\index{sunspec\+::data\+::\+Point\+Data@{sunspec\+::data\+::\+Point\+Data}!from\+\_\+xml@{from\+\_\+xml}}
+\index{from\+\_\+xml@{from\+\_\+xml}!sunspec\+::data\+::\+Point\+Data@{sunspec\+::data\+::\+Point\+Data}}
+\subsubsection{\texorpdfstring{from\+\_\+xml()}{from\_xml()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily \hyperlink{structsunspec_1_1data_1_1_point_data}{Point\+Data} sunspec\+::data\+::\+Point\+Data\+::from\+\_\+xml (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{point\+\_\+record }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Builds a \hyperlink{structsunspec_1_1data_1_1_point_data}{Point\+Data} out of a S\+DX specification. This specification can be found in the Sun\+Spec Data Model Exchange Specification and its syntax is X\+ML. 
+\begin{DoxyParams}{Parameters}
+{\em point\+\_\+record} & A {\ttfamily std\+::string} containing the X\+ML representation of the point record. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns a {\ttfamily \hyperlink{structsunspec_1_1data_1_1_point_data}{Point\+Data}} object with the same data as the X\+ML representation that was passed. 
+\end{DoxyReturn}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em \hyperlink{classsunspec_1_1data_1_1_x_m_l_error}{X\+M\+L\+Error}} & Throws if there was an error parsing the X\+ML. This will mean that the data contained in the {\ttfamily point\+\_\+record} is empty or is malformed. \\
+\hline
+\end{DoxyExceptions}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+sunspec/data/element/\hyperlink{_point_data_8hpp}{Point\+Data.\+hpp}\item 
+sunspec/data/element/Point\+Data.\+cpp\end{DoxyCompactItemize}

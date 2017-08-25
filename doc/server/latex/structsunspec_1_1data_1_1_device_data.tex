@@ -1,0 +1,141 @@
+\hypertarget{structsunspec_1_1data_1_1_device_data}{}\section{sunspec\+:\+:data\+:\+:Device\+Data Struct Reference}
+\label{structsunspec_1_1data_1_1_device_data}\index{sunspec\+::data\+::\+Device\+Data@{sunspec\+::data\+::\+Device\+Data}}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{structsunspec_1_1data_1_1_device_data_a35392620b4aa510eb8dff6f84d7aaaca}\label{structsunspec_1_1data_1_1_device_data_a35392620b4aa510eb8dff6f84d7aaaca}} 
+typedef std\+::vector$<$ \hyperlink{structsunspec_1_1data_1_1_model_data}{Model\+Data} $>$ {\bfseries model\+\_\+list\+\_\+type}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{structsunspec_1_1data_1_1_device_data_a967eadc9b8a8be0b768d6a68ff7f38ea}{Device\+Data} ()=default
+\item 
+\hyperlink{structsunspec_1_1data_1_1_device_data_a652eacfb6981db9e705131bfcbdfdc4b}{Device\+Data} (const \hyperlink{structsunspec_1_1data_1_1_device_data}{Device\+Data} \&other)=default
+\item 
+void \hyperlink{structsunspec_1_1data_1_1_device_data_a207df2dfcfc041cf9e93e2b917888030}{add\+\_\+model} (const \hyperlink{structsunspec_1_1data_1_1_model_data}{Model\+Data} \&model)
+\end{DoxyCompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static \hyperlink{structsunspec_1_1data_1_1_device_data}{Device\+Data} \hyperlink{structsunspec_1_1data_1_1_device_data_a8b7e40e1d57748cf963a1a41dbc092d2}{from\+\_\+xml} (const boost\+::property\+\_\+tree\+::ptree \&device\+\_\+element)
+\item 
+static \hyperlink{structsunspec_1_1data_1_1_device_data}{Device\+Data} \hyperlink{structsunspec_1_1data_1_1_device_data_afefe7462c600a9219c04867dce19d5e3}{from\+\_\+xml} (const std\+::string \&device\+\_\+record)
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{structsunspec_1_1data_1_1_device_data_a1056f73011728513747a96e31fa9ddc0}\label{structsunspec_1_1data_1_1_device_data_a1056f73011728513747a96e31fa9ddc0}} 
+std\+::string \hyperlink{structsunspec_1_1data_1_1_device_data_a1056f73011728513747a96e31fa9ddc0}{cid}
+\begin{DoxyCompactList}\small\item\em Result Correlation ID. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structsunspec_1_1data_1_1_device_data_a40bd089f25f4f67b41650ed5cf5704f3}\label{structsunspec_1_1data_1_1_device_data_a40bd089f25f4f67b41650ed5cf5704f3}} 
+std\+::string \hyperlink{structsunspec_1_1data_1_1_device_data_a40bd089f25f4f67b41650ed5cf5704f3}{id}
+\begin{DoxyCompactList}\small\item\em Optional Device Id which overrides the {\ttfamily man}, {\ttfamily mod} and {\ttfamily sn} if present. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structsunspec_1_1data_1_1_device_data_a40ba7b9f2a8348ed9cd4243fed963b6f}\label{structsunspec_1_1data_1_1_device_data_a40ba7b9f2a8348ed9cd4243fed963b6f}} 
+std\+::string \hyperlink{structsunspec_1_1data_1_1_device_data_a40ba7b9f2a8348ed9cd4243fed963b6f}{ifc}
+\begin{DoxyCompactList}\small\item\em Optional Interface Id string. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structsunspec_1_1data_1_1_device_data_abd4b73d94180a81a250c7e7bbf0f45c7}\label{structsunspec_1_1data_1_1_device_data_abd4b73d94180a81a250c7e7bbf0f45c7}} 
+std\+::string \hyperlink{structsunspec_1_1data_1_1_device_data_abd4b73d94180a81a250c7e7bbf0f45c7}{lid}
+\begin{DoxyCompactList}\small\item\em Logger Id string. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structsunspec_1_1data_1_1_device_data_ac9c16d6cbd4190cb0f55f2ba8327f583}\label{structsunspec_1_1data_1_1_device_data_ac9c16d6cbd4190cb0f55f2ba8327f583}} 
+std\+::string \hyperlink{structsunspec_1_1data_1_1_device_data_ac9c16d6cbd4190cb0f55f2ba8327f583}{man}
+\begin{DoxyCompactList}\small\item\em Device manufacturer. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structsunspec_1_1data_1_1_device_data_acd5b55b0350e5e354c6c8eb106d10f82}\label{structsunspec_1_1data_1_1_device_data_acd5b55b0350e5e354c6c8eb106d10f82}} 
+std\+::string \hyperlink{structsunspec_1_1data_1_1_device_data_acd5b55b0350e5e354c6c8eb106d10f82}{mod}
+\begin{DoxyCompactList}\small\item\em Device model. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structsunspec_1_1data_1_1_device_data_a91da1856b483eb5a54b3d8a20056c691}\label{structsunspec_1_1data_1_1_device_data_a91da1856b483eb5a54b3d8a20056c691}} 
+std\+::string \hyperlink{structsunspec_1_1data_1_1_device_data_a91da1856b483eb5a54b3d8a20056c691}{sn}
+\begin{DoxyCompactList}\small\item\em Device serial number. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structsunspec_1_1data_1_1_device_data_a62d4f6006c84bd7d9217b24e3755b979}\label{structsunspec_1_1data_1_1_device_data_a62d4f6006c84bd7d9217b24e3755b979}} 
+std\+::string \hyperlink{structsunspec_1_1data_1_1_device_data_a62d4f6006c84bd7d9217b24e3755b979}{ns}
+\begin{DoxyCompactList}\small\item\em Domain namespace for {\ttfamily lid} \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structsunspec_1_1data_1_1_device_data_aace034fae7cf144b9b38d0dfc50d18ac}\label{structsunspec_1_1data_1_1_device_data_aace034fae7cf144b9b38d0dfc50d18ac}} 
+std\+::string \hyperlink{structsunspec_1_1data_1_1_device_data_aace034fae7cf144b9b38d0dfc50d18ac}{t}
+\begin{DoxyCompactList}\small\item\em Timestamp in R\+F\+C3339 format. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structsunspec_1_1data_1_1_device_data_a4ba0ebd57766531d0ee5139cf0e651e8}\label{structsunspec_1_1data_1_1_device_data_a4ba0ebd57766531d0ee5139cf0e651e8}} 
+model\+\_\+list\+\_\+type {\bfseries model\+\_\+list}
+\item 
+\mbox{\Hypertarget{structsunspec_1_1data_1_1_device_data_a615727b0ee9fde8134b0f7a0e0ad6ce9}\label{structsunspec_1_1data_1_1_device_data_a615727b0ee9fde8134b0f7a0e0ad6ce9}} 
+bool {\bfseries lid\+\_\+enabled} = true
+\item 
+\mbox{\Hypertarget{structsunspec_1_1data_1_1_device_data_a889372455853340bc76c7f1a04367ee9}\label{structsunspec_1_1data_1_1_device_data_a889372455853340bc76c7f1a04367ee9}} 
+bool {\bfseries common\+\_\+block\+\_\+enabled} = true
+\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{structsunspec_1_1data_1_1_device_data_a967eadc9b8a8be0b768d6a68ff7f38ea}\label{structsunspec_1_1data_1_1_device_data_a967eadc9b8a8be0b768d6a68ff7f38ea}} 
+\index{sunspec\+::data\+::\+Device\+Data@{sunspec\+::data\+::\+Device\+Data}!Device\+Data@{Device\+Data}}
+\index{Device\+Data@{Device\+Data}!sunspec\+::data\+::\+Device\+Data@{sunspec\+::data\+::\+Device\+Data}}
+\subsubsection{\texorpdfstring{Device\+Data()}{DeviceData()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily sunspec\+::data\+::\+Device\+Data\+::\+Device\+Data (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [default]}}
+
+Empty constructor. \mbox{\Hypertarget{structsunspec_1_1data_1_1_device_data_a652eacfb6981db9e705131bfcbdfdc4b}\label{structsunspec_1_1data_1_1_device_data_a652eacfb6981db9e705131bfcbdfdc4b}} 
+\index{sunspec\+::data\+::\+Device\+Data@{sunspec\+::data\+::\+Device\+Data}!Device\+Data@{Device\+Data}}
+\index{Device\+Data@{Device\+Data}!sunspec\+::data\+::\+Device\+Data@{sunspec\+::data\+::\+Device\+Data}}
+\subsubsection{\texorpdfstring{Device\+Data()}{DeviceData()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily sunspec\+::data\+::\+Device\+Data\+::\+Device\+Data (\begin{DoxyParamCaption}\item[{const \hyperlink{structsunspec_1_1data_1_1_device_data}{Device\+Data} \&}]{other }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [default]}}
+
+Copy constructor. 
+\begin{DoxyParams}{Parameters}
+{\em other} & Other {\ttfamily \hyperlink{structsunspec_1_1data_1_1_device_data}{Device\+Data}} object to copy \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{structsunspec_1_1data_1_1_device_data_a207df2dfcfc041cf9e93e2b917888030}\label{structsunspec_1_1data_1_1_device_data_a207df2dfcfc041cf9e93e2b917888030}} 
+\index{sunspec\+::data\+::\+Device\+Data@{sunspec\+::data\+::\+Device\+Data}!add\+\_\+model@{add\+\_\+model}}
+\index{add\+\_\+model@{add\+\_\+model}!sunspec\+::data\+::\+Device\+Data@{sunspec\+::data\+::\+Device\+Data}}
+\subsubsection{\texorpdfstring{add\+\_\+model()}{add\_model()}}
+{\footnotesize\ttfamily void sunspec\+::data\+::\+Device\+Data\+::add\+\_\+model (\begin{DoxyParamCaption}\item[{const \hyperlink{structsunspec_1_1data_1_1_model_data}{Model\+Data} \&}]{model }\end{DoxyParamCaption})}
+
+Adds the {\ttfamily \hyperlink{structsunspec_1_1data_1_1_model_data}{Model\+Data}} instance to the list of models contained by this object. 
+\begin{DoxyParams}{Parameters}
+{\em model} & {\ttfamily \hyperlink{structsunspec_1_1data_1_1_model_data}{Model\+Data}} object to be added. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{structsunspec_1_1data_1_1_device_data_a8b7e40e1d57748cf963a1a41dbc092d2}\label{structsunspec_1_1data_1_1_device_data_a8b7e40e1d57748cf963a1a41dbc092d2}} 
+\index{sunspec\+::data\+::\+Device\+Data@{sunspec\+::data\+::\+Device\+Data}!from\+\_\+xml@{from\+\_\+xml}}
+\index{from\+\_\+xml@{from\+\_\+xml}!sunspec\+::data\+::\+Device\+Data@{sunspec\+::data\+::\+Device\+Data}}
+\subsubsection{\texorpdfstring{from\+\_\+xml()}{from\_xml()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily static \hyperlink{structsunspec_1_1data_1_1_device_data}{Device\+Data} sunspec\+::data\+::\+Device\+Data\+::from\+\_\+xml (\begin{DoxyParamCaption}\item[{const boost\+::property\+\_\+tree\+::ptree \&}]{device\+\_\+element }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Builds a {\ttfamily \hyperlink{structsunspec_1_1data_1_1_device_data}{Device\+Data}} object from the X\+ML representation contained in a {\ttfamily ptree}. 
+\begin{DoxyParams}{Parameters}
+{\em device\+\_\+element} & The {\ttfamily ptree} object that contains exactly one device element. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A {\ttfamily \hyperlink{structsunspec_1_1data_1_1_device_data}{Device\+Data}} object containing the data 
+\end{DoxyReturn}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em \hyperlink{classsunspec_1_1data_1_1_x_m_l_error}{X\+M\+L\+Error}} & Throws if there was an error parsing the X\+ML. This will mean that the data contained in the {\ttfamily device\+\_\+element} is empty or is malformed. \\
+\hline
+\end{DoxyExceptions}
+\mbox{\Hypertarget{structsunspec_1_1data_1_1_device_data_afefe7462c600a9219c04867dce19d5e3}\label{structsunspec_1_1data_1_1_device_data_afefe7462c600a9219c04867dce19d5e3}} 
+\index{sunspec\+::data\+::\+Device\+Data@{sunspec\+::data\+::\+Device\+Data}!from\+\_\+xml@{from\+\_\+xml}}
+\index{from\+\_\+xml@{from\+\_\+xml}!sunspec\+::data\+::\+Device\+Data@{sunspec\+::data\+::\+Device\+Data}}
+\subsubsection{\texorpdfstring{from\+\_\+xml()}{from\_xml()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily \hyperlink{structsunspec_1_1data_1_1_device_data}{Device\+Data} sunspec\+::data\+::\+Device\+Data\+::from\+\_\+xml (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{device\+\_\+record }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Builds a {\ttfamily \hyperlink{structsunspec_1_1data_1_1_device_data}{Device\+Data}} object from he X\+ML representation contained in a {\ttfamily ptree}. 
+\begin{DoxyParams}{Parameters}
+{\em device\+\_\+record} & The {\ttfamily std\+::string} record that contains the device X\+ML representation. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A {\ttfamily \hyperlink{structsunspec_1_1data_1_1_device_data}{Device\+Data}} object containing the data 
+\end{DoxyReturn}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em \hyperlink{classsunspec_1_1data_1_1_x_m_l_error}{X\+M\+L\+Error}} & Throws if there was an error parsing the X\+ML. This will mean that the data contained in the {\ttfamily device\+\_\+record} is empty or is malformed. \\
+\hline
+\end{DoxyExceptions}
+
+
+The documentation for this struct was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+sunspec/data/element/\hyperlink{_device_data_8hpp}{Device\+Data.\+hpp}\item 
+sunspec/data/element/Device\+Data.\+cpp\end{DoxyCompactItemize}

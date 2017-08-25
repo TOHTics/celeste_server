@@ -1,0 +1,120 @@
+\hypertarget{structsunspec_1_1data_1_1_sun_spec_data}{}\section{sunspec\+:\+:data\+:\+:Sun\+Spec\+Data Class Reference}
+\label{structsunspec_1_1data_1_1_sun_spec_data}\index{sunspec\+::data\+::\+Sun\+Spec\+Data@{sunspec\+::data\+::\+Sun\+Spec\+Data}}
+
+
+Represents a \hyperlink{structsunspec_1_1data_1_1_sun_spec_data}{Sun\+Spec\+Data} common block element.  
+
+
+
+
+{\ttfamily \#include $<$Sun\+Spec\+Data.\+hpp$>$}
+
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{structsunspec_1_1data_1_1_sun_spec_data_a104b19b0bddeb33e5937e937e9e0b72d}\label{structsunspec_1_1data_1_1_sun_spec_data_a104b19b0bddeb33e5937e937e9e0b72d}} 
+typedef std\+::vector$<$ \hyperlink{structsunspec_1_1data_1_1_device_data}{Device\+Data} $>$ {\bfseries device\+\_\+list\+\_\+type}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{structsunspec_1_1data_1_1_sun_spec_data_a8ad742efc8d2f0b8eab04505e9849084}{Sun\+Spec\+Data} ()=default
+\begin{DoxyCompactList}\small\item\em List of device records. \end{DoxyCompactList}\item 
+\hyperlink{structsunspec_1_1data_1_1_sun_spec_data_a712ee0978e396de352b28e5f6df7b681}{Sun\+Spec\+Data} (const \hyperlink{structsunspec_1_1data_1_1_sun_spec_data}{Sun\+Spec\+Data} \&other)=default
+\item 
+\hyperlink{structsunspec_1_1data_1_1_sun_spec_data_a3e13d41d1dc8f1fc09a5eb80bb602795}{Sun\+Spec\+Data} (std\+::string v, device\+\_\+list\+\_\+type d\+\_\+list)
+\item 
+void \hyperlink{structsunspec_1_1data_1_1_sun_spec_data_a9747c26b6951423f1cd1a17c39bd0878}{add\+\_\+device} (const \hyperlink{structsunspec_1_1data_1_1_device_data}{Device\+Data} \&device)
+\end{DoxyCompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{structsunspec_1_1data_1_1_sun_spec_data_ab75fc9474cfbbeed845edc896b96501e}\label{structsunspec_1_1data_1_1_sun_spec_data_ab75fc9474cfbbeed845edc896b96501e}} 
+static \hyperlink{structsunspec_1_1data_1_1_sun_spec_data}{Sun\+Spec\+Data} {\bfseries from\+\_\+xml} (const boost\+::property\+\_\+tree\+::ptree \&ss\+\_\+element)
+\item 
+\mbox{\Hypertarget{structsunspec_1_1data_1_1_sun_spec_data_a2bf6cdff301a72cae169d9077e86e92a}\label{structsunspec_1_1data_1_1_sun_spec_data_a2bf6cdff301a72cae169d9077e86e92a}} 
+static \hyperlink{structsunspec_1_1data_1_1_sun_spec_data}{Sun\+Spec\+Data} {\bfseries from\+\_\+xml} (const std\+::string \&ss\+\_\+record)
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{structsunspec_1_1data_1_1_sun_spec_data_aeb1d272c4563689a07b64fa2a41f0465}\label{structsunspec_1_1data_1_1_sun_spec_data_aeb1d272c4563689a07b64fa2a41f0465}} 
+std\+::string {\bfseries v}
+\item 
+\mbox{\Hypertarget{structsunspec_1_1data_1_1_sun_spec_data_ad4bcf24695b7777dc530120320dc44ec}\label{structsunspec_1_1data_1_1_sun_spec_data_ad4bcf24695b7777dc530120320dc44ec}} 
+device\+\_\+list\+\_\+type \hyperlink{structsunspec_1_1data_1_1_sun_spec_data_ad4bcf24695b7777dc530120320dc44ec}{device\+\_\+list}
+\begin{DoxyCompactList}\small\item\em Version number. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Represents a \hyperlink{structsunspec_1_1data_1_1_sun_spec_data}{Sun\+Spec\+Data} common block element. 
+
+\begin{DoxyAuthor}{Author}
+Carlos Brito (\href{mailto:carlos.brito524@gmail.com}{\tt carlos.\+brito524@gmail.\+com}) 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+8/17/17.
+\end{DoxyDate}
+\subsection*{Description}
+
+No full length description available.
+
+\subsection*{T\+O\+DO}
+
+Nothing for the moment. 
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{structsunspec_1_1data_1_1_sun_spec_data_a8ad742efc8d2f0b8eab04505e9849084}\label{structsunspec_1_1data_1_1_sun_spec_data_a8ad742efc8d2f0b8eab04505e9849084}} 
+\index{sunspec\+::data\+::\+Sun\+Spec\+Data@{sunspec\+::data\+::\+Sun\+Spec\+Data}!Sun\+Spec\+Data@{Sun\+Spec\+Data}}
+\index{Sun\+Spec\+Data@{Sun\+Spec\+Data}!sunspec\+::data\+::\+Sun\+Spec\+Data@{sunspec\+::data\+::\+Sun\+Spec\+Data}}
+\subsubsection{\texorpdfstring{Sun\+Spec\+Data()}{SunSpecData()}\hspace{0.1cm}{\footnotesize\ttfamily [1/3]}}
+{\footnotesize\ttfamily sunspec\+::data\+::\+Sun\+Spec\+Data\+::\+Sun\+Spec\+Data (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [default]}}
+
+
+
+List of device records. 
+
+Empty constructor \mbox{\Hypertarget{structsunspec_1_1data_1_1_sun_spec_data_a712ee0978e396de352b28e5f6df7b681}\label{structsunspec_1_1data_1_1_sun_spec_data_a712ee0978e396de352b28e5f6df7b681}} 
+\index{sunspec\+::data\+::\+Sun\+Spec\+Data@{sunspec\+::data\+::\+Sun\+Spec\+Data}!Sun\+Spec\+Data@{Sun\+Spec\+Data}}
+\index{Sun\+Spec\+Data@{Sun\+Spec\+Data}!sunspec\+::data\+::\+Sun\+Spec\+Data@{sunspec\+::data\+::\+Sun\+Spec\+Data}}
+\subsubsection{\texorpdfstring{Sun\+Spec\+Data()}{SunSpecData()}\hspace{0.1cm}{\footnotesize\ttfamily [2/3]}}
+{\footnotesize\ttfamily sunspec\+::data\+::\+Sun\+Spec\+Data\+::\+Sun\+Spec\+Data (\begin{DoxyParamCaption}\item[{const \hyperlink{structsunspec_1_1data_1_1_sun_spec_data}{Sun\+Spec\+Data} \&}]{other }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [default]}}
+
+Copy constructor. 
+\begin{DoxyParams}{Parameters}
+{\em other} & Other {\ttfamily \hyperlink{structsunspec_1_1data_1_1_sun_spec_data}{Sun\+Spec\+Data}} instance to be copied \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{structsunspec_1_1data_1_1_sun_spec_data_a3e13d41d1dc8f1fc09a5eb80bb602795}\label{structsunspec_1_1data_1_1_sun_spec_data_a3e13d41d1dc8f1fc09a5eb80bb602795}} 
+\index{sunspec\+::data\+::\+Sun\+Spec\+Data@{sunspec\+::data\+::\+Sun\+Spec\+Data}!Sun\+Spec\+Data@{Sun\+Spec\+Data}}
+\index{Sun\+Spec\+Data@{Sun\+Spec\+Data}!sunspec\+::data\+::\+Sun\+Spec\+Data@{sunspec\+::data\+::\+Sun\+Spec\+Data}}
+\subsubsection{\texorpdfstring{Sun\+Spec\+Data()}{SunSpecData()}\hspace{0.1cm}{\footnotesize\ttfamily [3/3]}}
+{\footnotesize\ttfamily sunspec\+::data\+::\+Sun\+Spec\+Data\+::\+Sun\+Spec\+Data (\begin{DoxyParamCaption}\item[{std\+::string}]{v,  }\item[{device\+\_\+list\+\_\+type}]{d\+\_\+list }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Constructs a {\ttfamily \hyperlink{structsunspec_1_1data_1_1_sun_spec_data}{Sun\+Spec\+Data}} instance. 
+\begin{DoxyParams}{Parameters}
+{\em v} & Version number of S\+DX spec \\
+\hline
+{\em d\+\_\+list} & Device list \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{structsunspec_1_1data_1_1_sun_spec_data_a9747c26b6951423f1cd1a17c39bd0878}\label{structsunspec_1_1data_1_1_sun_spec_data_a9747c26b6951423f1cd1a17c39bd0878}} 
+\index{sunspec\+::data\+::\+Sun\+Spec\+Data@{sunspec\+::data\+::\+Sun\+Spec\+Data}!add\+\_\+device@{add\+\_\+device}}
+\index{add\+\_\+device@{add\+\_\+device}!sunspec\+::data\+::\+Sun\+Spec\+Data@{sunspec\+::data\+::\+Sun\+Spec\+Data}}
+\subsubsection{\texorpdfstring{add\+\_\+device()}{add\_device()}}
+{\footnotesize\ttfamily void sunspec\+::data\+::\+Sun\+Spec\+Data\+::add\+\_\+device (\begin{DoxyParamCaption}\item[{const \hyperlink{structsunspec_1_1data_1_1_device_data}{Device\+Data} \&}]{device }\end{DoxyParamCaption})}
+
+Adds a device to the list of device records 
+\begin{DoxyParams}{Parameters}
+{\em device} & {\ttfamily \hyperlink{structsunspec_1_1data_1_1_device_data}{Device\+Data}} instance to add \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+sunspec/data/element/\hyperlink{_sun_spec_data_8hpp}{Sun\+Spec\+Data.\+hpp}\item 
+sunspec/data/element/Sun\+Spec\+Data.\+cpp\end{DoxyCompactItemize}
