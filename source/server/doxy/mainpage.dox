@@ -1,0 +1,79 @@
+/**
+ * \mainpage Solar Plant Monitoring System
+ * \tableofcontents
+ * \section Description
+ * This project consists in the monitoring of "samples" sent by
+ * some `Logger` device that measures various different types of
+ * these samples. In the SunSpec Data Exchange (SDX) terminology, these
+ * samples are called `Points`. In general terms, the `Logger` sends
+ * measurements encoded in XML to the server, where the server is allowed
+ * to do anything that it wants with the data; such as inserting it into
+ * a database.
+ *
+ * \section Points
+ * Points are measurements taken by `Models`. These points can be things
+ * such as:
+ * - Amperage
+ * - Wattage
+ * - Latitude
+ * - Longitude
+ * - Altitude
+ * - Temperature
+ * The exact interpretation and encoding of these points is to be defined in
+ * the folder `models`.
+ *
+ * Various points can be taken by one model. This means that for every model `M`, there
+ * are `N` points `P` that are sampled by it. In a diagram:
+ * ````
+ *   is sampled by
+ * P @-------------\
+ * P @--------------\
+ * .                 \
+ * .                 [M]
+ * .                 /
+ * P @--------------/
+ * P @-------------/
+ * ````
+ * \section Models
+ * Models are objects such as meters, temperatures sensors, GPS, etc. They are
+ * the ones in charge of sampling the `Points`. Please refer to the `Points` section
+ * to understand what a point is. It is clear that a GPS cannot measure things such
+ * as Amperage or Temperature, but it can measure Latitude, Longitude and Altitude.
+ * This is important to note as it is necessary to define exactly what the models
+ * can measure. These models are "contained" or "read by" `Devices`. Many models can
+ * be read by one device. That is, a device `D` can read `N` models `M` at once. In
+ * a diagram this looks like:
+ *
+ * ````
+ *     is read by
+ * M @-------------\
+ * M @--------------\
+ * .                 \
+ * .                 [D]
+ * .                 /
+ * M @--------------/
+ * M @-------------/
+ * ````
+ * The models "contain" many points.
+ *
+ * \section Devices
+ * Devices are to be thought of as "black boxes" that somehow sample measurements
+ * using the `Models`. Their sole function is to sample the measurements and make
+ * sure those samples reach the server. Think of devices as black boxes that contain
+ * `N` models, therefore encapsulating the electronics behind it and their output is
+ * an XML document. In a diagram this might look like:
+ *
+ * ````
+ * @-----------@
+ * | M . . . M |            @ o o o o o @
+ * | . .     . |    XML     8           8
+ * | .   .   . | ---------> 8  Server   8
+ * | .     . . |  Internet  8           8
+ * | M . . . M |            8 o o o o o @
+ * @-----------@
+ * ````
+ *
+ * We note that we only think these "`Devices`" as black boxes containing models. However,
+ * it might not (and it will be most likely) that this is not the case physically; the
+ * `Models` could be scattered around and there are cables connected to the `Device`.
+ */

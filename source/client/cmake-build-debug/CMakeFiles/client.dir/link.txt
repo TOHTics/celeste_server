@@ -1,0 +1,1 @@
+/Applications/Xcode.app/Contents/Developer/usr/bin/g++  -g -Wl,-search_paths_first -Wl,-headerpad_max_install_names  CMakeFiles/client.dir/main.cpp.o  -o client /usr/local/lib/librestbed.dylib 

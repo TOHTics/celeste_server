@@ -41,10 +41,10 @@ namespace sunspec
          * Nothing for the moment.
          */
         struct SunSpecData {
-            typedef std::vector<DeviceData> device_list_type;
+            typedef std::vector<DeviceData> device_list; ///< List of devices which is just `std::vector<DeviceData>`
 
-            std::string v;                  /// Version number
-            device_list_type device_list;   /// List of device records
+            std::string v;         ///< Version number
+            device_list devices;   ///< List of device records
 
             /**
              * Empty constructor
@@ -62,7 +62,7 @@ namespace sunspec
              * @param v Version number of SDX spec
              * @param d_list Device list
              */
-            SunSpecData(std::string v, device_list_type d_list) : v(v), device_list(d_list) {}
+            SunSpecData(std::string v, device_list d_list) : v(v), devices(d_list) {}
 
             /**
              * Adds a device to the list of device records

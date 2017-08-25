@@ -1,0 +1,4 @@
+/opt/local/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /Users/carlos/Documents/Trabajo/solarpanels/source/client
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /Users/carlos/Documents/Trabajo/solarpanels/source/client/cmake-build-debug

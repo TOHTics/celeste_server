@@ -45,15 +45,15 @@ namespace sunspec
 
             typedef std::vector<ModelData> model_list_type;
 
-            std::string cid;    /// Result Correlation ID
-            std::string id;     /// Optional Device Id which overrides the `man`, `mod` and `sn` if present
-            std::string ifc;    /// Optional Interface Id string
-            std::string lid;    /// Logger Id string
-            std::string man;    /// Device manufacturer
-            std::string mod;    /// Device model
-            std::string sn;     /// Device serial number
-            std::string ns;     /// Domain namespace for `lid`
-            std::string t;      /// Timestamp in RFC3339 format
+            std::string cid;    ///< Result Correlation ID
+            std::string id;     ///< Optional Device Id which overrides the `man`, `mod` and `sn` if present
+            std::string ifc;    ///< Optional Interface Id string
+            std::string lid;    ///< Logger Id string
+            std::string man;    ///< Device manufacturer
+            std::string mod;    ///< Device model
+            std::string sn;     ///< Device serial number
+            std::string ns;     ///< Domain namespace for `lid`
+            std::string t;      ///< Timestamp in RFC3339 format
 
             model_list_type model_list;
 

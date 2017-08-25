@@ -1,0 +1,16 @@
+<sunSpecData v="1">
+    <d ns="mac" lid="11:22:33:44:55:66" man="gsc" mod="r300" sn="123456" t="2011-05-12T09:21:49Z" cid="2"> 
+        <m id="101" x="1">
+            <p id="A">30.43</p>
+            <p id="PhVphA" sf="-1">2216</p> 
+            <p id="W" u="Watts">6701.3</p> 
+            <p id="Hz">60.01</p>
+            <p id="WH">126973</p>
+            <p id="DCA">14.28</p>
+            <p id="DCV">469</p>
+            <p id="DCW">6805</p>
+            <p id="TmpOt">32.94</p>
+            <p id="St">4</p>
+        </m>
+    </d>
+</sunSpecData>

@@ -32,7 +32,7 @@ namespace sunspec
 
         void SunSpecData::add_device(const DeviceData &device)
         {
-            device_list.push_back(device);
+            devices.push_back(device);
         }
 
         SunSpecData SunSpecData::from_xml(const boost::property_tree::ptree &ss_element)

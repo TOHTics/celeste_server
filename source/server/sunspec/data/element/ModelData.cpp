@@ -103,7 +103,7 @@ namespace sunspec {
 
         void ModelData::add_point(const PointData &p)
         {
-            point_list.push_back(p);
+            points.push_back(p);
         }
 
     }

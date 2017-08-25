@@ -12,12 +12,12 @@
  * @author Carlos Brito (carlos.brito524@gmail.com)
  * @date 8/17/17.
  * 
- * @brief Contains class definitions for DataPoint.
+ * @brief Contains class definitions for PointData.
  *
  */
 //</editor-fold>
-#ifndef SERVER_DATAPOINT_HPP
-#define SERVER_DATAPOINT_HPP
+#ifndef SERVER_POINTDATA_HPP
+#define SERVER_POINTDATA_HPP
 
 #include <string>
 #include <boost/property_tree/ptree.hpp>
@@ -26,14 +26,14 @@ namespace sunspec {
     namespace data {
 
         /**
-         * @class DataPoint
+         * @class PointData
          * @author Carlos Brito (carlos.brito524@gmail.com)
          * @date 8/17/17.
          *
          * @brief A record of some measurement.
          *
          * # Description
-         * A `DataPoint` is a record of data that contains information
+         * A `PointData` is a record of data that contains information
          * about some measurement (or sample). The measurement is
          * identified with and id and it takes any type of value. We
          * store all fields of data, like the `id` and `description`
@@ -43,13 +43,14 @@ namespace sunspec {
          * the types accordingly.
          */
         struct PointData {
-            std::string id;        /// Name of the data point record (to know what it represents).
-            std::string sf = "0";  /// The scale factor. I.e. $ 10^(sf) $. Defaults to 0.
-            std::string d;         /// User friendly description of the data point.
-            std::string u;         /// Unit of measure of the value.
-            std::string x;         /// Index of record. If we have multiple records of same type we need to differentiate them.
-            std::string t;         /// Time at which the point was obtained in RFC3339 format.
-            std::string value;     /// Value of the data point.
+            std::string id;        ///< Name of the data point record.
+            std::string sf = "0";  ///< The scale factor. I.e. \f$ value \times 10^{sf} \f$. Defaults to 0.
+            std::string d;         ///< User friendly description of the data point.
+            std::string u;         ///< Unit of measure of the value.
+            std::string x;         ///< Index of record. If we have multiple records of same type we need to differentiate them.
+            std::string t;         ///< Time at which the point was obtained in RFC3339 format.
+            std::string value;     ///< Value of the data point.
+
 
             /**
              * Empty constructor.
@@ -59,7 +60,7 @@ namespace sunspec {
             /**
              * Constructs a DataPoint object.
              * @param id Name of the data point.
-             * @param value Value of data point of type `T`.
+             * @param value Value of data point represented by a `std::string`
              */
             PointData(std::string id, std::string value) : id(id), value(value) {}
 
@@ -95,4 +96,4 @@ namespace sunspec {
     }
 }
 
-#endif //SERVER_DATAPOINT_HPP
+#endif //SERVER_POINTDATA_HPP

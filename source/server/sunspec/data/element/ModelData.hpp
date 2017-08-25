@@ -57,12 +57,12 @@ namespace sunspec
          * Nothing for the moment.
          */
         struct ModelData {
-            typedef std::vector<PointData> point_list_type;
+            typedef std::vector<PointData> point_list; ///< List of points
 
-            std::string id;                  /// Device Model Identifier
-            std::string ns = "sunspec";      /// Namespace under the model is valid. Defaults to `"sunspec"`.
-            std::string x;                   /// Index used in aggregated devices.
-            point_list_type point_list;      /// List of the point records' data.
+            std::string id;                  ///< Device Model Identifier
+            std::string ns = "sunspec";      ///< Namespace under the model is valid. Defaults to `"sunspec"`.
+            std::string x;                   ///< Index used in aggregated devices.
+            point_list points;               ///< List of the point records' data.
 
             /**
              * Empty constructor.
@@ -81,7 +81,7 @@ namespace sunspec
              * @param id
              * @param point_list
              */
-            ModelData(std::string id, point_list_type point_list) : id(id), point_list(point_list) {}
+            ModelData(std::string id, point_list point_list) : id(id), points(point_list) {}
 
             /**
              * Copy constructor. Copies the data from `other` over to `this`.
