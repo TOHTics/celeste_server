@@ -1,3 +1,9 @@
+# Mac OS X
+.DS_STORE
+
+# IDE
+.idea
+
 # Prerequisites
 *.d
 
