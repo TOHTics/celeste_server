@@ -8,11 +8,12 @@
 
 //<editor-fold desc="Description">
 /**
- * @file ${HEADER_FILENAME}
+ * @file data.hpp
  * @author Carlos Brito (carlos.brito524@gmail.com)
  * @date 8/18/17.
  * 
- * @brief No description available.
+ * @brief Including this file will grant access to the data exchange related
+ * methods and attributes.
  *
  */
 //</editor-fold>

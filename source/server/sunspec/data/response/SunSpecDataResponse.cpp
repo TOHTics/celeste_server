@@ -15,7 +15,6 @@
  * @brief No description available.
  *
  * TODO
- * ----
  * Nothing for the moment.
  */
 //</editor-fold>
@@ -35,25 +34,34 @@ namespace sunspec
         {
             using namespace boost::property_tree;
 
+            // Body of response
             ptree body;
 
-            body.put(sdx::SDX_RESPONSE_STATUS, std::to_string(response.status)); // Status is mandatory
+            // Status is mandatory
+            body.put(sdx::SDX_RESPONSE_STATUS, std::to_string(response.status));
 
+            // Put response message
             if (! response.message.empty())
                 body.put(sdx::SDX_RESPONSE_MESSAGE, response.message);
 
+            // Put response code
             if (! response.code.empty())
                 body.put(sdx::SDX_RESPONSE_CODE, response.code);
 
+            // Put response reason
             if (! response.reason.empty())
                 body.put(sdx::SDX_RESPONSE_REASON, response.reason);
 
+            // XML response
             ptree xml;
+            // Put body
             xml.put_child(sdx::SDX_SUNSPEC_DATA_RESPONSE, body);
 
+            // Write XML to stream
             std::ostringstream oss;
             write_xml(oss, xml);
 
+            // Return the ptree if necessary
             if (ptOut != nullptr)
                 *ptOut = xml;
             return oss.str();

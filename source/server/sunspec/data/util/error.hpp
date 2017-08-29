@@ -8,7 +8,7 @@
 
 //<editor-fold desc="Description">
 /**
- * @file ${HEADER_FILENAME}
+ * @file Error.hpp
  * @author Carlos Brito (carlos.brito524@gmail.com)
  * @date 8/18/17.
  * 

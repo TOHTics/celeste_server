@@ -37,7 +37,7 @@ namespace sunspec
          * @brief No description available.
          *
          * # Description
-         * No full length description available.
+         * Describes the response sent by a Host following the SunSpec interface.
          */
         struct SunSpecDataResponse
         {
