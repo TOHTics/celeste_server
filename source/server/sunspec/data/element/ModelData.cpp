@@ -106,5 +106,25 @@ namespace sunspec {
             points.push_back(p);
         }
 
+        ModelData::iterator ModelData::begin()
+        {
+            return points.begin();
+        }
+
+        ModelData::iterator ModelData::end()
+        {
+            return points.end();
+        }
+
+        ModelData::const_iterator ModelData::cbegin()
+        {
+            return points.cbegin();
+        }
+
+        ModelData::const_iterator ModelData::cend()
+        {
+            return points.cend();
+        }
+
     }
 }

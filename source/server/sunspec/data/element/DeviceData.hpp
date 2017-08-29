@@ -28,7 +28,7 @@ namespace sunspec
     namespace data
     {
         /**
-         * @class
+         * @class DeviceData
          * @author Carlos Brito (carlos.brito524@gmail.com)
          * @date 8/17/17.
          *
@@ -39,11 +39,13 @@ namespace sunspec
          * data received in an SDX-format representation.
          *
          * # TODO
-         * Add iterator support
+         * - Add constructor parameter to reserve space so when we know the number of
          */
         struct DeviceData {
 
-            typedef std::vector<ModelData> model_list;
+            typedef std::vector<ModelData>              model_list_type; ///< Type of list of models
+            typedef model_list_type::iterator           iterator;        ///< Iterator wrapper
+            typedef model_list_type::const_iterator     const_iterator;  ///< Const iterator wrapper
 
             std::string cid;    ///< Result Correlation ID
             std::string id;     ///< Optional Device Id which overrides the `man`, `mod` and `sn` if present
@@ -55,7 +57,7 @@ namespace sunspec
             std::string ns;     ///< Domain namespace for `lid`
             std::string t;      ///< Timestamp in RFC3339 format
 
-            model_list models;
+            model_list_type models;
 
             bool lid_enabled = true;
             bool common_block_enabled = true;
@@ -77,6 +79,37 @@ namespace sunspec
              * @param model `ModelData` object to be added.
              */
             void add_model(const ModelData& model);
+
+
+            /**
+             * Returns an iterator to the first element of the container.
+             * If the container is empty, the returned iterator will be equal to `end()`.
+             * @return An iterator to the first `ModelData`
+             */
+            iterator begin();
+
+            /**
+             * Returns an iterator to the element following the last element of the container.
+             * This element acts as a placeholder; attempting to access it results in undefined
+             * behavior.
+             * @return Iterator to the element following the last `ModelData`.
+             */
+            iterator end();
+
+            /**
+             * Returns a const iterator to the first element of the container.
+             * If the container is empty, the returned iterator will be equal to `end()`.
+             * @return An iterator to the first `ModelData`
+             */
+            const_iterator cbegin();
+
+            /**
+             * Returns a const iterator to the element following the last element of the container.
+             * This element acts as a placeholder; attempting to access it results in undefined
+             * behavior.
+             * @return Iterator to the element following the last `ModelData`.
+             */
+            const_iterator cend();
 
             /**
              * Builds a `DeviceData` object from the XML representation contained

@@ -122,5 +122,25 @@ namespace sunspec
             DeviceData result = DeviceData::from_xml(xml);
             return result;
         }
+
+        DeviceData::iterator DeviceData::begin()
+        {
+            return models.begin();
+        }
+
+        DeviceData::iterator DeviceData::end()
+        {
+            return models.end();
+        }
+
+        DeviceData::const_iterator DeviceData::cbegin()
+        {
+            return models.cbegin();
+        }
+
+        DeviceData::const_iterator DeviceData::cend()
+        {
+            return models.cend();
+        }
     }
 }

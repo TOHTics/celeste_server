@@ -98,5 +98,25 @@ namespace sunspec
             SunSpecData result = SunSpecData::from_xml(xml);
             return result;
         }
+
+        SunSpecData::iterator SunSpecData::begin()
+        {
+            return devices.begin();
+        }
+
+        SunSpecData::iterator SunSpecData::end()
+        {
+            return devices.end();
+        }
+
+        SunSpecData::const_iterator SunSpecData::cbegin()
+        {
+            return devices.cbegin();
+        }
+
+        SunSpecData::const_iterator SunSpecData::cend()
+        {
+            return devices.cend();
+        }
     }
 }

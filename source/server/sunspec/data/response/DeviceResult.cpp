@@ -18,24 +18,4 @@
  * Nothing for the moment.
  */
 //</editor-fold>
-#ifndef SERVER_DEVICEFAILURE_HPP
-#define SERVER_DEVICEFAILURE_HPP
-
-
-/**
- * @class
- * @author Carlos Brito (carlos.brito524@gmail.com)
- * @date 8/29/17.
- * 
- * @brief No description available.
- * 
- * # Description
- * No full length description available.
- */
-class DeviceFailure
-{
-
-};
-
-
-#endif //SERVER_DEVICEFAILURE_HPP
+#include "DeviceResult.hpp"

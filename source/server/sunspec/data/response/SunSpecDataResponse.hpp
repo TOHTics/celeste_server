@@ -23,6 +23,7 @@
 #define SERVER_SUNSPECDATARESPONSE_HPP
 
 #include <string>
+#include "DeviceResult.hpp"
 
 
 namespace sunspec
@@ -30,26 +31,37 @@ namespace sunspec
     namespace data
     {
         /**
-         * @class
+         * @class SunSpecDataResponse
          * @author Carlos Brito (carlos.brito524@gmail.com)
          * @date 8/29/17.
          *
-         * @brief No description available.
+         * @brief Describes the contents of a `SunSpecData` response
          *
          * # Description
          * Describes the response sent by a Host following the SunSpec interface.
          */
         struct SunSpecDataResponse
         {
+
+            typedef std::vector<DeviceResult> device_result_list;
+
             int         status = 0;     ///< Mandatory HTTP status
             std::string code;           ///< Status code as per SDX spec
             std::string reason;         ///< Information about where the error was detected.
             std::string message;        ///< User-friendly error information
 
+            device_result_list device_results; ///< Results of device processing
+
             /**
              * Empty constructor
              */
             SunSpecDataResponse() = default;
+
+            /**
+             * Copy constructor.
+             * @param other Other instance to copy
+             */
+            SunSpecDataResponse(const SunSpecDataResponse& other) = default;
 
             /**
              * Returns the XML representation of the `SunSpecDataResponse` instance.

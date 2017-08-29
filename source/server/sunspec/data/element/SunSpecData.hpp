@@ -41,10 +41,13 @@ namespace sunspec
          * - Add iterator support (wrapping around the devices)
          */
         struct SunSpecData {
-            typedef std::vector<DeviceData> device_list; ///< List of devices which is just `std::vector<DeviceData>`
+            typedef std::vector<DeviceData>             device_list_type;       ///< List of devices which is just `std::vector<DeviceData>`
+            typedef device_list_type::iterator          iterator;
+            typedef device_list_type::const_iterator    const_iterator;
 
-            std::string v;         ///< Version number
-            device_list devices;   ///< List of device records
+
+            std::string v;              ///< Version number
+            device_list_type devices;   ///< List of device records
 
             /**
              * Empty constructor
@@ -62,7 +65,7 @@ namespace sunspec
              * @param v Version number of SDX spec
              * @param d_list Device list
              */
-            SunSpecData(std::string v, device_list d_list) : v(v), devices(d_list) {}
+            SunSpecData(std::string v, device_list_type d_list) : v(v), devices(d_list) {}
 
             /**
              * Adds a device to the list of device records
@@ -70,7 +73,59 @@ namespace sunspec
              */
             void add_device(const DeviceData& device);
 
+            /**
+             * Returns an iterator to the first element of the container.
+             * If the container is empty, the returned iterator will be equal to `end()`.
+             * @return An iterator to the first `DeviceData`
+             */
+            iterator begin();
+
+            /**
+             * Returns an iterator to the element following the last element of the container.
+             * This element acts as a placeholder; attempting to access it results in undefined
+             * behavior.
+             * @return Iterator to the element following the last `DeviceData`.
+             */
+            iterator end();
+
+            /**
+             * Returns a const iterator to the first element of the container.
+             * If the container is empty, the returned iterator will be equal to `end()`.
+             * @return An iterator to the first `DeviceData`
+             */
+            const_iterator cbegin();
+
+            /**
+            * Returns a const iterator to the element following the last element of the container.
+            * This element acts as a placeholder; attempting to access it results in undefined
+            * behavior.
+            * @return Iterator to the element following the last `DeviceData`.
+            */
+            const_iterator cend();
+
+            /**
+             * Builds a `SunSpecData` instance from a element tree (`ptree`) representation of the
+             * SDX spec. This specification can be found in the SunSpec Data Model Exchange
+             * Specification and its syntax is XML.
+             * @param ss_element The `ptree` object (in XML) element of the model
+             * record.
+             * @return Returns a `ModelData` object with the same data as the element.
+             * @throws XMLError Throws if there was an error parsing the XML. This will mean
+             * that the data contained in the `model_element` is empty or is malformed.
+             */
             static SunSpecData from_xml(const boost::property_tree::ptree& ss_element );
+
+            /**
+             * Builds the `SunSpecData` instance out of a SDX specification. This specification
+             * can be found in the SunSpec Data Model Exchange Specification and
+             * its syntax is XML.
+             * @param model_record A `std::string` containing the XML representation
+             * of the model record.
+             * @return Returns a `ModelData` object with the same data as the XML
+             * representation that was passed.
+             * @throws XMLError Throws if there was an error parsing the XML. This will mean
+             * that the data contained in the `model_record` is empty or is malformed.
+             */
             static SunSpecData from_xml(const std::string& ss_record);
         };
     }

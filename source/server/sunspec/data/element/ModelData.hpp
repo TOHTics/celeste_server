@@ -57,12 +57,14 @@ namespace sunspec
          * - Add iterator support (wrap around the points)
          */
         struct ModelData {
-            typedef std::vector<PointData> point_list; ///< List of points
+            typedef std::vector<PointData>              point_list_type; ///< List of points
+            typedef point_list_type::iterator           iterator;        ///< Iterator wrapper
+            typedef point_list_type::const_iterator     const_iterator;  ///< Const iterator wrapper
 
             std::string id;                  ///< Device Model Identifier
             std::string ns = "sunspec";      ///< Namespace under the model is valid. Defaults to `"sunspec"`.
             std::string x;                   ///< Index used in aggregated devices.
-            point_list points;               ///< List of the point records' data.
+            point_list_type points;          ///< List of the point records' data.
 
             /**
              * Empty constructor.
@@ -81,7 +83,7 @@ namespace sunspec
              * @param id
              * @param point_list
              */
-            ModelData(std::string id, point_list point_list) : id(id), points(point_list) {}
+            ModelData(std::string id, point_list_type point_list) : id(id), points(point_list) {}
 
             /**
              * Copy constructor. Copies the data from `other` over to `this`.
@@ -93,6 +95,36 @@ namespace sunspec
              * @param p `PointData` to add to the list of point records of this model.
              */
             void add_point(const PointData& p);
+
+            /**
+             * Returns an iterator to the first element of the container.
+             * If the container is empty, the returned iterator will be equal to `end()`.
+             * @return An iterator to the first `PointData`
+             */
+            iterator begin();
+
+            /**
+             * Returns an iterator to the element following the last element of the container.
+             * This element acts as a placeholder; attempting to access it results in undefined
+             * behavior.
+             * @return Iterator to the element following the last `PointData`.
+             */
+            iterator end();
+
+            /**
+             * Returns a const iterator to the first element of the container.
+             * If the container is empty, the returned iterator will be equal to `cend()`.
+             * @return An iterator to the first `PointData`
+             */
+            const_iterator cbegin();
+
+            /**
+             * Returns a const iterator to the element following the last element of the container.
+             * This element acts as a placeholder; attempting to access it results in undefined
+             * behavior.
+             * @return Iterator to the element following the last `PointData`.
+             */
+            const_iterator cend();
 
             /**
              * Builds the ModelData out of a SDX specification. This specification
