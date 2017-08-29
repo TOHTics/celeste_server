@@ -39,4 +39,6 @@
 #ifndef SERVER_RESOURCE_HPP
 #define SERVER_RESOURCE_HPP
 
+#include "logger_upload.hpp"
+
 #endif //SERVER_RESOURCE_HPP

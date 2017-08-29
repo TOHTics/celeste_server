@@ -19,8 +19,8 @@
  * Nothing for the moment.
  */
 //</editor-fold>
-#ifndef SERVER_RESOURCE_HPP
-#define SERVER_RESOURCE_HPP
+#ifndef SERVER_RESOURCE_LOGGER_UPLOAD_HPP
+#define SERVER_RESOURCE_LOGGER_UPLOAD_HPP
 
 #include <restbed>
 
@@ -31,12 +31,13 @@ namespace solarplant
         namespace resource
         {
             /**
-             * Makes a Logger Upload Resource. If a Logger tries to access
+             * Makes a Logger Upload Resource. If a Logger gains access to
              * this resource then it will get a response as per the SDX spec.
+             * @param path Path where the logger upload shall be located
              * @return A `restbed::Resource` describing a logger upload.
              */
-            std::shared_ptr<restbed::Resource> make_logger_upload(std::string);
+            std::shared_ptr<restbed::Resource> make_logger_upload(std::string path);
         }
     }
 }
-#endif //SERVER_RESOURCE_HPP
+#endif //SERVER_RESOURCE_LOGGER_UPLOAD_HPP
