@@ -8,15 +8,8 @@
 
 //<editor-fold desc="Description">
 /**
- * @file logger_upload.hpp
- * @author Carlos Brito (carlos.brito524@gmail.com)
- * @date 8/24/17.
- * 
- * @brief Contains the function definitions for the `resource::make_upload` function.
- *
- * TODO
- * ----
- * Nothing for the moment.
+ * @file
+ * @brief Contains the function definitions for the `make_logger_upload` function.
  */
 //</editor-fold>
 #include <memory>
@@ -25,7 +18,7 @@
 #include <string>
 #include "logger_upload.hpp"
 #include "../../sunspec/data/data.hpp"
-#include "../status_codes.hpp"
+#include "../status_code.hpp"
 
 namespace solarplant
 {

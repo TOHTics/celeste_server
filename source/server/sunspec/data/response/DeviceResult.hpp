@@ -8,14 +8,8 @@
 
 //<editor-fold desc="Description">
 /**
- * @file DeviceFailure.hpp
- * @author Carlos Brito (carlos.brito524@gmail.com)
- * @date 8/29/17.
- * 
- * @brief No description available.
- *
- * TODO
- * Nothing for the moment.
+ * @file
+ * @brief Contains class declarations for `DeviceResult`
  */
 //</editor-fold>
 #ifndef SERVER_DEVICEFAILURE_HPP

@@ -8,11 +8,8 @@
 
 //<editor-fold desc="Description">
 /**
- * @file PointData.hpp
- * @author Carlos Brito (carlos.brito524@gmail.com)
- * @date 8/17/17.
- * 
- * @brief Contains class definitions for PointData.
+ * @file
+ * @brief Contains the class declarations for `PointData`
  *
  */
 //</editor-fold>

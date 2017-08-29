@@ -8,15 +8,8 @@
 
 //<editor-fold desc="Description">
 /**
- * @file ${HEADER_FILENAME}
- * @author Carlos Brito (carlos.brito524@gmail.com)
- * @date 8/23/17.
- * 
- * @brief No description available.
- *
- * TODO
- * ----
- * Nothing for the moment.
+ * @file
+ * @brief Contains class definitions for `PointData`
  */
 //</editor-fold>
 #include <boost/property_tree/ptree.hpp>

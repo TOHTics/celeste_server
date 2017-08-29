@@ -8,12 +8,8 @@
 
 //<editor-fold desc="Description">
 /**
- * @file ModelData.hpp
- * @author Carlos Brito (carlos.brito524@gmail.com)
- * @date 8/17/17.
- * 
- * @brief No description available.
- *
+ * @file
+ * @brief Contains the class declarations for `ModelData`
  */
 //</editor-fold>
 #ifndef SERVER_MODELDATA_HPP

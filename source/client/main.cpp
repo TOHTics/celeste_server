@@ -10,6 +10,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <restbed>
+#include <iostream>
 
 using namespace std;
 using namespace restbed;
@@ -30,19 +31,19 @@ void print( const shared_ptr< Response >& response )
     auto length = response->get_header( "Content-Length", 0 );
 
     Http::fetch( length, response );
-
-    fprintf( stderr, "Body:           %.*s...\n\n", 25, response->get_body( ).data( ) );
 }
 
 int main( const int, const char** )
 {
-    auto request = make_shared< Request >( Uri( "http://localhost:10000/solarplant/logger_upload" ) );
+    std::string body = "0987654321";
+    auto request = make_shared< Request >( Uri( "http://localhost:10000/resource/logger_upload" ) );
     request->set_method("POST");
-    request->set_body("Hello restbed!");
+    request->set_body(body);
     request->set_header( "Host", "localhost" );
-    request->set_header("Content-Length", ::to_string(request->get_body().size()));
+    request->set_header("Content-Length", "10");
 
     auto response = Http::sync( request );
+    printf("%s\n", response->get_body().data());
     print( response );
 
     return EXIT_SUCCESS;

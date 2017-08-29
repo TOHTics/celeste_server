@@ -8,10 +8,7 @@
 
 //<editor-fold desc="Description">
 /**
- * @file ${HEADER_FILENAME}
- * @author Carlos Brito (carlos.brito524@gmail.com)
- * @date 8/29/17.
- * 
+ * @file
  * @brief No description available.
  *
  * TODO

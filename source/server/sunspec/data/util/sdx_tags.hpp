@@ -8,10 +8,7 @@
 
 //<editor-fold desc="Description">
 /**
- * @file SDX_Tags.hpp
- * @author Carlos Brito (carlos.brito524@gmail.com)
- * @date 8/18/17.
- * 
+ * @file
  * @brief Contains the definitions for SunSpec Data Exchange (SDX) tags.
  *
  */

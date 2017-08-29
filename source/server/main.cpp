@@ -13,41 +13,20 @@
 #include <cstdlib>
 #include <restbed>
 
-#include "srv/resources/resource.hpp"
+
+#include "sunspec/data/data.hpp"
+#include "srv/resource/resource.hpp"
 
 using namespace std;
 using namespace restbed;
 
 
-void post_method_handler( const shared_ptr< Session > session )
-{
-    const auto request = session->get_request( );
-
-    size_t content_length = (size_t) request->get_header("Content-Length", 0 );
-
-    session->fetch( content_length, [ request ]( const shared_ptr< Session > session, const Bytes & body )
-    {
-        fprintf( stdout, "%.*s\n", ( int ) body.size( ), body.data( ) );
-        session->close( OK, "Hello, World!", { { "Content-Length", "13" }, { "Connection", "close" } } );
-    } );
-}
-
-shared_ptr<Resource> getResource()
-{
-    Resource* resource = new Resource;
-    resource->set_path("/solarplant/logger_upload");
-    resource->set_method_handler( "POST", post_method_handler );
-    return shared_ptr<Resource>(resource);
-}
-
 int main( const int, const char** )
 {
 
-//    auto resource = make_shared<Resource>();
-    auto resource = getResource();
-
-//    resource->set_path( "/solarplant/logger_upload" );
-//    resource->set_method_handler( "POST", solarplant::srv::resource::post_logger_upload_handler );
+    using namespace sunspec::data;
+    using namespace solarplant::srv;
+    auto resource = resource::make_logger_upload("/resource/logger_upload");
 
     shared_ptr<Settings> settings = make_shared<Settings>();
     settings->set_port(10000);

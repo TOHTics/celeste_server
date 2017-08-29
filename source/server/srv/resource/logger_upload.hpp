@@ -8,7 +8,7 @@
 
 //<editor-fold desc="Description">
 /**
- * @file resource.hpp
+ * @file logger_upload.hpp
  * @author Carlos Brito (carlos.brito524@gmail.com)
  * @date 8/24/17.
  * 

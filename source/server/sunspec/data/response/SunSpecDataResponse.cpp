@@ -8,14 +8,8 @@
 
 //<editor-fold desc="Description">
 /**
- * @file SunSpecDataResponse.hpp
- * @author Carlos Brito (carlos.brito524@gmail.com)
- * @date 8/29/17.
- * 
- * @brief No description available.
- *
- * TODO
- * Nothing for the moment.
+ * @file
+ * @brief Contains class definitions for `SunSpecDataResponse`
  */
 //</editor-fold>
 #include <sstream>

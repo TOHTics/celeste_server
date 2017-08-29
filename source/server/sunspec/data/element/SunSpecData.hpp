@@ -8,12 +8,8 @@
 
 //<editor-fold desc="Description">
 /**
- * @file SunSpecData.hpp
- * @author Carlos Brito (carlos.brito524@gmail.com)
- * @date 8/17/17.
- * 
- * @brief Contains SunSpecData class declarations.
- *
+ * @file
+ * @brief Contains the class declarations for `SunSpecData`
  */
 //</editor-fold>
 #ifndef SERVER_SUNSPECDATA_HPP

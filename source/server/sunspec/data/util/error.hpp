@@ -8,12 +8,8 @@
 
 //<editor-fold desc="Description">
 /**
- * @file Error.hpp
- * @author Carlos Brito (carlos.brito524@gmail.com)
- * @date 8/18/17.
- * 
- * @brief No description available.
- *
+ * @file
+ * @brief Contains `Error` and its derived classes.
  */
 //</editor-fold>
 #ifndef SERVER_ERROR_HPP
