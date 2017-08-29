@@ -23,5 +23,6 @@
 #include "element/DeviceData.hpp"
 #include "element/ModelData.hpp"
 #include "element/SunSpecData.hpp"
+#include "response/SunSpecDataResponse.hpp"
 
 #endif //SERVER_DATA_HPP

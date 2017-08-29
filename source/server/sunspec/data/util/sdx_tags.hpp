@@ -54,10 +54,10 @@ namespace sunspec
         static const std::string SDX_SUNSPEC_DATA_VERSION = "v";            ///< Version of SunSpecData
 
         static const std::string SDX_SUNSPEC_DATA_RESPONSE  = "SunspecDataResponse";
-        static const std::string SDX_STATUS                 = "status";
+        static const std::string SDX_RESPONSE_STATUS                 = "status";
         static const std::string SDX_RESPONSE_CODE          = "code";
-        static const std::string SDX_REASON                 = "reason";
-        static const std::string SDX_MESSAGE                = "message";
+        static const std::string SDX_RESPONSE_REASON                 = "reason";
+        static const std::string SDX_RESPONSE_MESSAGE                = "message";
     }
 }
 

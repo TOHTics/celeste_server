@@ -97,7 +97,7 @@ namespace sunspec
 
         void DeviceData::add_model(const ModelData &model)
         {
-            model_list.push_back(model);
+            models.push_back(model);
         }
 
         DeviceData DeviceData::from_xml(const std::string &device_record)

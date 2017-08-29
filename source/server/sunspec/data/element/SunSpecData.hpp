@@ -12,7 +12,7 @@
  * @author Carlos Brito (carlos.brito524@gmail.com)
  * @date 8/17/17.
  * 
- * @brief No description available.
+ * @brief Contains SunSpecData class declarations.
  *
  */
 //</editor-fold>
@@ -38,7 +38,7 @@ namespace sunspec
          * No full length description available.
          *
          * # TODO
-         * Nothing for the moment.
+         * - Add iterator support (wrapping around the devices)
          */
         struct SunSpecData {
             typedef std::vector<DeviceData> device_list; ///< List of devices which is just `std::vector<DeviceData>`

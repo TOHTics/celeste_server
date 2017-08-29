@@ -54,7 +54,7 @@ namespace sunspec
          * - The set of data point records
          *
          * # TODO
-         * Nothing for the moment.
+         * - Add iterator support (wrap around the points)
          */
         struct ModelData {
             typedef std::vector<PointData> point_list; ///< List of points

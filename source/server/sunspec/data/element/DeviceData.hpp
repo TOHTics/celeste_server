@@ -39,11 +39,11 @@ namespace sunspec
          * data received in an SDX-format representation.
          *
          * # TODO
-         * Nothing for the moment.
+         * Add iterator support
          */
         struct DeviceData {
 
-            typedef std::vector<ModelData> model_list_type;
+            typedef std::vector<ModelData> model_list;
 
             std::string cid;    ///< Result Correlation ID
             std::string id;     ///< Optional Device Id which overrides the `man`, `mod` and `sn` if present
@@ -55,7 +55,7 @@ namespace sunspec
             std::string ns;     ///< Domain namespace for `lid`
             std::string t;      ///< Timestamp in RFC3339 format
 
-            model_list_type model_list;
+            model_list models;
 
             bool lid_enabled = true;
             bool common_block_enabled = true;
