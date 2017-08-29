@@ -20,6 +20,7 @@
  */
 //</editor-fold>
 #include <sstream>
+#include <string>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 #include "SunSpecDataResponse.hpp"
@@ -29,15 +30,33 @@ namespace sunspec
 {
     namespace data
     {
-        std::string SunSpecDataResponse::to_xml(const SunSpecDataResponse &response)
+        std::string SunSpecDataResponse::to_xml(const SunSpecDataResponse &response,
+                                                std::shared_ptr<boost::property_tree::ptree> ptOut)
         {
-            using boost::property_tree::ptree;
+            using namespace boost::property_tree;
 
-            ptree xml_tree;
-            xml_tree.put(sdx::SDX_MESSAGE, this->message);
+            ptree body;
 
+            body.put(sdx::SDX_RESPONSE_STATUS, std::to_string(response.status)); // Status is mandatory
 
-            return std::string();
+            if (! response.message.empty())
+                body.put(sdx::SDX_RESPONSE_MESSAGE, response.message);
+
+            if (! response.code.empty())
+                body.put(sdx::SDX_RESPONSE_CODE, response.code);
+
+            if (! response.reason.empty())
+                body.put(sdx::SDX_RESPONSE_REASON, response.reason);
+
+            ptree xml;
+            xml.put_child(sdx::SDX_SUNSPEC_DATA_RESPONSE, body);
+
+            std::ostringstream oss;
+            write_xml(oss, xml);
+
+            if (ptOut != nullptr)
+                *ptOut = xml;
+            return oss.str();
         }
     }
 }

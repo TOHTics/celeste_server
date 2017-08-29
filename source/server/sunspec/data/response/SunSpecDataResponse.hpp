@@ -41,12 +41,24 @@ namespace sunspec
          */
         struct SunSpecDataResponse
         {
-            int status;
-            std::string code;
-            std::string reason;
-            std::string message;
+            int         status = 0;     ///< Mandatory HTTP status
+            std::string code;           ///< Status code as per SDX spec
+            std::string reason;         ///< Information about where the error was detected.
+            std::string message;        ///< User-friendly error information
 
-            static std::string to_xml(const SunSpecDataResponse &response);
+            /**
+             * Empty constructor
+             */
+            SunSpecDataResponse() = default;
+
+            /**
+             * Returns the XML representation of the `SunSpecDataResponse` instance.
+             * @param response The instance to convert to XML.
+             * @param ptOut An optional output parameter which is the element tree (`ptree`) representation of the XML
+             * @return The XML representation of the instance as a `std::string`
+             */
+            static std::string to_xml(const SunSpecDataResponse &response,
+                                      std::shared_ptr<boost::property_tree::ptree> ptOut = nullptr);
         };
     }
 }
