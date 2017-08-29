@@ -8,7 +8,7 @@
 
 //<editor-fold desc="Description">
 /**
- * @file sdx_tags.hpp
+ * @file SDX_Tags.hpp
  * @author Carlos Brito (carlos.brito524@gmail.com)
  * @date 8/18/17.
  * 
@@ -52,6 +52,12 @@ namespace sunspec
         static const std::string SDX_VERSION              = "1";            ///< Version of SDX spec
         static const std::string SDX_SUNSPEC_DATA         = "SunSpecData";  ///< SunSpecData record
         static const std::string SDX_SUNSPEC_DATA_VERSION = "v";            ///< Version of SunSpecData
+
+        static const std::string SDX_SUNSPEC_DATA_RESPONSE  = "SunspecDataResponse";
+        static const std::string SDX_STATUS                 = "status";
+        static const std::string SDX_RESPONSE_CODE          = "code";
+        static const std::string SDX_REASON                 = "reason";
+        static const std::string SDX_MESSAGE                = "message";
     }
 }
 

@@ -23,7 +23,7 @@
 #include <vector>
 #include <boost/property_tree/ptree.hpp>
 #include "PointData.hpp"
-#include "../util/error.hpp"
+#include "../util/Error.hpp"
 
 namespace sunspec
 {

@@ -21,7 +21,7 @@
 //</editor-fold>
 #include <boost/property_tree/xml_parser.hpp>
 #include "SunSpecData.hpp"
-#include "../util/sdx_tags.hpp"
+#include "../util/SDX_Tags.hpp"
 
 namespace sunspec
 {
