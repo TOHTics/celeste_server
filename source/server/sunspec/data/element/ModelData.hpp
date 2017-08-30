@@ -36,12 +36,11 @@ namespace sunspec
          * The class is based on the representation of a model record as per
          * the SunSpec Data Exchange Specification (SDX). From the SDX spec:
          *
-         * ````
-         * This element defines the SunSpec Model used to understand the following group
-         * of data point records. SunSpec-aware hosts use the model id to ‘look’
-         * up repetitive information such as “What is the unit of measure for data point A,
-         * from the SunSpec Device Model 103?”
-         * ````
+         * > This element defines the SunSpec Model used to understand the following group
+         * > of data point records. SunSpec-aware hosts use the model id to ‘look’
+         * > up repetitive information such as “What is the unit of measure for data point A,
+         * > from the SunSpec Device Model 103?”
+         *
          *
          * A model usually consists of 4 attributes:
          * - The model id
@@ -49,8 +48,8 @@ namespace sunspec
          * - The model record index
          * - The set of data point records
          *
-         * # TODO
-         * - Add iterator support (wrap around the points)
+         * TODO
+         * Nothing.
          */
         struct ModelData {
             typedef std::vector<PointData>              point_list_type; ///< List of points
@@ -68,18 +67,25 @@ namespace sunspec
             ModelData() = default;
 
             /**
-             * Constructs the ModelData with `this->id=id`.
+             * Constructs the ModelData with `id`
              * @param id The id of the model. The Device Model Identifier.
              */
             ModelData(std::string id) : id(id) {}
 
             /**
-             * Constructs the ModelData with `this->id=id` and
-             * a `point_list`
-             * @param id
-             * @param point_list
+             * Constructs the ModelData with a given point list
+             * @param point_list List of points
              */
-            ModelData(std::string id, point_list_type point_list) : id(id), points(point_list) {}
+            ModelData(const point_list_type& point_list) : points(point_list) {}
+
+            /**
+             * Initializes by reserving `n` spaces for `n` points.
+             * Calling this before hand will increase performance when adding new
+             * points.
+             * @param n Number of spaces to reserve
+             */
+            ModelData(size_t n);
+
 
             /**
              * Copy constructor. Copies the data from `other` over to `this`.
@@ -121,6 +127,12 @@ namespace sunspec
              * @return Iterator to the element following the last `PointData`.
              */
             const_iterator cend();
+
+            /**
+             * Returns the number of points contained by this object
+             * @return Number of points contained
+             */
+            size_t size();
 
             /**
              * Builds the ModelData out of a SDX specification. This specification

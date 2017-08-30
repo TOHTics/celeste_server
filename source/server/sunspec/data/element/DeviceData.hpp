@@ -34,8 +34,8 @@ namespace sunspec
          * This class is useful for containing the data of the
          * data received in an SDX-format representation.
          *
-         * # TODO
-         * - Add constructor parameter to reserve space so when we know the number of
+         * TODO
+         * - Add constructor parameter to reserve space so when we know the number of models
          */
         struct DeviceData {
 
@@ -70,12 +70,25 @@ namespace sunspec
             DeviceData(const DeviceData& other) = default;
 
             /**
+             * Initializes instance with a model list
+             * @param models List of models
+             */
+            DeviceData(const model_list_type& models) : models(models) {}
+
+            /**
+             * Initializes by reserving `n` spaces for `n` models.
+             * Calling this before hand will increase performance when adding new
+             * models.
+             * @param n Number of spaces to reserve
+             */
+            DeviceData(size_t n);
+
+            /**
              * Adds the `ModelData` instance to the list of
              * models contained by this object.
              * @param model `ModelData` object to be added.
              */
             void add_model(const ModelData& model);
-
 
             /**
              * Returns an iterator to the first element of the container.
@@ -106,6 +119,12 @@ namespace sunspec
              * @return Iterator to the element following the last `ModelData`.
              */
             const_iterator cend();
+
+            /**
+             * Returns the number of models contained by this object
+             * @return Number of models contained
+             */
+            size_t size();
 
             /**
              * Builds a `DeviceData` object from the XML representation contained

@@ -111,5 +111,15 @@ namespace sunspec
         {
             return devices.cend();
         }
+
+        size_t SunSpecData::size()
+        {
+            return devices.size();
+        }
+
+        SunSpecData::SunSpecData(size_t n)
+        {
+            devices.reserve(n);
+        }
     }
 }

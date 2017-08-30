@@ -119,5 +119,15 @@ namespace sunspec {
             return points.cend();
         }
 
+        size_t ModelData::size()
+        {
+            return points.size();
+        }
+
+        ModelData::ModelData(size_t n)
+        {
+            points.reserve(n);
+        }
+
     }
 }

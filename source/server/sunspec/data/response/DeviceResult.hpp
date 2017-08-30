@@ -19,25 +19,46 @@
 #include <string>
 #include <boost/property_tree/ptree.hpp>
 
-/**
- * @class DeviceResult
- * @author Carlos Brito (carlos.brito524@gmail.com)
- * @date 8/29/17.
- * 
- * @brief Describes the result of processing a device record
- */
-struct DeviceResult
+namespace sunspec
 {
-    std::string reason;
-    std::string message;
-    std::string code;
+    namespace data
+    {
+        /**
+         * @class DeviceResult
+         * @author Carlos Brito (carlos.brito524@gmail.com)
+         * @date 8/29/17.
+         *
+         * @brief Describes the result of processing a device record
+         */
+        struct DeviceResult
+        {
+            std::string reason;     ///< Reason as to why processing the device failed
+            std::string message;    ///< User friendly message to describe error
+            std::string code;       ///< Status code
 
-    DeviceResult() = default;
-    DeviceResult(const DeviceResult& other) = default;
+            /**
+             * Empty constructor.
+             */
+            DeviceResult() = default;
 
-    static std::string to_xml(const DeviceResult& dev_result,
-                              std::shared_ptr<boost::property_tree::ptree> ptOut = nullptr);
-};
+            /**
+             * Copy constructor.
+             * @param other Other instance to copy
+             */
+            DeviceResult(const DeviceResult& other) = default;
+
+            /**
+             * Method to output a `std::string` containing the XML representation of a `DeviceResult`
+             * @param dresult Instance of `DeviceResult`
+             * @param ptOut Output parameter that if set to something different than `nullptr` it will
+             * contain the element tree (`ptree`) representation of the XML.
+             * @return `std::string` containing the XML representation of the `dresult`
+             */
+            static std::string to_xml(const DeviceResult& dresult,
+                                      std::shared_ptr<boost::property_tree::ptree> ptOut = nullptr);
+        };
+    }
+}
 
 
 #endif //SERVER_DEVICEFAILURE_HPP

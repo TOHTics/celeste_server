@@ -9,11 +9,7 @@
 //<editor-fold desc="Description">
 /**
  * @file
- * @brief No description available.
- *
- * TODO
- * ----
- * Nothing for the moment.
+ * @brief Contains HTTP status codes
  */
 //</editor-fold>
 #ifndef SERVER_STATUS_CODES_HPP

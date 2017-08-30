@@ -33,6 +33,12 @@ namespace solarplant
             /**
              * Makes a Logger Upload Resource. If a Logger gains access to
              * this resource then it will get a response as per the SDX spec.
+             *
+             * This resource allows for a Logger to transmit the SDX data
+             * to the Host. The host will attempt to parse it and in any case
+             * of errors it will respond back with a description of the error
+             * as per SDX. If no errors where found, then the Host will respond
+             * back with a success message.
              * @param path Path where the logger upload shall be located
              * @return A `restbed::Resource` describing a logger upload.
              */

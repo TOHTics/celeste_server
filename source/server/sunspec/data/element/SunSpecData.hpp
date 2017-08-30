@@ -33,13 +33,13 @@ namespace sunspec
          * # Description
          * No full length description available.
          *
-         * # TODO
-         * - Add iterator support (wrapping around the devices)
+         * TODO
+         * Nothing.
          */
         struct SunSpecData {
             typedef std::vector<DeviceData>             device_list_type;       ///< List of devices which is just `std::vector<DeviceData>`
-            typedef device_list_type::iterator          iterator;
-            typedef device_list_type::const_iterator    const_iterator;
+            typedef device_list_type::iterator          iterator;               ///< Iterator wrapper
+            typedef device_list_type::const_iterator    const_iterator;         ///< Const iterator wrapper
 
 
             std::string v;              ///< Version number
@@ -58,10 +58,16 @@ namespace sunspec
 
             /**
              * Constructs a `SunSpecData` instance.
-             * @param v Version number of SDX spec
              * @param d_list Device list
              */
-            SunSpecData(std::string v, device_list_type d_list) : v(v), devices(d_list) {}
+            SunSpecData(const device_list_type& d_list) : devices(d_list) {}
+
+            /**
+             * Reserves `n` spaces for `n` devices. Calling beforehand will
+             * increase performance when adding new devices.
+             * @param n Number of spaces to reserve
+             */
+            SunSpecData(size_t n);
 
             /**
              * Adds a device to the list of device records
@@ -98,6 +104,13 @@ namespace sunspec
             * @return Iterator to the element following the last `DeviceData`.
             */
             const_iterator cend();
+
+
+            /**
+             * Returns the number of devices contained by this object
+             * @return Number of devices contained
+             */
+            size_t size();
 
             /**
              * Builds a `SunSpecData` instance from a element tree (`ptree`) representation of the

@@ -60,5 +60,40 @@ namespace sunspec
                 *ptOut = xml;
             return oss.str();
         }
+
+        SunSpecDataResponse::iterator SunSpecDataResponse::begin()
+        {
+            return device_results.begin();
+        }
+
+        SunSpecDataResponse::iterator SunSpecDataResponse::end()
+        {
+            return device_results.end();
+        }
+
+        SunSpecDataResponse::const_iterator SunSpecDataResponse::cbegin()
+        {
+            return device_results.cbegin();
+        }
+
+        SunSpecDataResponse::const_iterator SunSpecDataResponse::cend()
+        {
+            return device_results.cend();
+        }
+
+        void SunSpecDataResponse::add_device_result(const DeviceResult &dresult)
+        {
+            device_results.push_back(dresult);
+        }
+
+        size_t SunSpecDataResponse::size()
+        {
+            return device_results.size();
+        }
+
+        SunSpecDataResponse::SunSpecDataResponse(size_t n)
+        {
+            device_results.reserve(n);
+        }
     }
 }

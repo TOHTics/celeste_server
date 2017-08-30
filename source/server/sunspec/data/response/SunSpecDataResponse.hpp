@@ -36,7 +36,10 @@ namespace sunspec
         struct SunSpecDataResponse
         {
 
-            typedef std::vector<DeviceResult> device_result_list;
+            typedef std::vector<DeviceResult>           device_result_list; ///< Device result type
+            typedef device_result_list::iterator        iterator;           ///< Iterator wrapper
+            typedef device_result_list::const_iterator  const_iterator;     ///< Const iterator wrapper
+
 
             int         status = 0;     ///< Mandatory HTTP status
             std::string code;           ///< Status code as per SDX spec
@@ -55,6 +58,62 @@ namespace sunspec
              * @param other Other instance to copy
              */
             SunSpecDataResponse(const SunSpecDataResponse& other) = default;
+
+            /**
+             * Initializes with a device resuls list.
+             * @param dresults List of device results
+             */
+            SunSpecDataResponse(const device_result_list& dresults) : device_results(dresults) {}
+
+            /**
+             * Initializes instance with `n` spaces for `n` device results.
+             * Calling beforehand will increase performance when adding new device results
+             * @param n Number of spaces to reserve
+             */
+            SunSpecDataResponse(size_t n);
+
+            /**
+             * Returns an iterator to the first element of the container.
+             * If the container is empty, the returned iterator will be equal to `end()`.
+             * @return An iterator to the first `DeviceResult`
+             */
+            iterator begin();
+
+            /**
+             * Returns an iterator to the element following the last element of the container.
+             * This element acts as a placeholder; attempting to access it results in undefined
+             * behavior.
+             * @return Iterator to the element following the last `DeviceResult`.
+             */
+            iterator end();
+
+            /**
+             * Returns a const iterator to the first element of the container.
+             * If the container is empty, the returned iterator will be equal to `end()`.
+             * @return An iterator to the first `DeviceResult`
+             */
+            const_iterator cbegin();
+
+            /**
+             * Returns a const iterator to the element following the last element of the container.
+             * This element acts as a placeholder; attempting to access it results in undefined
+             * behavior.
+             * @return Iterator to the element following the last `DeviceResult`.
+             */
+            const_iterator cend();
+
+            /**
+             * Returns the number of device results contained by this object
+             * @return Number of device results contained
+             */
+            size_t size();
+
+            /**
+             * Adds an instance of a `DeviceResult` to the `SunSpecDataResponse`.
+             * @param dresult Instance of `DeviceResult` containing information about
+             * the error of the processing of the device record.
+             */
+            void add_device_result(const DeviceResult& dresult);
 
             /**
              * Returns the XML representation of the `SunSpecDataResponse` instance.
