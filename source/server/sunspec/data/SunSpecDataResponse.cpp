@@ -17,7 +17,7 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 #include "SunSpecDataResponse.hpp"
-#include "../util/SDX_Tags.hpp"
+#include "sunspec/util/SDX_Tags.hpp"
 
 namespace sunspec
 {

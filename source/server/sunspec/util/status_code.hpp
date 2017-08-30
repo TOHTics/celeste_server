@@ -17,7 +17,7 @@
 
 namespace sunspec
 {
-    namespace status_code
+    namespace sdx
     {
         static const int SUCCESS                = 200;
         static const int FAILURE                = 400;

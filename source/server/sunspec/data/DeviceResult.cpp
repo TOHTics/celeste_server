@@ -14,7 +14,7 @@
 //</editor-fold>
 #include <boost/property_tree/xml_parser.hpp>
 #include "DeviceResult.hpp"
-#include "../util/SDX_Tags.hpp"
+#include "sunspec/util/SDX_Tags.hpp"
 
 std::string sunspec::data::DeviceResult::to_xml(const sunspec::data::DeviceResult &dresult,
                                                 std::shared_ptr<boost::property_tree::ptree> ptOut)

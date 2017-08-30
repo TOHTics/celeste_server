@@ -14,7 +14,7 @@
 //</editor-fold>
 #include <boost/property_tree/xml_parser.hpp>
 #include "SunSpecData.hpp"
-#include "../util/SDX_Tags.hpp"
+#include "sunspec/util/SDX_Tags.hpp"
 
 namespace sunspec
 {
@@ -77,7 +77,15 @@ namespace sunspec
             // Parse XML into a ptree
             std::istringstream iss(ss_record);
             ptree xml;
-            xml_parser::read_xml<ptree>(iss, xml);
+
+            // Attempt to read XML
+            try
+            {
+                xml_parser::read_xml<ptree>(iss, xml);
+            } catch (xml_parser_error e)
+            {
+                throw XMLError("Malformed XML");
+            }
 
             try
             {
@@ -85,7 +93,7 @@ namespace sunspec
                 xml = xml.get_child(sdx::SDX_SUNSPEC_DATA);
             } catch (ptree_bad_path e)
             {
-                throw XMLError("XML Model record does not contain the <m> tag.");
+                throw XMLError("XML Model record does not contain the <" + sdx::SDX_SUNSPEC_DATA + "> tag.");
             }
 
             SunSpecData result = SunSpecData::from_xml(xml);

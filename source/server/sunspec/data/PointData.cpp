@@ -15,8 +15,8 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 #include "PointData.hpp"
-#include "../util/Error.hpp"
-#include "../util/SDX_Tags.hpp"
+#include "sunspec/util/Error.hpp"
+#include "sunspec/util/SDX_Tags.hpp"
 
 namespace sunspec
 {
@@ -82,7 +82,15 @@ namespace data
             // Read the string and convert to a ptree
             std::istringstream iss(point_record);
             ptree xml;
-            xml_parser::read_xml<ptree>(iss, xml);
+
+            // Attempt to read XML
+            try
+            {
+                xml_parser::read_xml<ptree>(iss, xml);
+            } catch (xml_parser_error e)
+            {
+                throw XMLError("Malformed XML");
+            }
 
             try
             {
@@ -90,7 +98,7 @@ namespace data
                 xml = xml.get_child(sdx::SDX_POINT);
             } catch (ptree_bad_path e)
             {
-                throw XMLError("XML Point Record does not contain the <p> tag.");
+                throw XMLError("XML Point Record does not contain the <" + sdx::SDX_POINT + "> tag.");
             }
 
             // Build PointData

@@ -16,10 +16,11 @@
 #ifndef SERVER_DATA_HPP
 #define SERVER_DATA_HPP
 
-#include "element/PointData.hpp"
-#include "element/DeviceData.hpp"
-#include "element/ModelData.hpp"
-#include "element/SunSpecData.hpp"
-#include "response/SunSpecDataResponse.hpp"
+#include "PointData.hpp"
+#include "DeviceData.hpp"
+#include "ModelData.hpp"
+#include "SunSpecData.hpp"
+#include "SunSpecDataResponse.hpp"
+#include "DeviceResult.hpp"
 
 #endif //SERVER_DATA_HPP
