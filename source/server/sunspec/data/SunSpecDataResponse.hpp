@@ -46,7 +46,7 @@ namespace sunspec
             std::string reason;         ///< Information about where the error was detected.
             std::string message;        ///< User-friendly error information
 
-            device_result_list device_results; ///< Results of device processing
+            device_result_list devResults; ///< Results of device processing
 
             /**
              * Empty constructor
@@ -63,7 +63,7 @@ namespace sunspec
              * Initializes with a device resuls list.
              * @param dresults List of device results
              */
-            SunSpecDataResponse(const device_result_list& dresults) : device_results(dresults) {}
+            SunSpecDataResponse(const device_result_list& dresults) : devResults(dresults) {}
 
             /**
              * Initializes instance with `n` spaces for `n` device results.

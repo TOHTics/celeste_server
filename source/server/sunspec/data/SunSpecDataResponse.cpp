@@ -16,8 +16,9 @@
 #include <string>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
+#include <iostream>
 #include "SunSpecDataResponse.hpp"
-#include "sunspec/util/SDX_Tags.hpp"
+#include "sunspec/util/sdx_tags.hpp"
 
 namespace sunspec
 {
@@ -27,6 +28,7 @@ namespace sunspec
                                                 std::shared_ptr<boost::property_tree::ptree> ptOut)
         {
             using namespace boost::property_tree;
+            using node = std::pair<std::string, ptree>;
 
             // Body of response
             ptree body;
@@ -46,8 +48,20 @@ namespace sunspec
             if (! response.reason.empty())
                 body.put(sdx::SDX_RESPONSE_REASON, response.reason);
 
+            if (! response.devResults.empty())
+            {
+                for (auto it = response.devResults.begin(); it != response.devResults.end(); it++)
+                {
+                    std::shared_ptr<ptree> dresult = std::make_shared<ptree>();
+                    DeviceResult::to_xml(*it, dresult);
+                    ptree dr = dresult->get_child(sdx::SDX_DRESULT); // Get contents
+                    body.add_child(sdx::SDX_DRESULT, dr);            // Add contents using SDX_DRESULT as the key
+                }
+            }
+
             // XML response
             ptree xml;
+
             // Put body
             xml.put_child(sdx::SDX_SUNSPEC_DATA_RESPONSE, body);
 
@@ -63,37 +77,37 @@ namespace sunspec
 
         SunSpecDataResponse::iterator SunSpecDataResponse::begin()
         {
-            return device_results.begin();
+            return devResults.begin();
         }
 
         SunSpecDataResponse::iterator SunSpecDataResponse::end()
         {
-            return device_results.end();
+            return devResults.end();
         }
 
         SunSpecDataResponse::const_iterator SunSpecDataResponse::cbegin()
         {
-            return device_results.cbegin();
+            return devResults.cbegin();
         }
 
         SunSpecDataResponse::const_iterator SunSpecDataResponse::cend()
         {
-            return device_results.cend();
+            return devResults.cend();
         }
 
         void SunSpecDataResponse::add_device_result(const DeviceResult &dresult)
         {
-            device_results.push_back(dresult);
+            devResults.push_back(dresult);
         }
 
         size_t SunSpecDataResponse::size()
         {
-            return device_results.size();
+            return devResults.size();
         }
 
         SunSpecDataResponse::SunSpecDataResponse(size_t n)
         {
-            device_results.reserve(n);
+            devResults.reserve(n);
         }
     }
 }

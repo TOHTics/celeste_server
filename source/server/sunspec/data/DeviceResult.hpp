@@ -18,6 +18,7 @@
 
 #include <string>
 #include <boost/property_tree/ptree.hpp>
+#include "DeviceData.hpp"
 
 namespace sunspec
 {
@@ -35,6 +36,8 @@ namespace sunspec
             std::string reason;     ///< Reason as to why processing the device failed
             std::string message;    ///< User friendly message to describe error
             std::string code;       ///< Status code
+
+            DeviceData devData;     ///< Associated device
 
             /**
              * Empty constructor.
