@@ -14,8 +14,8 @@
 //</editor-fold>
 #include <boost/property_tree/xml_parser.hpp>
 #include "DeviceData.hpp"
-#include "sunspec/util/Error.hpp"
-#include "sunspec/util/SDX_Tags.hpp"
+#include "sunspec/util/error.hpp"
+#include "sunspec/util/sdx_tags.hpp"
 
 namespace sunspec
 {
@@ -31,7 +31,7 @@ namespace sunspec
                 throw XMLError("Empty data value for a Device element");
 
             // Verify that there are attributes
-            ptree attr = device_element.get_child("<xmlattr>");
+            ptree attr = device_element.get_child(sdx::XML_ATTR);
             if ( attr.empty() )
                 throw XMLError("Empty attributes for a Device element");
 
@@ -42,15 +42,15 @@ namespace sunspec
             {
                 std::string attr_tag = n.first;
                 std::string attr_data = n.second.data();
-                if ( attr_tag == sdx::SDX_DEVICE_LOGGER_ID )
+                if ( attr_tag == sdx::SDX_DEVICE_LID )
                 {
                     d.lid = attr_data;
                 } else if ( attr_tag == sdx::SDX_DEVICE_ID )
                 {
                     d.id = sdx::SDX_DEVICE_ID;
-                } else if ( attr_tag == sdx::SDX_DEVICE_CORRELATION_ID )
+                } else if ( attr_tag == sdx::SDX_DEVICE_CID )
                 {
-                    d.cid = sdx::SDX_DEVICE_CORRELATION_ID;
+                    d.cid = sdx::SDX_DEVICE_CID;
                 } else if ( attr_tag == sdx::SDX_DEVICE_IFC )
                 {
                     d.ifc = attr_data;
@@ -60,7 +60,7 @@ namespace sunspec
                 } else if ( attr_tag == sdx::SDX_DEVICE_MOD )
                 {
                     d.mod = attr_data;
-                } else if ( attr_tag == sdx::SDX_DEVICE_NAMESPACE )
+                } else if ( attr_tag == sdx::SDX_DEVICE_NS )
                 {
                     d.ns = attr_data;
                 } else if ( attr_tag == sdx::SDX_DEVICE_SN )

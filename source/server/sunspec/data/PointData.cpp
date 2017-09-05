@@ -15,8 +15,8 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 #include "PointData.hpp"
-#include "sunspec/util/Error.hpp"
-#include "sunspec/util/SDX_Tags.hpp"
+#include "sunspec/util/error.hpp"
+#include "sunspec/util/sdx_tags.hpp"
 
 namespace sunspec
 {
@@ -31,7 +31,7 @@ namespace data
                 throw XMLError("Empty data value for PointData");
 
             // Get attributes of point element
-            ptree attr = point_element.get_child("<xmlattr>");
+            ptree attr = point_element.get_child(sdx::XML_ATTR);
             if ( attr.empty() )
                 throw XMLError("Empty attributes for point");
 

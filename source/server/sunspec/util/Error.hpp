@@ -29,14 +29,14 @@ namespace sunspec
          *
          * @brief General class for an Error.
          */
-        class Error : std::exception
+        class error : std::exception
         {
             std::string message;
 
         public:
-            Error() = default;
-            Error(const char* message) : message(message) {}
-            Error(std::string message) : message(message) {}
+            error() = default;
+            error(const char* message) : message(message) {}
+            error(std::string message) : message(message) {}
 
             virtual const char* what() const throw()
             {
@@ -52,10 +52,10 @@ namespace sunspec
          * @brief Represents an action that went wrong while
          * parsing XML.
          */
-        class XMLError : public Error
+        class XMLError : public error
         {
         public:
-            XMLError(std::string message) : Error(message) {}
+            XMLError(std::string message) : error(message) {}
         };
 
         /**
@@ -67,10 +67,10 @@ namespace sunspec
          * Usually this will indicate that the PointData is not formed
          * correctly.
          */
-        class PointDataError : public Error
+        class PointDataError : public error
         {
         public:
-            PointDataError(std::string message) : Error(message) {}
+            PointDataError(std::string message) : error(message) {}
         };
 
         /**
@@ -82,10 +82,10 @@ namespace sunspec
          * Usually this will indicate that the ModelDataError is not formed
          * correctly.
          */
-        class ModelDataError : public Error
+        class ModelDataError : public error
         {
         public:
-            ModelDataError(std::string message) : Error(message) {}
+            ModelDataError(std::string message) : error(message) {}
         };
     }
 }

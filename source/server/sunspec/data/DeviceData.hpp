@@ -147,6 +147,8 @@ namespace sunspec
              * that the data contained in the `device_record` is empty or is malformed.
              */
             static DeviceData from_xml(const std::string& device_record);
+
+            inline DeviceData& operator=(const DeviceData &other) = default;
         };
 
     }

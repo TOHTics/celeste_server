@@ -14,7 +14,7 @@
 //</editor-fold>
 #include <boost/property_tree/xml_parser.hpp>
 #include "SunSpecData.hpp"
-#include "sunspec/util/SDX_Tags.hpp"
+#include "sunspec/util/sdx_tags.hpp"
 
 namespace sunspec
 {
@@ -35,7 +35,7 @@ namespace sunspec
                 throw XMLError("Empty value for ModelData.");
 
             // Get attributes of the subtree ss_element
-            ptree attr = ss_element.get_child("<xmlattr>");
+            ptree attr = ss_element.get_child(sdx::XML_ATTR);
             if ( attr.empty() )
                 throw XMLError("Empty attributes for model.");
 
