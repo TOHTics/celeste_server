@@ -56,7 +56,6 @@ namespace sunspec {
             }
 
             // Get points
-            ptree point_elements;
             for ( const node& pe : model_element)
             {
                 std::string element_tag = pe.first;

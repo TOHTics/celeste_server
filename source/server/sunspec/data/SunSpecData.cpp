@@ -55,14 +55,13 @@ namespace sunspec
             }
 
             // Get devices
-            ptree device_elements;
             for ( const node& de : ss_element)
             {
                 std::string element_tag = de.first;
                 if ( element_tag == sdx::SDX_DEVICE )
                 {
-                    ptree point_element = de.second;
-                    DeviceData d = DeviceData::from_xml(point_element);
+                    ptree device_element = de.second;
+                    DeviceData d = DeviceData::from_xml(device_element);
                     result.add_device(d);
                 }
             }

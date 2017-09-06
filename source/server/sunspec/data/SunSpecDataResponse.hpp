@@ -123,6 +123,9 @@ namespace sunspec
              */
             static std::string to_xml(const SunSpecDataResponse &response,
                                       std::shared_ptr<boost::property_tree::ptree> ptOut = nullptr);
+
+            static SunSpecDataResponse from_xml(const std::string& data_response);
+            static SunSpecDataResponse from_xml(const boost::property_tree::ptree& data_response_tr);
         };
     }
 }

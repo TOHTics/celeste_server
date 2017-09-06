@@ -17,6 +17,7 @@
 #include "sunspec/util/sdx_tags.hpp"
 
 using namespace boost::property_tree;
+using node = std::pair<std::string, ptree>;
 
 namespace
 {
@@ -76,6 +77,112 @@ namespace sunspec
                 *ptOut = xml;
             }
             return oss.str();
+        }
+
+        DeviceResult DeviceResult::from_xml(const ptree& dresult_tr)
+        {
+            // Declare result
+            DeviceResult result;
+
+            // Get attributes of point element
+            ptree attr = dresult_tr.get_child(sdx::XML_ATTR);
+            if ( attr.empty() )
+                throw XMLError("Empty attributes for DeviceResult");
+
+            // Get data of device result
+            for (const node& n : dresult_tr)
+            {
+                std::string field_name = n.first;
+                std::string field_data = n.second.data();
+
+                if (field_name == sdx::SDX_DRESULT_REASON)
+                {
+                    result.reason = field_data;
+                } else if (field_name == sdx::SDX_DRESULT_CODE)
+                {
+                    result.code = field_data;
+                } else if (field_name == sdx::SDX_DRESULT_MESSAGE)
+                {
+                    result.message = field_data;
+                } else if (field_name == sdx::XML_ATTR)
+                {
+                    continue;
+                } else throw XMLError("Unrecognized field: " + field_name);
+
+            }
+
+            // The attributes of the DeviceResult are the attributes of a DeviceData object
+            DeviceData devData;
+            for (const node& n : attr)
+            {
+                std::string attr_data = n.second.data();
+                std::string attr_tag = n.first;
+                if ( attr_tag == sdx::SDX_DEVICE_LID )
+                {
+                    devData.lid = attr_data;
+                } else if ( attr_tag == sdx::SDX_DEVICE_ID )
+                {
+                    devData.id = sdx::SDX_DEVICE_ID;
+                } else if ( attr_tag == sdx::SDX_DEVICE_CID )
+                {
+                    devData.cid = sdx::SDX_DEVICE_CID;
+                } else if ( attr_tag == sdx::SDX_DEVICE_IFC )
+                {
+                    devData.ifc = attr_data;
+                } else if ( attr_tag == sdx::SDX_DEVICE_MAN )
+                {
+                    devData.man = attr_data;
+                } else if ( attr_tag == sdx::SDX_DEVICE_MOD )
+                {
+                    devData.mod = attr_data;
+                } else if ( attr_tag == sdx::SDX_DEVICE_NS )
+                {
+                    devData.ns = attr_data;
+                } else if ( attr_tag == sdx::SDX_DEVICE_SN )
+                {
+                    devData.sn = attr_data;
+                } else if ( attr_tag == sdx::SDX_DEVICE_TIME )
+                {
+                    devData.t = attr_data;
+                } else
+                    throw XMLError("Unrecognized attribute while parsing a DeviceResult element");
+            }
+            result.devData = devData;
+
+            return result;
+        }
+
+        DeviceResult DeviceResult::from_xml(const std::string &dresult)
+        {
+            // Verify point_record isn't empty
+            if ( dresult.empty() )
+                throw XMLError("Device result is empty.");
+
+            // Read the string and convert to a ptree
+            std::istringstream iss(dresult);
+            ptree xml;
+
+            // Attempt to read XML
+            try
+            {
+                xml_parser::read_xml<ptree>(iss, xml);
+            } catch (xml_parser_error e)
+            {
+                throw XMLError("Malformed XML");
+            }
+
+            try
+            {
+                // Get the child node which represents the point
+                xml = xml.get_child(sdx::SDX_DRESULT);
+            } catch (ptree_bad_path e)
+            {
+                throw XMLError("XML DeviceResult does not contain the <" + sdx::SDX_DRESULT + "> tag.");
+            }
+
+            // Build PointData
+            DeviceResult result = DeviceResult::from_xml(xml);
+            return result;
         }
     }
 }

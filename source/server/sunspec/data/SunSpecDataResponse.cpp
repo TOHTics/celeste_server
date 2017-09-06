@@ -20,6 +20,9 @@
 #include "SunSpecDataResponse.hpp"
 #include "sunspec/util/sdx_tags.hpp"
 
+using namespace boost::property_tree;
+using node = std::pair<std::string, ptree>;
+
 namespace sunspec
 {
     namespace data
@@ -27,9 +30,6 @@ namespace sunspec
         std::string SunSpecDataResponse::to_xml(const SunSpecDataResponse &response,
                                                 std::shared_ptr<boost::property_tree::ptree> ptOut)
         {
-            using namespace boost::property_tree;
-            using node = std::pair<std::string, ptree>;
-
             // Body of response
             ptree body;
 
@@ -108,6 +108,76 @@ namespace sunspec
         SunSpecDataResponse::SunSpecDataResponse(size_t n)
         {
             devResults.reserve(n);
+        }
+
+        SunSpecDataResponse SunSpecDataResponse::from_xml(const boost::property_tree::ptree& data_response_tr)
+        {
+            // Declare result
+            SunSpecDataResponse result;
+
+            // Get all fields of the body
+            for ( const node& dre : data_response_tr)
+            {
+                std::string element_tag = dre.first;
+                std::string element_data = dre.second.data();
+                if ( element_tag == sdx::SDX_DRESULT )
+                {
+                    ptree dr_element = dre.second;
+                    DeviceResult dr = DeviceResult::from_xml(dr_element);
+                    result.add_device_result(dr);
+                } else if (element_tag == sdx::SDX_RESPONSE_STATUS)
+                {
+                    try
+                    {
+                        result.status = std::stoi(element_data);
+                    } catch (std::invalid_argument e)
+                    {
+                        throw XMLError("Status field must be an integer");
+                    }
+
+                } else if (element_tag == sdx::SDX_RESPONSE_REASON)
+                {
+                    result.message = element_data;
+                } else if (element_tag == sdx::SDX_RESPONSE_CODE)
+                {
+                    result.code = element_data;
+                } else if (element_tag == sdx::SDX_RESPONSE_MESSAGE)
+                {
+                    result.message = element_data;
+                }
+            }
+            return result;
+        }
+
+        SunSpecDataResponse SunSpecDataResponse::from_xml(const std::string &data_response)
+        {
+            if ( data_response.empty() )
+                throw XMLError("Data response XML must be a non-empty string");
+
+            // Parse XML into a ptree
+            std::istringstream iss(data_response);
+            ptree xml;
+
+            // Attempt to read XML
+            try
+            {
+                xml_parser::read_xml<ptree>(iss, xml);
+            } catch (xml_parser_error e)
+            {
+                throw XMLError("Malformed XML");
+            }
+
+            try
+            {
+                // Get the child node which represents the model
+                xml = xml.get_child(sdx::SDX_SUNSPEC_DATA_RESPONSE);
+            } catch (ptree_bad_path e)
+            {
+                throw XMLError("XML Model record does not contain the <" + sdx::SDX_SUNSPEC_DATA_RESPONSE + "> tag.");
+            }
+
+            SunSpecDataResponse result = SunSpecDataResponse::from_xml(xml);
+            return result;
         }
     }
 }

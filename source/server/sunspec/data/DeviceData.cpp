@@ -84,7 +84,6 @@ namespace sunspec
                     d.add_model(model);
                 }
             }
-
             return d;
         }
 

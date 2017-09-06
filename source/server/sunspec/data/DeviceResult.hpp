@@ -59,6 +59,9 @@ namespace sunspec
              */
             static std::string to_xml(const DeviceResult& dresult,
                                       std::shared_ptr<boost::property_tree::ptree> ptOut = nullptr);
+
+            static DeviceResult from_xml(const std::string& dresult);
+            static DeviceResult from_xml(const boost::property_tree::ptree& dresult_tr);
         };
     }
 }
