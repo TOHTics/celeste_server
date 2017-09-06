@@ -28,6 +28,16 @@ namespace solarplant
 {
     namespace srv
     {
+        namespace handler
+        {
+            /**
+             * Method used to handle a request to the Logger Upload Resource. This method
+             * tries to stick to the SunSpec Data Exchange HTTP communication protocol.
+             * @param session The client-server session
+             */
+            void logger_upload_handler(const std::shared_ptr<restbed::Session> session);
+        }
+
         namespace resource
         {
             /**

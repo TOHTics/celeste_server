@@ -20,22 +20,50 @@
 #include "sunspec/data/data.hpp"
 #include "sunspec/util/status_code.hpp"
 
+using namespace restbed;
+using namespace sunspec;
+
 namespace solarplant
 {
     namespace srv
     {
         namespace handler
         {
-            void handle_error()
+            void handle_parsing_error(const std::shared_ptr<restbed::Session> session, data::error e)
             {
+                data::SunSpecDataResponse ss_r;
+                ss_r.status = sdx::FAILURE;
+                ss_r.code = "FAILURE";
+                ss_r.message = e.what();
 
+                std::string rr_body = data::SunSpecDataResponse::to_xml(ss_r);
+
+                session->close(OK,
+                               rr_body,
+                               {
+                                       {"Content-Length", std::to_string(rr_body.size())},
+                                       {"Connection", "close"}
+                               });
+            }
+
+            void handle_accept(const std::shared_ptr<restbed::Session> session)
+            {
+                data::SunSpecDataResponse ss_r;
+                ss_r.status = 400;
+                ss_r.code = "SUCCESS";
+                ss_r.message = "We have accepted the records :-)";
+
+                std::string rr_b = data::SunSpecDataResponse::to_xml(ss_r);
+                session->close(OK,
+                               rr_b,
+                               {
+                                       {"Content-Length", std::to_string(rr_b.size())},
+                                       {"Connection", "close"}
+                               });
             }
 
             void logger_upload_handler(const std::shared_ptr<restbed::Session> session)
             {
-                using namespace restbed;
-                using namespace sunspec;
-
                 // Get request and length of content
                 const auto request = session->get_request();
                 size_t content_length = (size_t) request->get_header("Content-Length", 0);
@@ -43,44 +71,34 @@ namespace solarplant
                 // Fetch bytes from request and handle using callback function
                 session->fetch(content_length, [ request ](const std::shared_ptr<Session> session, const Bytes &body)
                 {
-                    // --- Callback function ---//
-                    char *body_c = (char*) malloc(body.size());
-                    snprintf(body_c, (int) body.size(), "%s", body.data());
+                    std::cout << "Incoming connection from: " << session->get_origin() << std::endl;
 
-                    std::string body_str = body_c;
+                    // Read body into char*
+                    char *req_body_c = (char*) malloc (body.size());
+                    snprintf(req_body_c, (int) body.size() + 1, "%s", body.data());
 
+                    // Convert char* to string
+                    std::string req_body_str = req_body_c;
+
+                    std::cout << req_body_str << std::endl;
+
+                    // Attempt to parse data
                     data::SunSpecData data;
-                    data::SunSpecDataResponse ss_response;
-                    bool error_happened = false;
                     try
                     {
-                        data = data::SunSpecData::from_xml(body_str);
+                        data = data::SunSpecData::from_xml(req_body_str);
                     } catch (data::XMLError e)
                     {
-                        ss_response.status = sdx::D_FAILURE;
-                        ss_response.code = "D_FAILURE";
-                        ss_response.message = e.what();
-                        error_happened = true;
+
+                        handle_parsing_error(session, e);
+                        return;
                     }
 
-                    if (! error_happened )
-                    {
-                        // handle data here...
+                    // Persist into db
+                    // ... to implement...
 
-                        // build response
-                        ss_response.status = sdx::SUCCESS;
-                        ss_response.code = "SUCCESS";
-                        ss_response.message = "We have accepted the records :-)";
-                    }
-                    std::string response_body = data::SunSpecDataResponse::to_xml(ss_response);
-
-                    session->close(OK,
-                                   response_body,
-                                   {
-                                           {"Content-Length", std::to_string(response_body.size())},
-                                           {"Connection", "close"}
-                                   });
-                    // ------ //
+                    // Handle acceptance response
+                    handle_accept(session);
                 });
             }
         }
