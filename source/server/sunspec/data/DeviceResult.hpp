@@ -60,7 +60,18 @@ namespace sunspec
             static std::string to_xml(const DeviceResult& dresult,
                                       std::shared_ptr<boost::property_tree::ptree> ptOut = nullptr);
 
+            /**
+             * Converts the `std::string` XML specification to a `DeviceResult` object.
+             * @param data_response The string containing the XML specification.
+             * @return The instance of `DeviceResult` containing the information.
+             */
             static DeviceResult from_xml(const std::string& dresult);
+
+            /**
+             * Converts the `ptree` XML specification to a `DeviceResult` object.
+             * @param data_response The property tree containing the XML specification.
+             * @return The instance of `DeviceResult` containing the information.
+             */
             static DeviceResult from_xml(const boost::property_tree::ptree& dresult_tr);
         };
     }

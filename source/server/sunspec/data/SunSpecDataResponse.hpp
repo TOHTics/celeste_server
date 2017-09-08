@@ -124,8 +124,27 @@ namespace sunspec
             static std::string to_xml(const SunSpecDataResponse &response,
                                       std::shared_ptr<boost::property_tree::ptree> ptOut = nullptr);
 
+            /**
+             * Converts the `std::string` XML specification to a `SunSpecDataResponse` object.
+             * @param data_response The string containing the XML spec.
+             * @return The instance of `SunSpecDataResponse` containing the information.
+             */
             static SunSpecDataResponse from_xml(const std::string& data_response);
+
+            /**
+             * Converts the `ptree` XML specification to a `SunSpecDataResponse` object.
+             * @param data_response The property tree containing the XML spec.
+             * @return The instance of `SunSpecDataResponse` containing the information.
+             */
             static SunSpecDataResponse from_xml(const boost::property_tree::ptree& data_response_tr);
+
+            /**
+             * Overload of stream injection operator.
+             * @param os `ostream` object
+             * @param obj Object to inject
+             * @return Reference to the modified `os` instance
+             */
+            friend std::ostream& operator<<(std::ostream& os, const SunSpecDataResponse& obj);
         };
     }
 }
