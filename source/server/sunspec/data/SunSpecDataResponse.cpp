@@ -27,44 +27,44 @@ namespace sunspec
 {
 namespace data
 {
-std::string SunSpecDataResponse::to_xml(const SunSpecDataResponse &response,
-                                        std::shared_ptr<boost::property_tree::ptree> ptOut)
+std::string SunSpecDataResponse::to_xml( const SunSpecDataResponse &response,
+                                         std::shared_ptr<boost::property_tree::ptree> ptOut )
 {
     // Body of response
     ptree body;
 
     // Status is mandatory
-    body.put(sdx::SDX_RESPONSE_STATUS, std::to_string(response.status));
+    body.put( sdx::SDX_RESPONSE_STATUS, std::to_string( response.status ));
 
     // Put response message
     if ( !response.message.empty())
-        body.put(sdx::SDX_RESPONSE_MESSAGE, response.message);
+        body.put( sdx::SDX_RESPONSE_MESSAGE, response.message );
 
     // Put response code
     if ( !response.code.empty())
-        body.put(sdx::SDX_RESPONSE_CODE, response.code);
+        body.put( sdx::SDX_RESPONSE_CODE, response.code );
 
     // Put response reason
     if ( !response.reason.empty())
-        body.put(sdx::SDX_RESPONSE_REASON, response.reason);
+        body.put( sdx::SDX_RESPONSE_REASON, response.reason );
 
     if ( !response.devResults.empty())
     {
         for ( auto it = response.devResults.begin(); it != response.devResults.end(); it++ )
         {
             std::shared_ptr<ptree> dresult = std::make_shared<ptree>();
-            DeviceResult::to_xml(*it, dresult);
-            ptree dr = dresult->get_child(sdx::SDX_DRESULT); // Get contents
-            body.add_child(sdx::SDX_DRESULT, dr);            // Add contents using SDX_DRESULT as the key
+            DeviceResult::to_xml( *it, dresult );
+            ptree dr = dresult->get_child( sdx::SDX_DRESULT ); // Get contents
+            body.add_child( sdx::SDX_DRESULT, dr );            // Add contents using SDX_DRESULT as the key
         }
     }
     // XML response
     ptree xml;
     // Put body
-    xml.put_child(sdx::SDX_SUNSPEC_DATA_RESPONSE, body);
+    xml.put_child( sdx::SDX_SUNSPEC_DATA_RESPONSE, body );
     // Write XML to stream
     std::ostringstream oss;
-    write_xml(oss, xml);
+    write_xml( oss, xml );
 
     // Return the ptree if necessary
     if ( ptOut != nullptr )
@@ -92,9 +92,9 @@ SunSpecDataResponse::const_iterator SunSpecDataResponse::cend()
     return devResults.cend();
 }
 
-void SunSpecDataResponse::add_device_result(const DeviceResult &dresult)
+void SunSpecDataResponse::add_device_result( const DeviceResult &dresult )
 {
-    devResults.push_back(dresult);
+    devResults.push_back( dresult );
 }
 
 size_t SunSpecDataResponse::size()
@@ -102,12 +102,12 @@ size_t SunSpecDataResponse::size()
     return devResults.size();
 }
 
-SunSpecDataResponse::SunSpecDataResponse(size_t n)
+SunSpecDataResponse::SunSpecDataResponse( size_t n )
 {
-    devResults.reserve(n);
+    devResults.reserve( n );
 }
 
-SunSpecDataResponse SunSpecDataResponse::from_xml(const boost::property_tree::ptree &data_response_tr)
+SunSpecDataResponse SunSpecDataResponse::from_xml( const boost::property_tree::ptree &data_response_tr )
 {
     // Declare result
     SunSpecDataResponse result;
@@ -120,16 +120,16 @@ SunSpecDataResponse SunSpecDataResponse::from_xml(const boost::property_tree::pt
         if ( element_tag == sdx::SDX_DRESULT )
         {
             ptree dr_element = dre.second;
-            DeviceResult dr = DeviceResult::from_xml(dr_element);
-            result.add_device_result(dr);
+            DeviceResult dr = DeviceResult::from_xml( dr_element );
+            result.add_device_result( dr );
         } else if ( element_tag == sdx::SDX_RESPONSE_STATUS )
         {
             try
             {
-                result.status = std::stoi(element_data);
+                result.status = std::stoi( element_data );
             } catch ( std::invalid_argument e )
             {
-                throw XMLError("Status field must be an integer");
+                throw XMLError( "Status field must be an integer" );
             }
 
         } else if ( element_tag == sdx::SDX_RESPONSE_REASON )
@@ -146,38 +146,38 @@ SunSpecDataResponse SunSpecDataResponse::from_xml(const boost::property_tree::pt
     return result;
 }
 
-SunSpecDataResponse SunSpecDataResponse::from_xml(const std::string &data_response)
+SunSpecDataResponse SunSpecDataResponse::from_xml( const std::string &data_response )
 {
     if ( data_response.empty())
-        throw XMLError("Data response XML must be a non-empty string");
+        throw XMLError( "Data response XML must be a non-empty string" );
 
     // Parse XML into a ptree
-    std::istringstream iss(data_response);
+    std::istringstream iss( data_response );
     ptree xml;
 
     // Attempt to read XML
     try
     {
-        xml_parser::read_xml<ptree>(iss, xml);
+        xml_parser::read_xml<ptree>( iss, xml );
     } catch ( xml_parser_error e )
     {
-        throw XMLError("Malformed XML");
+        throw XMLError( "Malformed XML" );
     }
 
     try
     {
         // Get the child node which represents the model
-        xml = xml.get_child(sdx::SDX_SUNSPEC_DATA_RESPONSE);
+        xml = xml.get_child( sdx::SDX_SUNSPEC_DATA_RESPONSE );
     } catch ( ptree_bad_path e )
     {
-        throw XMLError("XML Model record does not contain the <" + sdx::SDX_SUNSPEC_DATA_RESPONSE + "> tag.");
+        throw XMLError( "XML Model record does not contain the <" + sdx::SDX_SUNSPEC_DATA_RESPONSE + "> tag." );
     }
 
-    SunSpecDataResponse result = SunSpecDataResponse::from_xml(xml);
+    SunSpecDataResponse result = SunSpecDataResponse::from_xml( xml );
     return result;
 }
 
-std::ostream &operator<<(std::ostream &os, const SunSpecDataResponse& obj)
+std::ostream &operator<<( std::ostream &os, const SunSpecDataResponse &obj )
 {
     os << "Status: " << obj.status << std::endl
        << "Code: " << obj.code << std::endl

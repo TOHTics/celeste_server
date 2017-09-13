@@ -42,10 +42,11 @@ class ClientDAO
 
     std::shared_ptr<sql::Connection> conn;
 public:
-    ClientDAO (const std::shared_ptr<sql::Connection> conn);
+    ClientDAO( const std::shared_ptr<sql::Connection> conn );
 
-    entity::Client get(key_type id);
-    void save(entity::Client client);
+    entity::Client get( key_type id );
+
+    void save( entity::Client client );
 };
 }
 }

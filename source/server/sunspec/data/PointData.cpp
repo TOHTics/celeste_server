@@ -22,88 +22,83 @@ namespace sunspec
 {
 namespace data
 {
-    using namespace boost::property_tree;
-    using node = std::pair<std::string, ptree>;
+using namespace boost::property_tree;
+using node = std::pair<std::string, ptree>;
 
-    PointData PointData::from_xml(const ptree &point_element) {
-            // Verify that there is data
-            if ( point_element.data().empty() )
-                throw XMLError("Empty data value for PointData");
+PointData PointData::from_xml( const ptree &point_element )
+{
+    // Verify that there is data
+    if ( point_element.data().empty())
+        throw XMLError( "Empty data value for PointData" );
 
-            // Get attributes of point element
-            ptree attr = point_element.get_child(sdx::XML_ATTR);
-            if ( attr.empty() )
-                throw XMLError("Empty attributes for point");
+    // Get attributes of point element
+    ptree attr = point_element.get_child( sdx::XML_ATTR );
+    if ( attr.empty())
+        throw XMLError( "Empty attributes for point" );
 
-            // Build PointData
-            PointData result;
-            for ( const node &n : attr )
-            {
-                std::string attr_name = n.first;
-                std::string attr_data = n.second.data();
-                if ( attr_name == sdx::SDX_POINT_ID )
-                {
-                    result.id = attr_data;
-                }
-                else if ( attr_name == sdx::SDX_POINT_SF )
-                {
-                    result.sf = attr_data;
-                }
-                else if ( attr_name == sdx::SDX_POINT_INDEX )
-                {
-                    result.x = attr_data;
-                }
-                else if ( attr_name == sdx::SDX_POINT_DESC )
-                {
-                    result.d = attr_data;
-                }
-                else if ( attr_name == sdx::SDX_POINT_UNITS )
-                {
-                    result.u = attr_data;
-                }
-                else if ( attr_name == sdx::SDX_POINT_TIME )
-                {
-                    result.t = attr_data;
-                }
-                else
-                    throw XMLError("Undefined attribute while parsing PointData");
-            }
-            result.value = point_element.data();
-
-            return result;
-        }
-
-        PointData PointData::from_xml(const std::string &point_record)
+    // Build PointData
+    PointData result;
+    for ( const node &n : attr )
+    {
+        std::string attr_name = n.first;
+        std::string attr_data = n.second.data();
+        if ( attr_name == sdx::SDX_POINT_ID )
         {
-            // Verify point_record isn't empty
-            if ( point_record.empty() )
-                throw XMLError("Point record is empty.");
+            result.id = attr_data;
+        } else if ( attr_name == sdx::SDX_POINT_SF )
+        {
+            result.sf = attr_data;
+        } else if ( attr_name == sdx::SDX_POINT_INDEX )
+        {
+            result.x = attr_data;
+        } else if ( attr_name == sdx::SDX_POINT_DESC )
+        {
+            result.d = attr_data;
+        } else if ( attr_name == sdx::SDX_POINT_UNITS )
+        {
+            result.u = attr_data;
+        } else if ( attr_name == sdx::SDX_POINT_TIME )
+        {
+            result.t = attr_data;
+        } else
+            throw XMLError( "Undefined attribute while parsing PointData" );
+    }
+    result.value = point_element.data();
 
-            // Read the string and convert to a ptree
-            std::istringstream iss(point_record);
-            ptree xml;
+    return result;
+}
 
-            // Attempt to read XML
-            try
-            {
-                xml_parser::read_xml<ptree>(iss, xml);
-            } catch (xml_parser_error e)
-            {
-                throw XMLError("Malformed XML");
-            }
+PointData PointData::from_xml( const std::string &point_record )
+{
+    // Verify point_record isn't empty
+    if ( point_record.empty())
+        throw XMLError( "Point record is empty." );
 
-            try
-            {
-                // Get the child node which represents the point
-                xml = xml.get_child(sdx::SDX_POINT);
-            } catch (ptree_bad_path e)
-            {
-                throw XMLError("XML Point Record does not contain the <" + sdx::SDX_POINT + "> tag.");
-            }
+    // Read the string and convert to a ptree
+    std::istringstream iss( point_record );
+    ptree xml;
 
-            // Build PointData
-            PointData result = PointData::from_xml(xml);
-            return result;
-        }
+    // Attempt to read XML
+    try
+    {
+        xml_parser::read_xml<ptree>( iss, xml );
+    } catch ( xml_parser_error e )
+    {
+        throw XMLError( "Malformed XML" );
+    }
+
+    try
+    {
+        // Get the child node which represents the point
+        xml = xml.get_child( sdx::SDX_POINT );
+    } catch ( ptree_bad_path e )
+    {
+        throw XMLError( "XML Point Record does not contain the <" + sdx::SDX_POINT + "> tag." );
+    }
+
+    // Build PointData
+    PointData result = PointData::from_xml( xml );
+    return result;
+}
 }
 }

@@ -39,36 +39,39 @@
  * class is well abstracted. Please consult the `boost` docs for more infor-
  * mation: http://www.boost.org/doc/libs/1_64_0/libs/optional/doc/html/index.html
  */
-struct IntegerTranslator {
+struct IntegerTranslator
+{
     typedef std::string internal_type;
-    typedef int         external_type;
+    typedef int external_type;
 
     // Converts a string to bool
-    boost::optional<external_type> get_value(const internal_type& str)
+    boost::optional<external_type> get_value( const internal_type &str )
     {
-        int i = std::stoi(str);
-        return boost::optional<external_type >(i);
+        int i = std::stoi( str );
+        return boost::optional<external_type>( i );
     }
 
     // Converts a bool to string
-    boost::optional<internal_type> put_value(const external_type& i)
+    boost::optional<internal_type> put_value( const external_type &i )
     {
-        std::string s = std::to_string(i);
-        return boost::optional<internal_type>(s);
+        std::string s = std::to_string( i );
+        return boost::optional<internal_type>( s );
     }
 };
 
 
-namespace boost {
-    namespace property_tree {
+namespace boost
+{
+namespace property_tree
+{
 
-        template<typename Ch, typename Traits, typename Alloc>
-        struct translator_between<std::basic_string< Ch, Traits, Alloc >, int>
-        {
-            typedef IntegerTranslator type;
-        };
+template < typename Ch, typename Traits, typename Alloc >
+struct translator_between<std::basic_string<Ch, Traits, Alloc>, int>
+{
+    typedef IntegerTranslator type;
+};
 
-    }
+}
 }
 
 #endif //SERVER_INTEGERTRANSLATOR_HPP

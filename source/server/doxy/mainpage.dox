@@ -85,6 +85,7 @@
  *     __________
  *    |  Server  |
  *    ------------
+ *         @
  *         |
  *         | looks internally like
  *         |

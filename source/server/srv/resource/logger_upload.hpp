@@ -37,7 +37,7 @@ namespace handler
  * tries to stick to the SunSpec Data Exchange HTTP communication protocol.
  * @param session The client-server session
  */
-void logger_upload_handler(const std::shared_ptr<restbed::Session> session);
+void logger_upload_handler( const std::shared_ptr<restbed::Session> session );
 }
 
 namespace resource
@@ -54,7 +54,7 @@ namespace resource
  * @param path Path where the logger upload shall be located
  * @return A `restbed::Resource` describing a logger upload.
  */
-std::shared_ptr<restbed::Resource> make_logger_upload(std::string path);
+std::shared_ptr<restbed::Resource> make_logger_upload( std::string path );
 }
 }
 }

@@ -14,19 +14,23 @@ set(SOURCE_FILES main.cpp
         sunspec/data/SunSpecData.cpp
         srv/resource/logger_upload.cpp srv/resource/logger_upload.hpp
         srv/resource/resource.hpp sunspec/data/SunSpecDataResponse.cpp sunspec/data/SunSpecDataResponse.hpp
-        sunspec/util/status_code.hpp test/tests.cpp test/tests.hpp sunspec/data/DeviceResult.cpp sunspec/data/DeviceResult.hpp sunspec/model/GPSReading.hpp sunspec/model/OpenEnergyMonitor.cpp sunspec/model/OpenEnergyMonitor.hpp sunspec/model/Thermometer.cpp sunspec/model/Thermometer.hpp sunspec/model/CommonModel.hpp sunspec/point/Altitude.hpp sunspec/sunspec.hpp sunspec/util/util.hpp)
+        sunspec/util/status_code.hpp test/tests.cpp test/tests.hpp sunspec/data/DeviceResult.cpp
+        sunspec/data/DeviceResult.hpp sunspec/sunspec.hpp sunspec/util/util.hpp
+        sunspec/verifier/verify.cpp sunspec/verifier/verify.hpp srv/db/dao/ClientDAO.cpp srv/db/dao/ClientDAO.hpp srv/entity/Client.hpp)
 
 
 
 find_package(Boost REQUIRED)
 find_library(Restbed_Library librestbed.dylib)
+find_library(MySQL_Library libmysqlcppconn.dylib)
 
-# Find packages
+# Link executable
 add_executable(server ${SOURCE_FILES})
 target_link_libraries(server ${Boost_LIBRARIES})
 target_link_libraries(server ${Restbed_Library})
+target_link_libraries(server ${MySQL_Library})
 
-
+# Link library
 file(GLOB_RECURSE sunspec_SRC
         "sunspec/*.hpp"
         "sunspec/*.cpp")

@@ -2,61 +2,66 @@
 #include <cstdlib>
 #include <restbed>
 #include <iostream>
+
+#include <mysql_connection.h>
+#include <cppconn/driver.h>
+#include <cppconn/exception.h>
+#include <cppconn/resultset.h>
+#include <cppconn/statement.h>
+
 #include "srv/resource/resource.hpp"
-#include "sunspec/data/data.hpp"
-#include "sunspec/model/GPSReading.hpp"
+#include "srv/db/dao/ClientDAO.hpp"
 
 using namespace std;
-using namespace restbed;
 using namespace solarplant::srv;
 using namespace sunspec;
 
 int main( const int, const char** )
 {
 
-//    data::DeviceData d1;
-//    d1.id = "1";
-//    d1.man = "Mulkin";
-//
-//    data::DeviceData d2;
-//    d2.id = "2";
-//
-//
-//    data::DeviceResult r1;
-//    r1.code = "Yee";
-//    r1.devData = d1;
-//
-//    data::DeviceResult r2;
-//    r2.code = "Yee2";
-//    r2.message = "Meamm eamema222";
-//    r2.devData = d2;
-//
-//    data::SunSpecDataResponse resp;
-//    resp.add_device_result(r1);
-//    resp.add_device_result(r2);
-//    resp.status = 5;
-//
-//    std::string xml = data::SunSpecDataResponse::to_xml(resp);
-//    cout << xml << endl;
-//    point::Altitude alt = 200.23;
-//
-//    model::GPSReading gpsReading(alt);
-//
-//    cout << gpsReading.alt << endl;
-//    cout << alt.d << endl;
-
-    auto resource = resource::make_logger_upload("/resource/logger_upload/");
+    sql::Driver *driver;
+    shared_ptr<sql::Connection> con;
+    unique_ptr<dao::ClientDAO> client_dao;
+    try
+    {
+        /* Create a connection */
+        driver = get_driver_instance();
+        con = shared_ptr<sql::Connection>(driver->connect("tcp://127.0.0.1:3306", "root", "root"));
+        con->setSchema("mydb");
+    } catch (const sql::SQLException &e)
+    {
+        cout << "Error: " << e.what() << endl;
+        cout << "State: " << e.getSQLState() << endl;
+    }
 
 
-    shared_ptr<Settings> settings = make_shared<Settings>();
-    settings->set_port(10000);
+    try
+    {
+        // Time to access the client
+        client_dao = unique_ptr<dao::ClientDAO>(new dao::ClientDAO(con));
+        entity::Client client;
+        client = client_dao->get(10);
+//
+//        cout << "id: " << client.id << endl
+//             << "name: " << client.first_name << " " << client.last_name << endl
+//             << "age: " << client.age << endl;
+    } catch (const sql::SQLException &e)
+    {
+        cout << "Error: " << e.what() << endl;
+        cout << "State: " << e.getSQLState() << endl;
+    }
 
-    Service service;
-    service.publish( resource );
-    service.start( settings );
 
 
-//    cout << rr.message << endl;
+//
+//    auto resource = resource::make_logger_upload("/resource/logger_upload/");
+//
+//    shared_ptr<Settings> settings = make_shared<Settings>();
+//    settings->set_port(10000);
+//
+//    Service service;
+//    service.publish( resource );
+//    service.start( settings );
 
     return EXIT_SUCCESS;
 }

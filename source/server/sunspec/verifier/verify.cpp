@@ -1,7 +1,7 @@
 //<editor-fold desc="Preamble">
 /*
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Copyright (C) 9/6/17 Carlos Brito
+ * Copyright (C) 9/8/17 Carlos Brito
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  */
 //</editor-fold>
@@ -12,11 +12,21 @@
  * @brief No description available.
  */
 //</editor-fold>
-#ifndef SERVER_UTIL_HPP
-#define SERVER_UTIL_HPP
+#include "verify.hpp"
 
-#include "error.hpp"
-#include "sdx_tags.hpp"
-#include "status_code.hpp"
+namespace sunspec
+{
+namespace data
+{
+namespace verifier
+{
 
-#endif //SERVER_UTIL_HPP
+void verify_point( const PointData &point )
+{
+
+}
+
+
+}
+}
+}

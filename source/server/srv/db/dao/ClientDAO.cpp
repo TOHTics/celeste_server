@@ -25,14 +25,14 @@ namespace srv
 namespace dao
 {
 
-ClientDAO::ClientDAO(const std::shared_ptr<sql::Connection> conn)
+ClientDAO::ClientDAO( const std::shared_ptr<sql::Connection> conn )
         : conn( conn )
 {
-    if (conn == nullptr || !conn->isValid())
-        throw sql::SQLException("Failed to create ClientDAO due to invalid connection.");
+    if ( conn == nullptr || !conn->isValid())
+        throw sql::SQLException( "Failed to create ClientDAO due to invalid connection." );
 }
 
-entity::Client ClientDAO::get(ClientDAO::key_type id)
+entity::Client ClientDAO::get( ClientDAO::key_type id )
 {
     unique_ptr<sql::Statement> stmt;
     unique_ptr<sql::ResultSet> res;
@@ -53,7 +53,7 @@ entity::Client ClientDAO::get(ClientDAO::key_type id)
         client.first_name = res->getString( "first_name" );
         client.last_name = res->getString( "last_name" );
 
-    } catch (sql::SQLException e)
+    } catch ( sql::SQLException e )
     {
         // Rethrow
         throw e;
