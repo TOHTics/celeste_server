@@ -2,8 +2,13 @@ dist: trusty
 sudo: false
 language: cpp
   
-before_install:
-  sudo apt-get install cmake
+addons:
+  apt:
+    sources:
+      - george-edison55-precise-backports # cmake 3.2.3 / doxygen 1.8.3
+    packages:
+      - cmake
+      - cmake-data
 
 script:
   - cmake source/server/
