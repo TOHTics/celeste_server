@@ -74,7 +74,7 @@ struct DeviceData
      * Initializes instance with a model list
      * @param models List of models
      */
-    DeviceData( const model_list_type &models ) : models( models )
+    DeviceData( const model_list_type &models ) : models(models)
     { }
 
     /**
@@ -134,7 +134,7 @@ struct DeviceData
      * @param device_element The `ptree` object that contains exactly one
      * device element.
      * @return A `DeviceData` object containing the data
-     * @throws XMLError Throws if there was an error parsing the XML. This will mean
+     * @throws XMLException Throws if there was an error parsing the XML. This will mean
      * that the data contained in the `device_element` is empty or is malformed.
      */
     static DeviceData from_xml( const boost::property_tree::ptree &device_element );
@@ -145,7 +145,7 @@ struct DeviceData
      * @param device_record The `std::string` record that contains the device
      * XML representation.
      * @return A `DeviceData` object containing the data
-     * @throws XMLError Throws if there was an error parsing the XML. This will mean
+     * @throws XMLException Throws if there was an error parsing the XML. This will mean
      * that the data contained in the `device_record` is empty or is malformed.
      */
     static DeviceData from_xml( const std::string &device_record );

@@ -23,23 +23,23 @@ namespace sunspec
 namespace data
 {
 /**
- * @class Error
+ * @class DataException
  * @author Carlos Brito (carlos.brito524@gmail.com)
  * @date 8/17/17.
  *
- * @brief General class for an Error.
+ * @brief General class for a DataException.
  */
-class error : std::exception
+class DataException : std::exception
 {
     std::string message;
 
 public:
-    error() = default;
+    DataException() = default;
 
-    error( const char *message ) : message( message )
+    DataException( const char *message ) : message(message)
     { }
 
-    error( std::string message ) : message( message )
+    DataException( std::string message ) : message(message)
     { }
 
     virtual const char *what() const throw()
@@ -49,22 +49,22 @@ public:
 };
 
 /**
- * @class XMLError
+ * @class XMLException
  * @author Carlos Brito (carlos.brito524@gmail.com)
  * @date 8/17/17.
  *
  * @brief Represents an action that went wrong while
  * parsing XML.
  */
-class XMLError : public error
+class XMLException : public DataException
 {
 public:
-    XMLError( std::string message ) : error( message )
+    XMLException( std::string message ) : DataException(message)
     { }
 };
 
 /**
- * @class PointDataError
+ * @class PointDataException
  * @author Carlos Brito (carlos.brito524@gmail.com)
  * @date 8/22/17.
  *
@@ -72,15 +72,15 @@ public:
  * Usually this will indicate that the PointData is not formed
  * correctly.
  */
-class PointDataError : public error
+class PointDataException : public DataException
 {
 public:
-    PointDataError( std::string message ) : error( message )
+    PointDataException( std::string message ) : DataException(message)
     { }
 };
 
 /**
- * @class ModelDataError
+ * @class ModelDataException
  * @author Carlos Brito (carlos.brito524@gmail.com)
  * @date 8/23/17.
  *
@@ -88,10 +88,10 @@ public:
  * Usually this will indicate that the ModelDataError is not formed
  * correctly.
  */
-class ModelDataError : public error
+class ModelDataException : public DataException
 {
 public:
-    ModelDataError( std::string message ) : error( message )
+    ModelDataException( std::string message ) : DataException(message)
     { }
 };
 }

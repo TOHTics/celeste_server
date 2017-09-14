@@ -19,7 +19,7 @@
 #include <vector>
 #include <boost/property_tree/ptree.hpp>
 #include "PointData.hpp"
-#include "sunspec/util/error.hpp"
+#include "sunspec/util/data_exceptions.hpp"
 
 namespace sunspec
 {
@@ -71,14 +71,14 @@ struct ModelData
      * Constructs the ModelData with `id`
      * @param id The id of the model. The Device Model Identifier.
      */
-    ModelData( std::string id ) : id( id )
+    ModelData( std::string id ) : id(id)
     { }
 
     /**
      * Constructs the ModelData with a given point list
      * @param point_list List of points
      */
-    ModelData( const point_list_type &point_list ) : points( point_list )
+    ModelData( const point_list_type &point_list ) : points(point_list)
     { }
 
     /**
@@ -144,7 +144,7 @@ struct ModelData
      * @param model_element The `ptree` object (in XML) element of the model
      * record.
      * @return Returns a `ModelData` object with the same data as the element.
-     * @throws XMLError Throws if there was an error parsing the XML. This will mean
+     * @throws XMLException Throws if there was an error parsing the XML. This will mean
      * that the data contained in the `model_element` is empty or is malformed.
      */
     static ModelData from_xml( const boost::property_tree::ptree &model_element );
@@ -157,7 +157,7 @@ struct ModelData
      * of the model record.
      * @return Returns a `ModelData` object with the same data as the XML
      * representation that was passed.
-     * @throws XMLError Throws if there was an error parsing the XML. This will mean
+     * @throws XMLException Throws if there was an error parsing the XML. This will mean
      * that the data contained in the `model_record` is empty or is malformed.
      */
     static ModelData from_xml( const std::string &model_record );

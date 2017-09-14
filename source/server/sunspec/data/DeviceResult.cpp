@@ -24,7 +24,7 @@ namespace
 void add_attribute( std::string attr, std::string tag, ptree &tree )
 {
     if ( !attr.empty())
-        tree.put( "<xmlattr>." + tag, attr );
+        tree.put("<xmlattr>." + tag, attr);
 }
 
 }
@@ -41,35 +41,35 @@ std::string DeviceResult::to_xml( const DeviceResult &dresult,
 
     // Put response message
     if ( !dresult.message.empty())
-        body.put( sdx::SDX_DRESULT_MESSAGE, dresult.message );
+        body.put(sdx::SDX_DRESULT_MESSAGE, dresult.message);
 
     // Put dresult code
     if ( !dresult.code.empty())
-        body.put( sdx::SDX_DRESULT_CODE, dresult.code );
+        body.put(sdx::SDX_DRESULT_CODE, dresult.code);
 
     // Put dresult reason
     if ( !dresult.reason.empty())
-        body.put( sdx::SDX_DRESULT_REASON, dresult.reason );
+        body.put(sdx::SDX_DRESULT_REASON, dresult.reason);
 
     // Add device data
-    add_attribute( dresult.devData.id, sdx::SDX_DEVICE_ID, body );
-    add_attribute( dresult.devData.sn, sdx::SDX_DEVICE_SN, body );
-    add_attribute( dresult.devData.ns, sdx::SDX_DEVICE_NS, body );
-    add_attribute( dresult.devData.mod, sdx::SDX_DEVICE_MOD, body );
-    add_attribute( dresult.devData.man, sdx::SDX_DEVICE_MAN, body );
-    add_attribute( dresult.devData.cid, sdx::SDX_DEVICE_CID, body );
-    add_attribute( dresult.devData.ifc, sdx::SDX_DEVICE_IFC, body );
-    add_attribute( dresult.devData.t, sdx::SDX_DEVICE_TIME, body );
-    add_attribute( dresult.devData.lid, sdx::SDX_DEVICE_LID, body );
+    add_attribute(dresult.devData.id, sdx::SDX_DEVICE_ID, body);
+    add_attribute(dresult.devData.sn, sdx::SDX_DEVICE_SN, body);
+    add_attribute(dresult.devData.ns, sdx::SDX_DEVICE_NS, body);
+    add_attribute(dresult.devData.mod, sdx::SDX_DEVICE_MOD, body);
+    add_attribute(dresult.devData.man, sdx::SDX_DEVICE_MAN, body);
+    add_attribute(dresult.devData.cid, sdx::SDX_DEVICE_CID, body);
+    add_attribute(dresult.devData.ifc, sdx::SDX_DEVICE_IFC, body);
+    add_attribute(dresult.devData.t, sdx::SDX_DEVICE_TIME, body);
+    add_attribute(dresult.devData.lid, sdx::SDX_DEVICE_LID, body);
 
     // XML response
     ptree xml;
     // Put body
-    xml.put_child( sdx::SDX_DRESULT, body );
+    xml.put_child(sdx::SDX_DRESULT, body);
 
     // Write XML to stream
     std::ostringstream oss;
-    write_xml( oss, xml );
+    write_xml(oss, xml);
 
     // Return the ptree if necessary
     if ( ptOut != nullptr )
@@ -85,9 +85,9 @@ DeviceResult DeviceResult::from_xml( const ptree &dresult_tr )
     DeviceResult result;
 
     // Get attributes of point element
-    ptree attr = dresult_tr.get_child( sdx::XML_ATTR );
+    ptree attr = dresult_tr.get_child(sdx::XML_ATTR);
     if ( attr.empty())
-        throw XMLError( "Empty attributes for DeviceResult" );
+        throw XMLException("Empty attributes for DeviceResult");
 
     // Get data of device result
     for ( const node &n : dresult_tr )
@@ -107,7 +107,7 @@ DeviceResult DeviceResult::from_xml( const ptree &dresult_tr )
         } else if ( field_name == sdx::XML_ATTR )
         {
             continue;
-        } else throw XMLError( "Unrecognized field: " + field_name );
+        } else throw XMLException("Unrecognized field: " + field_name);
 
     }
 
@@ -145,7 +145,7 @@ DeviceResult DeviceResult::from_xml( const ptree &dresult_tr )
         {
             devData.t = attr_data;
         } else
-            throw XMLError( "Unrecognized attribute while parsing a DeviceResult element" );
+            throw XMLException("Unrecognized attribute while parsing a DeviceResult element");
     }
     result.devData = devData;
 
@@ -156,32 +156,32 @@ DeviceResult DeviceResult::from_xml( const std::string &dresult )
 {
     // Verify point_record isn't empty
     if ( dresult.empty())
-        throw XMLError( "Device result is empty." );
+        throw XMLException("Device result is empty.");
 
     // Read the string and convert to a ptree
-    std::istringstream iss( dresult );
+    std::istringstream iss(dresult);
     ptree xml;
 
     // Attempt to read XML
     try
     {
-        xml_parser::read_xml<ptree>( iss, xml );
+        xml_parser::read_xml<ptree>(iss, xml);
     } catch ( xml_parser_error e )
     {
-        throw XMLError( "Malformed XML" );
+        throw XMLException("Malformed XML");
     }
 
     try
     {
         // Get the child node which represents the point
-        xml = xml.get_child( sdx::SDX_DRESULT );
+        xml = xml.get_child(sdx::SDX_DRESULT);
     } catch ( ptree_bad_path e )
     {
-        throw XMLError( "XML DeviceResult does not contain the <" + sdx::SDX_DRESULT + "> tag." );
+        throw XMLException("XML DeviceResult does not contain the <" + sdx::SDX_DRESULT + "> tag.");
     }
 
     // Build PointData
-    DeviceResult result = DeviceResult::from_xml( xml );
+    DeviceResult result = DeviceResult::from_xml(xml);
     return result;
 }
 }

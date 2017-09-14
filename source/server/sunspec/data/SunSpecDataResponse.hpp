@@ -63,7 +63,7 @@ struct SunSpecDataResponse
      * Initializes with a device resuls list.
      * @param dresults List of device results
      */
-    SunSpecDataResponse( const device_result_list &dresults ) : devResults( dresults )
+    SunSpecDataResponse( const device_result_list &dresults ) : devResults(dresults)
     { }
 
     /**

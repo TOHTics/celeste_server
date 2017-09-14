@@ -33,7 +33,13 @@ void print( const shared_ptr< Response >& response )
     auto length = response->get_header( "Content-Length", 0 );
 
     Http::fetch( length, response );
-    string xml_body = (char*) response->get_body().data();
+
+    // Read body into char*
+    auto body = response->get_body();
+    char *xml_body_c = (char*) malloc (body.size() + 1);
+    snprintf(xml_body_c, (int) body.size() + 1, "%s", body.data());
+
+    string xml_body = xml_body_c;
 
     data::SunSpecDataResponse rr;
     try
@@ -43,10 +49,8 @@ void print( const shared_ptr< Response >& response )
     {
         cout << e.what() << endl;
     }
-//    fprintf( stderr, "Body:           %.*s\n\n", (int) response->get_body().size(), xml_body );
 
-    cout << rr.message << endl << rr.code << endl << rr.status << endl << rr.reason << endl;
-
+    cout << rr << endl;
 }
 
 int main( const int, const char** )

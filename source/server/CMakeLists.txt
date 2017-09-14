@@ -4,11 +4,12 @@ project(server)
 include_directories(.)
 
 set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_FLAGS "-O2")
 
 set(SOURCE_FILES main.cpp
         sunspec/data/SunSpecData.hpp sunspec/data/DeviceData.hpp
         sunspec/data/ModelData.hpp sunspec/data/PointData.hpp
-        sunspec/util/error.hpp sunspec/data/data.hpp sunspec/util/sdx_tags.hpp
+        sunspec/util/data_exceptions.hpp sunspec/data/data.hpp sunspec/util/sdx_tags.hpp
         sunspec/translator/IntegerTranslator.hpp sunspec/translator/FloatTranslator.hpp
         sunspec/data/PointData.cpp sunspec/data/ModelData.cpp sunspec/data/DeviceData.cpp
         sunspec/data/SunSpecData.cpp
@@ -16,11 +17,11 @@ set(SOURCE_FILES main.cpp
         srv/resource/resource.hpp sunspec/data/SunSpecDataResponse.cpp sunspec/data/SunSpecDataResponse.hpp
         sunspec/util/status_code.hpp test/tests.cpp test/tests.hpp sunspec/data/DeviceResult.cpp
         sunspec/data/DeviceResult.hpp sunspec/sunspec.hpp sunspec/util/util.hpp
-        sunspec/verifier/verify.cpp sunspec/verifier/verify.hpp srv/db/dao/ClientDAO.cpp srv/db/dao/ClientDAO.hpp srv/entity/Client.hpp)
+        sunspec/verifier/verify.cpp sunspec/verifier/verify.hpp db/dao/ClientDAO.cpp db/dao/ClientDAO.hpp db/entity/Client.hpp db/db_exceptions.hpp sunspec/util/data_exceptions.hpp db/dao/dao.hpp db/entity/entity.hpp db/db.hpp)
 
 
 
-find_package(Boost REQUIRED)
+find_package(Boost COMPONENTS date_time REQUIRED)
 find_library(Restbed_Library librestbed.dylib)
 find_library(MySQL_Library libmysqlcppconn.dylib)
 

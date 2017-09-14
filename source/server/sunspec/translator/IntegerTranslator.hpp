@@ -47,15 +47,15 @@ struct IntegerTranslator
     // Converts a string to bool
     boost::optional<external_type> get_value( const internal_type &str )
     {
-        int i = std::stoi( str );
-        return boost::optional<external_type>( i );
+        int i = std::stoi(str);
+        return boost::optional<external_type>(i);
     }
 
     // Converts a bool to string
     boost::optional<internal_type> put_value( const external_type &i )
     {
-        std::string s = std::to_string( i );
-        return boost::optional<internal_type>( s );
+        std::string s = std::to_string(i);
+        return boost::optional<internal_type>(s);
     }
 };
 

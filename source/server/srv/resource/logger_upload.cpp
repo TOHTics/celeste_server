@@ -29,21 +29,21 @@ namespace srv
 {
 namespace handler
 {
-void handle_parsing_error( const std::shared_ptr<restbed::Session> session, const data::error &e )
+void handle_parsing_error( const std::shared_ptr<restbed::Session> session, const data::DataException &e )
 {
     data::SunSpecDataResponse ss_r;
     ss_r.status = sdx::FAILURE;
     ss_r.code = "FAILURE";
     ss_r.message = e.what();
 
-    std::string rr_body = data::SunSpecDataResponse::to_xml( ss_r );
+    std::string rr_body = data::SunSpecDataResponse::to_xml(ss_r);
 
-    session->close( OK,
-                    rr_body,
-                    {
-                            { "Content-Length", std::to_string( rr_body.size()) },
-                            { "Connection",     "close" }
-                    } );
+    session->close(OK,
+                   rr_body,
+                   {
+                           { "Content-Length", std::to_string(rr_body.size()) },
+                           { "Connection",     "close" }
+                   });
 }
 
 void handle_accept( const std::shared_ptr<restbed::Session> session )
@@ -53,29 +53,29 @@ void handle_accept( const std::shared_ptr<restbed::Session> session )
     ss_r.code = "SUCCESS";
     ss_r.message = "We have accepted the records :-)";
 
-    std::string rr_b = data::SunSpecDataResponse::to_xml( ss_r );
-    session->close( OK,
-                    rr_b,
-                    {
-                            { "Content-Length", std::to_string( rr_b.size()) },
-                            { "Connection",     "close" }
-                    } );
+    std::string rr_b = data::SunSpecDataResponse::to_xml(ss_r);
+    session->close(OK,
+                   rr_b,
+                   {
+                           { "Content-Length", std::to_string(rr_b.size()) },
+                           { "Connection",     "close" }
+                   });
 }
 
 void logger_upload_handler( const std::shared_ptr<restbed::Session> session )
 {
     // Get request and length of content
     const auto request = session->get_request();
-    size_t content_length = (size_t) request->get_header( "Content-Length", 0 );
+    size_t content_length = (size_t) request->get_header("Content-Length", 0);
 
     // Fetch bytes from request and handle using callback function
-    session->fetch( content_length, [ request ]( const std::shared_ptr<Session> session, const Bytes &body )
+    session->fetch(content_length, [ request ]( const std::shared_ptr<Session> session, const Bytes &body )
     {
         std::cout << "Request for a logger_upload from: " << session->get_origin() << std::endl;
 
         // Read body into char*
-        char *req_body_c = (char *) malloc( body.size() + 1 );
-        snprintf( req_body_c, (int) body.size() + 1, "%s", body.data());
+        char *req_body_c = (char *) malloc(body.size() + 1);
+        snprintf(req_body_c, (int) body.size() + 1, "%s", body.data());
 
         // Convert char* to string
         std::string req_body_str = req_body_c;
@@ -84,10 +84,10 @@ void logger_upload_handler( const std::shared_ptr<restbed::Session> session )
         data::SunSpecData data;
         try
         {
-            data = data::SunSpecData::from_xml( req_body_str );
-        } catch ( data::XMLError e )
+            data = data::SunSpecData::from_xml(req_body_str);
+        } catch ( data::XMLException e )
         {
-            handle_parsing_error( session, e );
+            handle_parsing_error(session, e);
             return;
         }
 
@@ -108,8 +108,8 @@ void logger_upload_handler( const std::shared_ptr<restbed::Session> session )
         // Persist device records into db
 
         // If all went well then handle acceptance response
-        handle_accept( session );
-    } );
+        handle_accept(session);
+    });
 }
 }
 
@@ -118,9 +118,9 @@ namespace resource
 std::shared_ptr<restbed::Resource> make_logger_upload( std::string path )
 {
     restbed::Resource *resource = new restbed::Resource;
-    resource->set_path( path );
-    resource->set_method_handler( "POST", handler::logger_upload_handler );
-    return std::shared_ptr<restbed::Resource>( resource );
+    resource->set_path(path);
+    resource->set_method_handler("POST", handler::logger_upload_handler);
+    return std::shared_ptr<restbed::Resource>(resource);
 }
 
 }

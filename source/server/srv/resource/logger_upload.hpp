@@ -24,7 +24,7 @@
 
 #include <restbed>
 #include "sunspec/data/SunSpecData.hpp"
-#include "sunspec/util/error.hpp"
+#include "sunspec/util/data_exceptions.hpp"
 
 namespace solarplant
 {

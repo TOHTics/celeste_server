@@ -62,7 +62,7 @@ struct PointData
      * @param id Name of the data point.
      * @param value Value of data point represented by a `std::string`
      */
-    PointData( std::string id, std::string value ) : id( id ), value( value )
+    PointData( std::string id, std::string value ) : id(id), value(value)
     { }
 
     /**
@@ -76,7 +76,7 @@ struct PointData
      * its syntax is XML.
      * @param point_element The `ptree` object (in XML) element of the point record.
      * @return Returns a `PointData` object with the same data as the element.
-     * @throws XMLError Throws if there was an error parsing the XML. This will mean
+     * @throws XMLException Throws if there was an error parsing the XML. This will mean
      * that the data contained in the `point_element` is empty or is malformed.
      */
     static PointData from_xml( const boost::property_tree::ptree &point_element );
@@ -89,7 +89,7 @@ struct PointData
      * of the point record.
      * @return Returns a `PointData` object with the same data as the XML
      * representation that was passed.
-     * @throws XMLError Throws if there was an error parsing the XML. This will mean
+     * @throws XMLException Throws if there was an error parsing the XML. This will mean
      * that the data contained in the `point_record` is empty or is malformed.
      */
     static PointData from_xml( const std::string &point_record );

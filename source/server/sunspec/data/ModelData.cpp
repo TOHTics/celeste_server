@@ -14,7 +14,7 @@
 //</editor-fold>
 #include <boost/property_tree/xml_parser.hpp>
 #include "ModelData.hpp"
-#include "sunspec/util/error.hpp"
+#include "sunspec/util/data_exceptions.hpp"
 #include "sunspec/util/sdx_tags.hpp"
 
 namespace sunspec
@@ -28,12 +28,12 @@ ModelData ModelData::from_xml( const ptree &model_element )
 {
     // Verify that there is data
     if ( model_element.data().empty())
-        throw XMLError( "Empty value for ModelData." );
+        throw XMLException("Empty value for ModelData.");
 
     // Get attributes of the subtree model_element
-    ptree attr = model_element.get_child( sdx::XML_ATTR );
+    ptree attr = model_element.get_child(sdx::XML_ATTR);
     if ( attr.empty())
-        throw XMLError( "Empty attributes for model." );
+        throw XMLException("Empty attributes for model.");
 
     // Declare model
     ModelData result;
@@ -64,8 +64,8 @@ ModelData ModelData::from_xml( const ptree &model_element )
         if ( element_tag == sdx::SDX_POINT )
         {
             ptree point_element = pe.second;
-            PointData p = PointData::from_xml( point_element );
-            result.add_point( p );
+            PointData p = PointData::from_xml(point_element);
+            result.add_point(p);
         }
     }
     return result;
@@ -75,37 +75,37 @@ ModelData ModelData::from_xml( const std::string &model_record )
 {
     // Verify if model record is empty
     if ( model_record.empty())
-        throw XMLError( "Model record is empty." );
+        throw XMLException("Model record is empty.");
 
     // Parse XML into a ptree
-    std::istringstream iss( model_record );
+    std::istringstream iss(model_record);
     ptree xml;
 
     // Attempt to read XML
     try
     {
-        xml_parser::read_xml<ptree>( iss, xml );
+        xml_parser::read_xml<ptree>(iss, xml);
     } catch ( xml_parser_error e )
     {
-        throw XMLError( "Malformed XML" );
+        throw XMLException("Malformed XML");
     }
 
     try
     {
         // Get the child node which represents the model
-        xml = xml.get_child( sdx::SDX_MODEL );
+        xml = xml.get_child(sdx::SDX_MODEL);
     } catch ( boost::property_tree::ptree_bad_path e )
     {
-        throw XMLError( "XML Model record does not contain the <" + sdx::SDX_MODEL + "> tag." );
+        throw XMLException("XML Model record does not contain the <" + sdx::SDX_MODEL + "> tag.");
     }
 
-    ModelData result = ModelData::from_xml( xml );
+    ModelData result = ModelData::from_xml(xml);
     return result;
 }
 
 void ModelData::add_point( const PointData &p )
 {
-    points.push_back( p );
+    points.push_back(p);
 }
 
 ModelData::iterator ModelData::begin()
@@ -135,7 +135,7 @@ size_t ModelData::size()
 
 ModelData::ModelData( size_t n )
 {
-    points.reserve( n );
+    points.reserve(n);
 }
 
 }

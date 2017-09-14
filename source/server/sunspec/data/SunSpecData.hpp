@@ -61,7 +61,7 @@ struct SunSpecData
      * Constructs a `SunSpecData` instance.
      * @param d_list Device list
      */
-    SunSpecData( const device_list_type &d_list ) : devices( d_list )
+    SunSpecData( const device_list_type &d_list ) : devices(d_list)
     { }
 
     /**
@@ -121,7 +121,7 @@ struct SunSpecData
      * @param ss_element The `ptree` object (in XML) element of the model
      * record.
      * @return Returns a `ModelData` object with the same data as the element.
-     * @throws XMLError Throws if there was an error parsing the XML. This will mean
+     * @throws XMLException Throws if there was an error parsing the XML. This will mean
      * that the data contained in the `model_element` is empty or is malformed.
      */
     static SunSpecData from_xml( const boost::property_tree::ptree &ss_element );
@@ -134,7 +134,7 @@ struct SunSpecData
      * of the model record.
      * @return Returns a `ModelData` object with the same data as the XML
      * representation that was passed.
-     * @throws XMLError Throws if there was an error parsing the XML. This will mean
+     * @throws XMLException Throws if there was an error parsing the XML. This will mean
      * that the data contained in the `model_record` is empty or is malformed.
      */
     static SunSpecData from_xml( const std::string &ss_record );

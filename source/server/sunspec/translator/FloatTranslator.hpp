@@ -48,15 +48,15 @@ struct FloatTranslator
     // Converts a string to float
     boost::optional<external_type> get_value( const internal_type &str )
     {
-        float f = std::stof( str );
-        return boost::optional<external_type>( f );
+        float f = std::stof(str);
+        return boost::optional<external_type>(f);
     }
 
     // Converts a float to string
     boost::optional<internal_type> put_value( const external_type &f )
     {
-        std::string s = std::to_string( f );
-        return boost::optional<internal_type>( s );
+        std::string s = std::to_string(f);
+        return boost::optional<internal_type>(s);
     }
 };
 

@@ -1,7 +1,7 @@
 //<editor-fold desc="Preamble">
 /*
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Copyright (C) 9/6/17 Carlos Brito
+ * Copyright (C) 9/13/17 Carlos Brito
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  */
 //</editor-fold>
@@ -12,11 +12,7 @@
  * @brief No description available.
  */
 //</editor-fold>
-#ifndef SERVER_UTIL_HPP
-#define SERVER_UTIL_HPP
-
-#include "data_exceptions.hpp"
-#include "sdx_tags.hpp"
-#include "status_code.hpp"
-
-#endif //SERVER_UTIL_HPP
+#ifndef SERVER_DAO_HPP
+#define SERVER_DAO_HPP
+#include "ClientDAO.hpp"
+#endif //SERVER_DAO_HPP

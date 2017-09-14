@@ -16,10 +16,11 @@
 #define SERVER_CLIENT_HPP
 
 #include <string>
+#include <boost/date_time/gregorian/gregorian.hpp>
 
 namespace solarplant
 {
-namespace srv
+namespace db
 {
 namespace entity
 {
@@ -35,10 +36,12 @@ namespace entity
 */
 struct Client
 {
+    typedef boost::gregorian::date date_type;
     int id;
     std::string first_name;
     std::string last_name;
     uint32_t age;
+    date_type dob;
 };
 }
 }
