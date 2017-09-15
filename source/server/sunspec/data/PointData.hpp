@@ -13,8 +13,8 @@
  *
  */
 //</editor-fold>
-#ifndef SERVER_POINTDATA_HPP
-#define SERVER_POINTDATA_HPP
+#ifndef SUNSPEC_POINTDATA_HPP
+#define SUNSPEC_POINTDATA_HPP
 
 #include <string>
 #include <boost/property_tree/ptree.hpp>

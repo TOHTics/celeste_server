@@ -12,8 +12,8 @@
  * @brief No description available.
  */
 //</editor-fold>
-#ifndef SERVER_VERIFY_HPP
-#define SERVER_VERIFY_HPP
+#ifndef SUNSPEC_VERIFY_HPP
+#define SUNSPEC_VERIFY_HPP
 
 #include <sunspec/data/data.hpp>
 
@@ -29,11 +29,11 @@ namespace verifier
  * exists in the database.
  * @param point The `PointData` to be analyzed.
  */
-void verify_point( const PointData &point );
+bool verify_point( const PointData &point );
 
-void verify_model( const ModelData &model );
+bool verify_model( const ModelData &model );
 
-void verify_device( const DeviceData &data );
+bool verify_device( const DeviceData &data );
 }
 }
 }

@@ -12,8 +12,8 @@
  * @brief Contains class declarations for `DeviceResult`
  */
 //</editor-fold>
-#ifndef SERVER_DEVICEFAILURE_HPP
-#define SERVER_DEVICEFAILURE_HPP
+#ifndef SUNSPEC_DEVICEFAILURE_HPP
+#define SUNSPEC_DEVICEFAILURE_HPP
 
 
 #include <string>

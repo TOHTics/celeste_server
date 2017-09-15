@@ -12,8 +12,8 @@
  * @brief No description available.
  */
 //</editor-fold>
-#ifndef SERVER_UTIL_HPP
-#define SERVER_UTIL_HPP
+#ifndef SUNSPEC_UTIL_HPP
+#define SUNSPEC_UTIL_HPP
 
 #include "data_exceptions.hpp"
 #include "sdx_tags.hpp"

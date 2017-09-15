@@ -12,8 +12,8 @@
  * @brief Contains the class declarations for `ModelData`
  */
 //</editor-fold>
-#ifndef SERVER_MODELDATA_HPP
-#define SERVER_MODELDATA_HPP
+#ifndef SUNSPEC_MODELDATA_HPP
+#define SUNSPEC_MODELDATA_HPP
 
 
 #include <vector>

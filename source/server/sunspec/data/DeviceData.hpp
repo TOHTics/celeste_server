@@ -12,8 +12,8 @@
  * @brief Contains the class declarations for `DeviceData`
  */
 //</editor-fold>
-#ifndef SERVER_DEVICEDATA_HPP
-#define SERVER_DEVICEDATA_HPP
+#ifndef SUNSPEC_DEVICEDATA_HPP
+#define SUNSPEC_DEVICEDATA_HPP
 
 #include <string>
 #include <boost/property_tree/ptree.hpp>

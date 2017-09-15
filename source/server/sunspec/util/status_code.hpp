@@ -12,8 +12,8 @@
  * @brief Contains HTTP status codes
  */
 //</editor-fold>
-#ifndef SERVER_STATUS_CODES_HPP
-#define SERVER_STATUS_CODES_HPP
+#ifndef SUNSPEC_STATUS_CODES_HPP
+#define SUNSPEC_STATUS_CODES_HPP
 
 namespace sunspec
 {

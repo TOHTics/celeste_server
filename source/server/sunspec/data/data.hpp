@@ -13,8 +13,8 @@
  * methods and attributes.
  */
 //</editor-fold>
-#ifndef SERVER_DATA_HPP
-#define SERVER_DATA_HPP
+#ifndef SUNSPEC_DATA_HPP
+#define SUNSPEC_DATA_HPP
 
 #include "PointData.hpp"
 #include "DeviceData.hpp"

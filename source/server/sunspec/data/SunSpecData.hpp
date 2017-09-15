@@ -12,8 +12,8 @@
  * @brief Contains the class declarations for `SunSpecData`
  */
 //</editor-fold>
-#ifndef SERVER_SUNSPECDATA_HPP
-#define SERVER_SUNSPECDATA_HPP
+#ifndef SUNSPEC_SUNSPECDATA_HPP
+#define SUNSPEC_SUNSPECDATA_HPP
 
 #include <vector>
 #include <string>

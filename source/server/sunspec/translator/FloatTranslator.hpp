@@ -20,8 +20,8 @@
  * Nothing for the moment.
  */
 //</editor-fold>
-#ifndef SERVER_FLOATTRANSLATOR_HPP
-#define SERVER_FLOATTRANSLATOR_HPP
+#ifndef SUNSPEC_FLOATTRANSLATOR_HPP
+#define SUNSPEC_FLOATTRANSLATOR_HPP
 
 
 #include <boost/property_tree/ptree.hpp>

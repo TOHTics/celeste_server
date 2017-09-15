@@ -12,8 +12,8 @@
  * @brief Contains class declarations for `SunSpecDataResponse`
  */
 //</editor-fold>
-#ifndef SERVER_SUNSPECDATARESPONSE_HPP
-#define SERVER_SUNSPECDATARESPONSE_HPP
+#ifndef SUNSPEC_SUNSPECDATARESPONSE_HPP
+#define SUNSPEC_SUNSPECDATARESPONSE_HPP
 
 #include <string>
 #include "DeviceResult.hpp"

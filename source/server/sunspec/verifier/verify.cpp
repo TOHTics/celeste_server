@@ -21,7 +21,7 @@ namespace data
 namespace verifier
 {
 
-void verify_point( const PointData &point )
+bool verify_point( const PointData &point )
 {
 
 }

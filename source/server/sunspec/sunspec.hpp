@@ -12,10 +12,10 @@
  * @brief No description available.
  */
 //</editor-fold>
-#ifndef SERVER_SUNSPEC_HPP
-#define SERVER_SUNSPEC_HPP
+#ifndef SUNSPEC_HPP
+#define SUNSPEC_HPP
 
 #include "data/data.hpp"
 #include "util/util.hpp"
 
-#endif //SERVER_SUNSPEC_HPP
+#endif //SUNSPEC_HPP

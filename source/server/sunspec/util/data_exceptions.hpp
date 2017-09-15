@@ -12,8 +12,8 @@
  * @brief Contains `Error` and its derived classes.
  */
 //</editor-fold>
-#ifndef SERVER_ERROR_HPP
-#define SERVER_ERROR_HPP
+#ifndef SUNSPEC_ERROR_HPP
+#define SUNSPEC_ERROR_HPP
 
 #include <exception>
 #include <string>

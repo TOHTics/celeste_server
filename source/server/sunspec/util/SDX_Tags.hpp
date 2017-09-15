@@ -13,8 +13,8 @@
  *
  */
 //</editor-fold>
-#ifndef SERVER_SDX_TAGS_HPP
-#define SERVER_SDX_TAGS_HPP
+#ifndef SUNSPEC_SDX_TAGS_HPP
+#define SUNSPEC_SDX_TAGS_HPP
 
 #include <string>
 

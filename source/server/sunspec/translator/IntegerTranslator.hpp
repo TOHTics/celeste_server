@@ -19,8 +19,8 @@
  * Nothing for the moment.
  */
 //</editor-fold>
-#ifndef SERVER_INTEGERTRANSLATOR_HPP
-#define SERVER_INTEGERTRANSLATOR_HPP
+#ifndef SUNSPEC_INTEGERTRANSLATOR_HPP
+#define SUNSPEC_INTEGERTRANSLATOR_HPP
 
 
 #include <string>
