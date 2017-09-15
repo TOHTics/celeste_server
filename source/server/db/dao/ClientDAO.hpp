@@ -12,8 +12,8 @@
  * @brief No description available.
  */
 //</editor-fold>
-#ifndef SERVER_CLIENTDAO_HPP
-#define SERVER_CLIENTDAO_HPP
+#ifndef SERVER_DB_CLIENTDAO_HPP
+#define SERVER_DB_CLIENTDAO_HPP
 
 #include <memory>
 #include <string>
@@ -45,11 +45,11 @@ public:
 
    std::string TABLE_NAME = "Client";
    std::unordered_map<std::string, std::string> columns{
-            {"ID", "id"},
-            {"AGE", "age"},
-            {"FIRST NAME", "first_name"},
-            {"LAST NAME", "last_name"},
-            {"DATE OF BIRTH", "dob"},
+            {"id", "id"},
+            {"age", "age"},
+            {"first_name", "first_name"},
+            {"last_name", "last_name"},
+            {"dob", "dob"},
     };
 
     /**

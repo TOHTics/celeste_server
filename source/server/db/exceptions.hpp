@@ -12,8 +12,8 @@
  * @brief No description available.
  */
 //</editor-fold>
-#ifndef SERVER_ERROR_HPP
-#define SERVER_ERROR_HPP
+#ifndef SERVER_DB_ERROR_HPP
+#define SERVER_DB_ERROR_HPP
 
 #include <string>
 #include <exception>

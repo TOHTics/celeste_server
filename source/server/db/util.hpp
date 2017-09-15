@@ -12,7 +12,13 @@
  * @brief No description available.
  */
 //</editor-fold>
-#ifndef SERVER_DB_ENTITY_HPP
-#define SERVER_DB_ENTITY_HPP
-#include "Client.hpp"
-#endif //SERVER_DB_ENTITY_HPP
+#ifndef SERVER_DB_UTIL_HPP
+#define SERVER_DB_UTIL_HPP
+
+#include <string>
+#include <vector>
+
+std::string as_comma_list(std::vector<std::string> v);
+std::string quote(std::string str, char q);
+
+#endif

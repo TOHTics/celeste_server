@@ -12,8 +12,8 @@
  * @brief No description available.
  */
 //</editor-fold>
-#ifndef SERVER_CLIENT_HPP
-#define SERVER_CLIENT_HPP
+#ifndef SERVER_DB_CLIENT_HPP
+#define SERVER_DB_CLIENT_HPP
 
 #include <string>
 #include <boost/date_time/gregorian/gregorian.hpp>

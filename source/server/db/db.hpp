@@ -16,5 +16,6 @@
 #define SERVER_DB_HPP
 #include "dao/dao.hpp"
 #include "entity/entity.hpp"
-#include "db_exceptions.hpp"
+#include "exceptions.hpp"
+#include "util.hpp"
 #endif //SERVER_DB_HPP
