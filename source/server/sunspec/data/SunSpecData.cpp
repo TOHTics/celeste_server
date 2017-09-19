@@ -15,6 +15,7 @@
 #include <boost/property_tree/xml_parser.hpp>
 #include "SunSpecData.hpp"
 #include "sunspec/util/sdx_tags.hpp"
+#include "sunspec/util/exceptions.hpp"
 
 namespace sunspec
 {

@@ -13,9 +13,9 @@
  */
 //</editor-fold>
 #include <boost/property_tree/xml_parser.hpp>
-#include "DeviceData.hpp"
-#include "sunspec/util/data_exceptions.hpp"
+#include "sunspec/util/exceptions.hpp"
 #include "sunspec/util/sdx_tags.hpp"
+#include "DeviceData.hpp"
 
 namespace sunspec
 {

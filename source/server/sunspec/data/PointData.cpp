@@ -15,7 +15,7 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 #include "PointData.hpp"
-#include "sunspec/util/data_exceptions.hpp"
+#include "sunspec/util/exceptions.hpp"
 #include "sunspec/util/sdx_tags.hpp"
 
 namespace sunspec

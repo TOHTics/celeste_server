@@ -40,8 +40,8 @@ namespace data
 struct DeviceData
 {
 
-    typedef std::vector<ModelData> model_list_type; ///< Type of list of models
-    typedef model_list_type::iterator iterator;        ///< Iterator wrapper
+    typedef std::vector<ModelData> model_list_type;          ///< Type of list of models
+    typedef model_list_type::iterator iterator;              ///< Iterator wrapper
     typedef model_list_type::const_iterator const_iterator;  ///< Const iterator wrapper
 
     std::string cid;    ///< Result Correlation ID

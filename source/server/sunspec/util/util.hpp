@@ -15,7 +15,7 @@
 #ifndef SUNSPEC_UTIL_HPP
 #define SUNSPEC_UTIL_HPP
 
-#include "data_exceptions.hpp"
+#include "exceptions.hpp"
 #include "sdx_tags.hpp"
 #include "status_code.hpp"
 

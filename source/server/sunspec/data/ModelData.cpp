@@ -14,7 +14,7 @@
 //</editor-fold>
 #include <boost/property_tree/xml_parser.hpp>
 #include "ModelData.hpp"
-#include "sunspec/util/data_exceptions.hpp"
+#include "sunspec/util/exceptions.hpp"
 #include "sunspec/util/sdx_tags.hpp"
 
 namespace sunspec

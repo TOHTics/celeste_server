@@ -13,20 +13,17 @@
  */
 //</editor-fold>
 #include <boost/property_tree/xml_parser.hpp>
-#include "DeviceResult.hpp"
 #include "sunspec/util/sdx_tags.hpp"
+#include "sunspec/util/exceptions.hpp"
+#include "DeviceResult.hpp"
 
 using namespace boost::property_tree;
 using node = std::pair<std::string, ptree>;
 
-namespace
-{
 void add_attribute( std::string attr, std::string tag, ptree &tree )
 {
     if ( !attr.empty())
         tree.put("<xmlattr>." + tag, attr);
-}
-
 }
 
 namespace sunspec
