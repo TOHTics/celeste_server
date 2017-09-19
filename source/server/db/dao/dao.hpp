@@ -14,5 +14,7 @@
 //</editor-fold>
 #ifndef SERVER_DB_DAO_HPP
 #define SERVER_DB_DAO_HPP
+
 #include "ClientDAO.hpp"
+
 #endif //SERVER_DAO_HPP
