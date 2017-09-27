@@ -16,5 +16,9 @@
 #define SERVER_DB_DAO_HPP
 
 #include "ClientDAO.hpp"
+#include "DeviceDAO.hpp"
+#include "PointDAO.hpp"
+#include "ModelDAO.hpp"
+#include "DeviceRecordDAO.hpp"
 
 #endif //SERVER_DAO_HPP

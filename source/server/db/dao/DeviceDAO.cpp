@@ -9,13 +9,13 @@
 //<editor-fold desc="Description">
 /**
  * @file
- * @brief Contains class definitions for ClientDAO
+ * @brief Contains class definitions for DeviceDAO
  */
 //</editor-fold>
 #include <cppconn/exception.h>
 #include <cppconn/resultset.h>
 #include <cppconn/prepared_statement.h>
-#include "ClientDAO.hpp"
+#include "DeviceDAO.hpp"
 #include "db/exceptions.hpp"
 #include "db/util.hpp"
 
@@ -28,17 +28,16 @@ namespace db
 {
 namespace dao
 {
-ClientDAO::ClientDAO(const std::shared_ptr<sql::Connection> conn)
-        : GenericDAO( conn )
+DeviceDAO::DeviceDAO(const std::shared_ptr<sql::Connection> conn) : GenericDAO( conn )
 {
     assert(conn != nullptr);
 }
 
-entity::Client ClientDAO::get(const ClientDAO::key_type & id)
+entity::Device DeviceDAO::get(const DeviceDAO::key_type & id)
 {
     unique_ptr<sql::Statement> stmt;
     unique_ptr<sql::ResultSet> res;
-    entity::Client             client;
+    entity::Device             device;
 
     if ( conn == nullptr || !conn->isValid())
     {
@@ -55,21 +54,22 @@ entity::Client ClientDAO::get(const ClientDAO::key_type & id)
         // Advance to first entry
         res->next();
 
-        // Build client
-        client.id         = id;
-        client.first_name = res->getString( "first_name" );
-        client.last_name  = res->getString( "last_name" );
-        client.dob        = string_to_date( res->getString("dob") );
+        // Build device
+        device.id         = id;
+        device.client_id  = res->getString("client_id");
+        device.man        = res->getString("man");
+        device.mod        = res->getString("mod");
+        device.sn         = res->getString("sn");
 
     } catch ( const sql::SQLException &e )
     {
         throw e; // Rethrow
     }
 
-    return client;
+    return device;
 }
 
-void ClientDAO::save(const entity::Client & client)
+void DeviceDAO::save(const entity::Device & device)
 {
     unique_ptr<sql::PreparedStatement> stmt;
     unique_ptr<sql::ResultSet>         res;
@@ -78,10 +78,11 @@ void ClientDAO::save(const entity::Client & client)
         throw sql::SQLException( "Invalid or NULL connection to database." );
 
     std::vector<std::string> values{
-        to_string(client.id),
-        to_string(client.first_name),
-        to_string(client.last_name),
-        to_string(client.dob)
+        to_string(device.id),
+        to_string(device.client_id),
+        to_string(device.man),
+        to_string(device.mod),
+        to_string(device.sn)
     };
 
     try

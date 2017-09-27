@@ -9,13 +9,13 @@
 //<editor-fold desc="Description">
 /**
  * @file
- * @brief Contains class definitions for ClientDAO
+ * @brief Contains class definitions for PointDAO
  */
 //</editor-fold>
 #include <cppconn/exception.h>
 #include <cppconn/resultset.h>
 #include <cppconn/prepared_statement.h>
-#include "ClientDAO.hpp"
+#include "PointDAO.hpp"
 #include "db/exceptions.hpp"
 #include "db/util.hpp"
 
@@ -28,17 +28,16 @@ namespace db
 {
 namespace dao
 {
-ClientDAO::ClientDAO(const std::shared_ptr<sql::Connection> conn)
-        : GenericDAO( conn )
+PointDAO::PointDAO(const std::shared_ptr<sql::Connection> conn) : GenericDAO( conn )
 {
     assert(conn != nullptr);
 }
 
-entity::Client ClientDAO::get(const ClientDAO::key_type & id)
+entity::Point PointDAO::get(const PointDAO::key_type & id)
 {
     unique_ptr<sql::Statement> stmt;
     unique_ptr<sql::ResultSet> res;
-    entity::Client             client;
+    entity::Point             point;
 
     if ( conn == nullptr || !conn->isValid())
     {
@@ -55,21 +54,22 @@ entity::Client ClientDAO::get(const ClientDAO::key_type & id)
         // Advance to first entry
         res->next();
 
-        // Build client
-        client.id         = id;
-        client.first_name = res->getString( "first_name" );
-        client.last_name  = res->getString( "last_name" );
-        client.dob        = string_to_date( res->getString("dob") );
+        // Build point
+        point.id       = id;
+        point.model_id = res->getString("model_id");
+        point.type     = res->getString("type");
+        point.u        = res->getString("u");
+        point.d        = res->getString("d");
 
     } catch ( const sql::SQLException &e )
     {
         throw e; // Rethrow
     }
 
-    return client;
+    return point;
 }
 
-void ClientDAO::save(const entity::Client & client)
+void PointDAO::save(const entity::Point & point)
 {
     unique_ptr<sql::PreparedStatement> stmt;
     unique_ptr<sql::ResultSet>         res;
@@ -78,10 +78,11 @@ void ClientDAO::save(const entity::Client & client)
         throw sql::SQLException( "Invalid or NULL connection to database." );
 
     std::vector<std::string> values{
-        to_string(client.id),
-        to_string(client.first_name),
-        to_string(client.last_name),
-        to_string(client.dob)
+        to_string(point.id),
+        to_string(point.model_id),
+        to_string(point.type),
+        to_string(point.u),
+        to_string(point.d)
     };
 
     try

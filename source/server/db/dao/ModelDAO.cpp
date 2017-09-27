@@ -9,13 +9,13 @@
 //<editor-fold desc="Description">
 /**
  * @file
- * @brief Contains class definitions for ClientDAO
+ * @brief Contains class definitions for ModelDAO
  */
 //</editor-fold>
 #include <cppconn/exception.h>
 #include <cppconn/resultset.h>
 #include <cppconn/prepared_statement.h>
-#include "ClientDAO.hpp"
+#include "ModelDAO.hpp"
 #include "db/exceptions.hpp"
 #include "db/util.hpp"
 
@@ -28,17 +28,16 @@ namespace db
 {
 namespace dao
 {
-ClientDAO::ClientDAO(const std::shared_ptr<sql::Connection> conn)
-        : GenericDAO( conn )
+ModelDAO::ModelDAO(const std::shared_ptr<sql::Connection> conn) : GenericDAO( conn )
 {
     assert(conn != nullptr);
 }
 
-entity::Client ClientDAO::get(const ClientDAO::key_type & id)
+entity::Model ModelDAO::get(const ModelDAO::key_type & id)
 {
     unique_ptr<sql::Statement> stmt;
     unique_ptr<sql::ResultSet> res;
-    entity::Client             client;
+    entity::Model             model;
 
     if ( conn == nullptr || !conn->isValid())
     {
@@ -55,21 +54,20 @@ entity::Client ClientDAO::get(const ClientDAO::key_type & id)
         // Advance to first entry
         res->next();
 
-        // Build client
-        client.id         = id;
-        client.first_name = res->getString( "first_name" );
-        client.last_name  = res->getString( "last_name" );
-        client.dob        = string_to_date( res->getString("dob") );
-
+        // Build model
+        model.id        = id;
+        model.index     = res->getInt("index");
+        model.device_id = res->getInt("device_id");
+        model.ns        = res->getString("ns");
     } catch ( const sql::SQLException &e )
     {
         throw e; // Rethrow
     }
 
-    return client;
+    return model;
 }
 
-void ClientDAO::save(const entity::Client & client)
+void ModelDAO::save(const entity::Model & model)
 {
     unique_ptr<sql::PreparedStatement> stmt;
     unique_ptr<sql::ResultSet>         res;
@@ -78,10 +76,10 @@ void ClientDAO::save(const entity::Client & client)
         throw sql::SQLException( "Invalid or NULL connection to database." );
 
     std::vector<std::string> values{
-        to_string(client.id),
-        to_string(client.first_name),
-        to_string(client.last_name),
-        to_string(client.dob)
+        to_string(model.id),
+        to_string(model.index),
+        to_string(model.device_id),
+        to_string(model.ns)
     };
 
     try
