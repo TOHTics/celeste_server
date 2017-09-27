@@ -1,17 +1,11 @@
-//<editor-fold desc="Preamble">
-/*
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Copyright (C) 9/8/17 Carlos Brito
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- */
-//</editor-fold>
-
-//<editor-fold desc="Description">
 /**
+ * * * * * * * * * * * * * * * * * * *
+ * Copyright (C) 9/8/17 Carlos Brito *
+ * * * * * * * * * * * * * * * * * * *
+ * 
  * @file
- * @brief Contains the definition of a Point
+ * @brief Contains class declarations.
  */
-//</editor-fold>
 #ifndef SERVER_DB_POINT_HPP
 #define SERVER_DB_POINT_HPP
 
@@ -24,13 +18,11 @@ namespace db
 namespace entity
 {
 /**
- * @class Point
- * @author Carlos Brito (carlos.brito524@gmail.com)
- * @date 20/Sep/17.
- *
+ * @class   Point
+ * @author  Carlos Brito (carlos.brito524@gmail.com)
  * @brief This describes a Point.
  * 
- * A point is 
+ * No full lenght description available. 
  */
 struct Point
 {

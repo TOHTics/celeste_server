@@ -1,17 +1,11 @@
-//<editor-fold desc="Preamble">
-/*
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Copyright (C) 9/8/17 Carlos Brito
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- */
-//</editor-fold>
-
-//<editor-fold desc="Description">
 /**
+ * * * * * * * * * * * * * * * * * * *
+ * Copyright (C) 9/8/17 Carlos Brito *
+ * * * * * * * * * * * * * * * * * * *
+ * 
  * @file
- * @brief Contains class declarations for DeviceRecordDAO
+ * @brief Contains class declarations.
  */
-//</editor-fold>
 #ifndef SERVER_DB_DEVICERECORDDAO_HPP
 #define SERVER_DB_DEVICERECORDDAO_HPP
 
@@ -30,13 +24,10 @@ namespace db
 namespace dao
 {
 /**
- * @class DeviceRecordDAO
- * @author Carlos Brito (carlos.brito524@gmail.com)
- * @date 9/8/17.
+ * @class   DeviceRecordDAO
+ * @author  Carlos Brito (carlos.brito524@gmail.com)
+ * @brief   No description available.
  * 
- * @brief No description available.
- * 
- * # Description
  * No full length description available.
  */
 class DeviceRecordDAO : public GenericDAO< entity::DeviceRecord, std::tuple<int, int> >

@@ -1,27 +1,21 @@
-//<editor-fold desc="Preamble">
-/*
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Copyright (C) 9/13/17 Carlos Brito
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- */
-//</editor-fold>
-
-//<editor-fold desc="Description">
 /**
+ * * * * * * * * * * * * * * * * * * *
+ * Copyright (C) 9/8/17 Carlos Brito *
+ * * * * * * * * * * * * * * * * * * *
+ * 
  * @file
- * @brief No description available.
+ * @brief Contains function declarations and template function definitions.
  */
-//</editor-fold>
 #ifndef SERVER_DB_UTIL_HPP
 #define SERVER_DB_UTIL_HPP
 
 #include <iostream>
 
 #include <string>
-#include <unordered_set>
 #include <vector>
-#include <map>
 #include <iterator>
+#include <boost/date_time/gregorian/gregorian.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
 
 namespace solarplant
 {
@@ -30,7 +24,37 @@ namespace db
 namespace util
 {
 
-typedef std::map<std::string, std::string> column_map;
+typedef boost::gregorian::date date_type; ///< `date_type` is typedefed with `boost::gregorian::date`
+typedef boost::posix_time::ptime timestamp_type;
+
+inline std::string to_string(const std::string &str)
+{
+    return str;
+}
+
+std::string to_string(timestamp_type t);
+std::string to_string(date_type date);
+timestamp_type get_universal_time();
+
+/**
+ * @brief      Returns an object of `date_type` with the given
+ * date in the string. It expects the format of the date to be in
+ * ISO format: `YYYYMMDD`
+ *
+ * @param[in]  str   The date formatted as `YYYYMMDD`.
+ *
+ * @return     { description_of_the_return_value }
+ */
+date_type string_to_date(std::string str);
+
+/**
+ * @brief      Returns a string in ISO format: `YYYYMMDD`.
+ *
+ * @param[in]  date  A `date_type` object.
+ *
+ * @return     A string in ISO date format: `YYYMMDD`.
+ */
+std::string date_to_string(date_type date);
 
 /**
  * @brief      Returns the string but with quotes around it.
@@ -52,6 +76,11 @@ std::string quote(const std::string& str, char q = '\'');
  * @param[in]  table_name     Name of table to insert to.
  *
  * @return     A string containing the insert statement.
+ * 
+ * In general it will return a string that looks like:
+ * ````
+ * 
+ * ````
  */
 std::string build_insert_statement( const std::vector<std::string> & value_vector,
                                     const std::vector<std::string> & column_vector,
@@ -64,9 +93,28 @@ std::string build_insert_statement( const std::vector<std::string> & value_vecto
  * @param[in]  table_name     Name of table to select from.
  *
  * @return     A string containing the select statement.
+ * 
+ * In general it will return a string that looks like:
+ * ````sql
+ * SELECT column1, column2, ... FROM table_name;
+ * ````
  */
 std::string build_select_statement( const std::vector<std::string> & column_vector,
                                     const std::string & table_name);
+
+/**
+ * @brief      Builds a SQL select statement for selecting all the columns from the table.
+ * 
+ * @param[in]  table_name  The table name
+ *
+ * @return     A string containing the select statement
+ * 
+ * In general it will return a string that looks like:
+ * ````sql
+ * SELECT * FROM table_name; 
+ * ````
+ */
+std::string build_select_all_statement (const std::string & table_name);
 
 /**
  * @brief      Creates a comma list from elements in a container. The container must contain strings.
@@ -97,6 +145,15 @@ std::string as_comma_list(const It &begin, const It &end)
     return result;
 }
 
+/**
+ * @brief      Quotes all the elements of a container, *which contains* `std::string`.
+ *
+ * @param[in]  container  Instance of Container
+ *
+ * @tparam     Container  Container type which should contain `std::string`.
+ *
+ * @return     A string of comma separated list of the elements from `container.`
+ */
 template < typename Container >
 std::string as_comma_list(const Container& container)
 {
@@ -155,14 +212,14 @@ std::string with_prefix_suffix(const It &begin, const It &end, std::string prefi
  * using namespace std;
  * 
  * set<string> S{"Hello", "World", "This", "Is", "The", "Example"};
- * vector<string> QuoteList;
+ * vector<string> QuoteVec;
  * 
- * QuoteList = quote(S.begin(), S.end());
+ * QuoteVec = as_quote_vector(S.begin(), S.end());
  * 
- * for (auto it = QuoteList.begin(); it != QuoteList.end(); ++it)
+ * for (auto it = QuoteVec.begin(); it != QuoteVec.end(); ++it)
  *     cout << *it << endl;
  * 
- * - $:
+ * user $:
  * Output:
  * 'Hello'
  * 'World'
@@ -189,12 +246,21 @@ std::vector<std::string> as_quote_vector(const It& begin, const It& end, char q 
     return result;
 }
 
+/**
+ * @brief      Returns a vector of quoted string elements.
+ *
+ * @param[in]  container  A container of strings. I.e. their `value_type` is a string.
+ * @param[in]  q          The quote character.
+ *
+ * @tparam     Container  Template type of a container.
+ *
+ * @return     A vector of quoted elements from the container.
+ */
 template < typename Container >
 std::vector<std::string> as_quote_vector(const Container& container, char q = '\'')
 {
     return as_quote_vector(std::begin(container), std::end(container), q);
 }
-
 }   
 }
 }

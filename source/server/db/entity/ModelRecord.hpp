@@ -1,17 +1,11 @@
-//<editor-fold desc="Preamble">
-/*
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Copyright (C) 9/8/17 Carlos Brito
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- */
-//</editor-fold>
-
-//<editor-fold desc="Description">
 /**
+ * * * * * * * * * * * * * * * * * * *
+ * Copyright (C) 9/8/17 Carlos Brito *
+ * * * * * * * * * * * * * * * * * * *
+ * 
  * @file
- * @brief Contains ModelRecord definitions.
+ * @brief Contains class declarations.
  */
-//</editor-fold>
 #ifndef SERVER_DB_MODELRECORD_HPP
 #define SERVER_DB_MODELRECORD_HPP
 
@@ -24,13 +18,10 @@ namespace db
 namespace entity
 {
 /**
- * @class ModelRecord
- * @author Carlos Brito (carlos.brito524@gmail.com)
- * @date 20/Sep/17.
+ * @class   ModelRecord
+ * @author  Carlos Brito (carlos.brito524@gmail.com)
+ * @brief   No description available.
  *
- * @brief No description available.
- *
- * # Description
  * No full length description available.
  */
 struct ModelRecord

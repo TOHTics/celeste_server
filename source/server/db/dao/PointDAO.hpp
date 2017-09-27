@@ -1,17 +1,11 @@
-//<editor-fold desc="Preamble">
-/*
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Copyright (C) 9/8/17 Carlos Brito
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- */
-//</editor-fold>
-
-//<editor-fold desc="Description">
 /**
+ * * * * * * * * * * * * * * * * * * *
+ * Copyright (C) 9/8/17 Carlos Brito *
+ * * * * * * * * * * * * * * * * * * *
+ * 
  * @file
- * @brief Contains class declarations for PointDAO
+ * @brief Contains class declarations.
  */
-//</editor-fold>
 #ifndef SERVER_DB_POINTDAO_HPP
 #define SERVER_DB_POINTDAO_HPP
 
@@ -29,13 +23,10 @@ namespace db
 namespace dao
 {
 /**
- * @class PointDAO
- * @author Carlos Brito (carlos.brito524@gmail.com)
- * @date 9/8/17.
+ * @class   PointDAO
+ * @author  Carlos Brito (carlos.brito524@gmail.com)
+ * @brief   No description available.
  * 
- * @brief No description available.
- * 
- * # Description
  * No full length description available.
  */
 class PointDAO : public GenericDAO< entity::Point, std::string >

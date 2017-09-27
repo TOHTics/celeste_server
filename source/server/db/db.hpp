@@ -1,21 +1,15 @@
-//<editor-fold desc="Preamble">
-/*
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Copyright (C) 9/13/17 Carlos Brito
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- */
-//</editor-fold>
-
-//<editor-fold desc="Description">
 /**
+ * * * * * * * * * * * * * * * * * * *
+ * Copyright (C) 9/8/17 Carlos Brito *
+ * * * * * * * * * * * * * * * * * * *
+ * 
  * @file
- * @brief No description available.
+ * @brief Contains generic includes.
  */
-//</editor-fold>
 #ifndef SERVER_DB_HPP
 #define SERVER_DB_HPP
 #include "dao/dao.hpp"
 #include "entity/entity.hpp"
 #include "exceptions.hpp"
 #include "util.hpp"
-#endif //SERVER_DB_HPP
+#endif

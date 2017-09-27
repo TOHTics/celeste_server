@@ -1,17 +1,11 @@
-//<editor-fold desc="Preamble">
-/*
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Copyright (C) 9/8/17 Carlos Brito
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- */
-//</editor-fold>
-
-//<editor-fold desc="Description">
 /**
+ * * * * * * * * * * * * * * * * * * *
+ * Copyright (C) 9/8/17 Carlos Brito *
+ * * * * * * * * * * * * * * * * * * *
+ * 
  * @file
- * @brief No description available.
+ * @brief Contains class declarations.
  */
-//</editor-fold>
 #ifndef SERVER_DB_CLIENT_HPP
 #define SERVER_DB_CLIENT_HPP
 
@@ -25,11 +19,9 @@ namespace db
 namespace entity
 {
 /**
- * @class Client
- * @author Carlos Brito (carlos.brito524@gmail.com)
- * @date 08/Sep/17.
- *
- * @brief No description available.
+ * @class   Client
+ * @author  Carlos Brito (carlos.brito524@gmail.com)
+ * @brief   No description available.
  * 
  * A client is usually a physical person which is composed
  * of many attributes such as:
