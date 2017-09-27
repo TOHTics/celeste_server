@@ -1,13 +1,8 @@
-//<editor-fold desc="Preamble">
-/*
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Copyright (C) 8/29/17 Carlos Brito
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- */
-//</editor-fold>
-
-//<editor-fold desc="Description">
 /**
+ * * * * * * * * * * * * * * * * * * * *
+ * Copyright (C) 24/08/17 Carlos Brito *
+ * * * * * * * * * * * * * * * * * * * *
+ * 
  * @file
  * @brief Contains the function declarations for obtaining a resource.
  *
@@ -70,7 +65,6 @@
  * TODO
  * Nothing for the moment.
  */
-//</editor-fold>
 #ifndef SERVER_RESOURCE_HPP
 #define SERVER_RESOURCE_HPP
 

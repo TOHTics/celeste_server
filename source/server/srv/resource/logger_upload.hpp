@@ -1,30 +1,16 @@
-//<editor-fold desc="Preamble">
-/*
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Copyright (C) 8/24/17 Carlos Brito
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- */
-//</editor-fold>
-
-//<editor-fold desc="Description">
 /**
- * @file logger_upload.hpp
- * @author Carlos Brito (carlos.brito524@gmail.com)
- * @date 8/24/17.
+ * * * * * * * * * * * * * * * * * * * *
+ * Copyright (C) 24/08/17 Carlos Brito *
+ * * * * * * * * * * * * * * * * * * * *
  * 
- * @brief Contains the function declarations for making a logger upload.
- *
- * TODO
- * ----
- * Nothing for the moment.
+ * @file
+ * @brief Contains class declarations.
  */
-//</editor-fold>
 #ifndef SERVER_RESOURCE_LOGGER_UPLOAD_HPP
 #define SERVER_RESOURCE_LOGGER_UPLOAD_HPP
 
 #include <restbed>
 #include "sunspec/data/SunSpecData.hpp"
-#include "sunspec/util/data_exceptions.hpp"
 
 namespace solarplant
 {
@@ -33,9 +19,11 @@ namespace srv
 namespace handler
 {
 /**
- * Method used to handle a request to the Logger Upload Resource. This method
- * tries to stick to the SunSpec Data Exchange HTTP communication protocol.
- * @param session The client-server session
+ * @brief      Method used to handle a request to the Logger Upload Resource.
+ * 
+ * @param[in]  session  The client-server session
+ * 
+ * This method tries to stick to the SunSpec Data Exchange HTTP communication protocol.
  */
 void logger_upload_handler( const std::shared_ptr<restbed::Session> session );
 }
@@ -43,16 +31,18 @@ void logger_upload_handler( const std::shared_ptr<restbed::Session> session );
 namespace resource
 {
 /**
- * Makes a Logger Upload Resource. If a Logger gains access to
+ * @brief      Makes a Logger Upload Resource. If a Logger gains access to
  * this resource then it will get a response as per the SDX spec.
- *
+ * 
+ * @param[in]  path  Path where the logger upload shall be located.
+
+ * @return     A `restbed::Resource` describing a logger upload.
+ * 
  * This resource allows for a Logger to transmit the SDX data
  * to the Host. The host will attempt to parse it and in any case
  * of errors it will respond back with a description of the error
  * as per SDX. If no errors where found, then the Host will respond
  * back with a success message.
- * @param path Path where the logger upload shall be located
- * @return A `restbed::Resource` describing a logger upload.
  */
 std::shared_ptr<restbed::Resource> make_logger_upload( std::string path );
 }

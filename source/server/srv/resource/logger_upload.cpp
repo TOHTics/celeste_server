@@ -1,17 +1,11 @@
-//<editor-fold desc="Preamble">
-/*
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Copyright (C) 8/24/17 Carlos Brito
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- */
-//</editor-fold>
-
-//<editor-fold desc="Description">
 /**
+ * * * * * * * * * * * * * * * * * * *
+ * Copyright (C) 9/8/17 Carlos Brito *
+ * * * * * * * * * * * * * * * * * * *
+ * 
  * @file
- * @brief Contains the function definitions for the `make_logger_upload` function.
+ * @brief Contains definitions and helper functions for a logger upload resource.
  */
-//</editor-fold>
 #include <memory>
 #include <restbed>
 #include <iostream>
@@ -19,6 +13,7 @@
 #include "logger_upload.hpp"
 #include "sunspec/data/data.hpp"
 #include "sunspec/util/status_code.hpp"
+#include "sunspec/util/exceptions.hpp"
 
 using namespace restbed;
 using namespace sunspec;
