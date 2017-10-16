@@ -1,8 +1,10 @@
 /**
- * Copyright (C) 9/8/17 Carlos Brito
+ * * * * * * * * * * * * * * * * * * *
+ * Copyright (C) 9/8/17 Carlos Brito *
+ * * * * * * * * * * * * * * * * * * *
  * 
  * @file
- * @brief Contains class declarations for ClientDAO
+ * @brief Contains class declarations.
  */
 #ifndef SERVER_DB_CLIENTDAO_HPP
 #define SERVER_DB_CLIENTDAO_HPP

@@ -6,8 +6,8 @@
  * @file
  * @brief Contains class declarations.
  */
-#ifndef SERVER_DB_DEVICERECORDDAO_HPP
-#define SERVER_DB_DEVICERECORDDAO_HPP
+#ifndef SERVER_DB_MODELRECORDDAO_HPP
+#define SERVER_DB_MODELRECORDDAO_HPP
 
 #include <memory>
 #include <string>
@@ -15,7 +15,7 @@
 #include <vector>
 #include <tuple>
 #include "GenericDAO.hpp"
-#include "db/entity/DeviceRecord.hpp"
+#include "db/entity/ModelRecord.hpp"
 
 namespace solarplant
 {
@@ -24,52 +24,50 @@ namespace db
 namespace dao
 {
 /**
- * @class   DeviceRecordDAO
+ * @class   ModelRecordDAO
  * @author  Carlos Brito (carlos.brito524@gmail.com)
  * @brief   No description available.
  * 
  * No full length description available.
  */
-class DeviceRecordDAO : public GenericDAO< entity::DeviceRecord, std::tuple<int, int> >
+class ModelRecordDAO : public GenericDAO< entity::ModelRecord, std::tuple<int, std::string, int, int> >
 {
-    const std::string TABLE_NAME = "DeviceRecord";  ///< Name associated table in the db
+    const std::string TABLE_NAME = "ModelRecord";  ///< Name associated table in the db
     const std::vector<std::string> columns {
         "device_id",
-        "idx",
-        "t",
-        "cid",
-        "if",
-        "lid"
+        "model_id",
+        "Model_index"
     };                                  ///< Set of columns associated with the table in the db
 
     const std::vector<std::string> pk_columns {
         "device_id",
-        "idx"
-    };
+        "model_id",
+        "Model_index",
+    }; 
 
-    static constexpr int n = 2;
+    constexpr static int n = 3;
 public:
     /**
-     * @brief       Constructs a DeviceRecord given the database MySQL connection.
+     * @brief       Constructs a ModelRecord given the database MySQL connection.
      * @param conn  A MySQL connection to the database.
      */
-    DeviceRecordDAO(const std::shared_ptr<sql::Connection> conn);
+    ModelRecordDAO(const std::shared_ptr<sql::Connection> conn);
 
     /**
-     * @brief        Retrieves a DeviceRecord uniquely identified by `id` from the database.
-     * @param[in]    id The id of the DeviceRecord.
-     * @return       DeviceRecord from the database.
+     * @brief        Retrieves a ModelRecord uniquely identified by `id` from the database.
+     * @param[in]    id The id of the ModelRecord.
+     * @return       ModelRecord from the database.
      * @throws      `SQLException` if an error with the retrieval of information happens.
      * @throws      `DAOException` if the connection is invalid. This is most likely to
      *              `conn == nullptr` evaluating to `true`.
      */
-    entity::DeviceRecord get(const key_type & id);
+    entity::ModelRecord get(const key_type & id);
 
     /**
-     * @brief      Saves a DeviceRecord to the database.
-     * @param[in]  DeviceRecord  The DeviceRecord to save.
+     * @brief      Saves a ModelRecord to the database.
+     * @param[in]  ModelRecord  The ModelRecord to save.
      */
-    void save(const entity::DeviceRecord & DeviceRecord);
+    void save(const entity::ModelRecord & ModelRecord);
 };
 }
 }

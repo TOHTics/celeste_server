@@ -14,5 +14,6 @@
 #include "PointDAO.hpp"
 #include "ModelDAO.hpp"
 #include "DeviceRecordDAO.hpp"
+#include "ModelRecordDAO.hpp"
 
 #endif //SERVER_DAO_HPP

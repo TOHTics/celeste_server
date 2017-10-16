@@ -27,6 +27,8 @@ namespace entity
  */
 struct PointRecord
 {
+    typedef boost::posix_time::ptime timestamp_type;
+
     int device_id;
     std::string model_id;
     std::string point_id;
@@ -35,6 +37,7 @@ struct PointRecord
     int model_index;
     int index;
     double sf;
+    timestamp_type t;
 
 };
 }

@@ -9,12 +9,13 @@
 #include <cppconn/exception.h>
 #include <cppconn/resultset.h>
 #include <cppconn/prepared_statement.h>
-#include "DeviceRecordDAO.hpp"
+#include "PointRecordDAO.hpp"
 #include "db/exceptions.hpp"
 #include "db/util.hpp"
 
 using namespace std;
 using namespace solarplant::db::util;
+
 
 namespace solarplant
 {
@@ -22,17 +23,17 @@ namespace db
 {
 namespace dao
 {
-DeviceRecordDAO::DeviceRecordDAO(const std::shared_ptr<sql::Connection> conn)
+PointRecordDAO::PointRecordDAO(const std::shared_ptr<sql::Connection> conn)
         : GenericDAO( conn )
 {
     assert(conn != nullptr);
 }
 
-entity::DeviceRecord DeviceRecordDAO::get(const DeviceRecordDAO::key_type & id)
+entity::PointRecord PointRecordDAO::get(const PointRecordDAO::key_type & id)
 {
     unique_ptr<sql::Statement>       stmt;
     unique_ptr<sql::ResultSet>       res;
-    entity::DeviceRecord             deviceRecord;
+    entity::PointRecord              pointRecord;
 
     if ( conn == nullptr || !conn->isValid())
     {
@@ -53,7 +54,7 @@ entity::DeviceRecord DeviceRecordDAO::get(const DeviceRecordDAO::key_type & id)
             else
                 cond += pk_columns[n - 1] + "=" + quote(to_string(std::get<i.value>(id)), '\'');
         });
-        
+
         // Execute statement
         stmt = unique_ptr<sql::Statement>( conn->createStatement() );
         res  = unique_ptr<sql::ResultSet>(
@@ -63,23 +64,25 @@ entity::DeviceRecord DeviceRecordDAO::get(const DeviceRecordDAO::key_type & id)
         // Advance to first entry
         res->next();
 
-        // Build deviceRecord
-        deviceRecord.device_id  = res->getInt( "device_id" );
-        deviceRecord.index      = res->getInt( "idx" );
-        deviceRecord.t          = boost::posix_time::time_from_string(res->getString( "t" ));
-        deviceRecord.cid        = res->getString( "cid" );
-        deviceRecord.lif        = res->getString( "lif" );
-        deviceRecord.lid        = res->getString( "lid" );
+        // Build PointRecord
+        pointRecord.device_id = res->getInt("device_id");
+        pointRecord.model_id = res->getString("model_id");
+        pointRecord.point_id = res->getInt("deviceRecord_index");
+        pointRecord.device_record_idx = res->getInt("DeviceRecord_index");
+        pointRecord.model_index = res->getInt("model_index");
+        pointRecord.index = res->getInt("index");
+        pointRecord.sf = res->getDouble("sf");
+        pointRecord.t = boost::posix_time::time_from_string(res->getString("t"));
 
     } catch ( const sql::SQLException &e )
     {
         throw e; // Rethrow
     }
 
-    return deviceRecord;
+    return pointRecord;
 }
 
-void DeviceRecordDAO::save(const entity::DeviceRecord & deviceRecord)
+void PointRecordDAO::save(const entity::PointRecord & pointRecord)
 {
     unique_ptr<sql::PreparedStatement> stmt;
     unique_ptr<sql::ResultSet>         res;
@@ -88,12 +91,10 @@ void DeviceRecordDAO::save(const entity::DeviceRecord & deviceRecord)
         throw sql::SQLException( "Invalid or NULL connection to database." );
 
     std::vector<std::string> values{
-        to_string(deviceRecord.device_id),
-        to_string(deviceRecord.index),
-        to_string(deviceRecord.t),
-        to_string(deviceRecord.cid),
-        to_string(deviceRecord.lif),
-        to_string(deviceRecord.lid)
+        to_string(pointRecord.device_id),
+        to_string(pointRecord.model_id),
+        to_string(pointRecord.device_record_idx),
+        to_string(pointRecord.model_index)
     };
 
     try
@@ -114,4 +115,3 @@ void DeviceRecordDAO::save(const entity::DeviceRecord & deviceRecord)
 }
 }
 }
-

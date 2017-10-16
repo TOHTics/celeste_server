@@ -1,17 +1,11 @@
-//<editor-fold desc="Preamble">
-/*
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Copyright (C) 9/8/17 Carlos Brito
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- */
-//</editor-fold>
-
-//<editor-fold desc="Description">
 /**
+ * * * * * * * * * * * * * * * * * * *
+ * Copyright (C) 9/8/17 Carlos Brito *
+ * * * * * * * * * * * * * * * * * * *
+ * 
  * @file
- * @brief Contains class definitions for ModelDAO
+ * @brief Contains class declarations.
  */
-//</editor-fold>
 #include <cppconn/exception.h>
 #include <cppconn/resultset.h>
 #include <cppconn/prepared_statement.h>
