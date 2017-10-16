@@ -36,7 +36,7 @@ namespace data
  * about some measurement (or sample). The measurement is
  * identified with and id and it takes any type of value. We
  * store all fields of data, like the `id` and `description`
- * as `std::strings`. This is because we are only interested in
+ * as `std::string`s. This is because we are only interested in
  * getting the data instead of parsing it. To know what the types
  * of data are then we would have to look at the SDMX spec and assign
  * the types accordingly.

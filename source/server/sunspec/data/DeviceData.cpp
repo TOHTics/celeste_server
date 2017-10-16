@@ -47,10 +47,10 @@ DeviceData DeviceData::from_xml( const ptree &device_element )
             d.lid = attr_data;
         } else if ( attr_tag == sdx::SDX_DEVICE_ID )
         {
-            d.id = sdx::SDX_DEVICE_ID;
+            d.id = attr_data;
         } else if ( attr_tag == sdx::SDX_DEVICE_CID )
         {
-            d.cid = sdx::SDX_DEVICE_CID;
+            d.cid = attr_data;
         } else if ( attr_tag == sdx::SDX_DEVICE_IFC )
         {
             d.ifc = attr_data;
