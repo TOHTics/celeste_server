@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.0)
 project(server)
 
-include_directories(.)
+include_directories(".")
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_FLAGS "-O2")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
@@ -27,7 +27,6 @@ file(GLOB_RECURSE DB_SRC
     "db/*.cpp"
     )
 set(db ${DB_SRC})
-message("DB SRC: " ${db})
 
 # -- Tests ------------------
 file(GLOB_RECURSE TEST_SRC
@@ -36,14 +35,21 @@ file(GLOB_RECURSE TEST_SRC
     )
 set(tests ${TEST_SRC})
 
+# -- Translators ------------
+file(GLOB_RECURSE TRANSLATOR_SRC
+    "translator/*.hpp"
+    "translator/*.cpp"
+    )
+set(translator ${TRANSLATOR_SRC})
+
 # -- Mix all source files --
 set(SOURCE_FILES 
         main.cpp
-
         ${sunspec}
         ${srv}
         ${db}
         ${tests}
+        ${translator}
     )
 
 # Find packages
