@@ -84,7 +84,10 @@ SunSpecData SunSpecData::from_xml( const std::string &ss_record )
         xml_parser::read_xml<ptree>(iss, xml);
     } catch ( xml_parser_error e )
     {
-        throw XMLException("Malformed XML");
+        throw XMLException("Malformed XML near line " 
+                           + std::to_string(e.line())
+                           + ": " + e.message()
+                           );
     }
 
     try
@@ -110,12 +113,12 @@ SunSpecData::iterator SunSpecData::end()
     return devices.end();
 }
 
-SunSpecData::const_iterator SunSpecData::cbegin()
+SunSpecData::const_iterator SunSpecData::cbegin() const
 {
     return devices.cbegin();
 }
 
-SunSpecData::const_iterator SunSpecData::cend()
+SunSpecData::const_iterator SunSpecData::cend() const
 {
     return devices.cend();
 }

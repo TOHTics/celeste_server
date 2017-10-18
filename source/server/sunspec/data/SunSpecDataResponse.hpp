@@ -137,10 +137,10 @@ struct SunSpecDataResponse
      * @param data_response The property tree containing the XML spec.
      * @return The instance of `SunSpecDataResponse` containing the information.
      */
-    static SunSpecDataResponse from_xml( const boost::property_tree::ptree &data_response_tr );
+    static SunSpecDataResponse from_xml( const boost::property_tree::ptree &data_response_tree );
 
     /**
-     * Overload of stream injection operator.
+     * Overload stream injection operator.
      * @param os `ostream` object
      * @param obj Object to inject
      * @return Reference to the modified `os` instance

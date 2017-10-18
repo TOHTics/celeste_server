@@ -107,7 +107,7 @@ DeviceData DeviceData::from_xml( const std::string &device_record )
         xml_parser::read_xml<ptree>(iss, xml);
     } catch ( xml_parser_error e )
     {
-        throw XMLException("Malformed XML");
+        throw XMLException("Malformed XML near " + device_record);
     }
 
     try
@@ -133,12 +133,12 @@ DeviceData::iterator DeviceData::end()
     return models.end();
 }
 
-DeviceData::const_iterator DeviceData::cbegin()
+DeviceData::const_iterator DeviceData::cbegin() const
 {
     return models.cbegin();
 }
 
-DeviceData::const_iterator DeviceData::cend()
+DeviceData::const_iterator DeviceData::cend() const
 {
     return models.cend();
 }

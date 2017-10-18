@@ -61,7 +61,7 @@ PointData PointData::from_xml( const ptree &point_element )
         {
             result.t = attr_data;
         } else
-            throw XMLException("Undefined attribute while parsing PointData");
+            throw XMLException("Undefined attribute <" + attr_name + "> while parsing PointData");
     }
     result.value = point_element.data();
 
@@ -84,7 +84,7 @@ PointData PointData::from_xml( const std::string &point_record )
         xml_parser::read_xml<ptree>(iss, xml);
     } catch ( xml_parser_error e )
     {
-        throw XMLException("Malformed XML");
+        throw XMLException("Malformed XML near " + point_record);
     }
 
     try

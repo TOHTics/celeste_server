@@ -134,7 +134,7 @@ SunSpecDataResponse SunSpecDataResponse::from_xml( const boost::property_tree::p
 
         } else if ( element_tag == sdx::SDX_RESPONSE_REASON )
         {
-            result.message = element_data;
+            result.reason = element_data;
         } else if ( element_tag == sdx::SDX_RESPONSE_CODE )
         {
             result.code = element_data;

@@ -112,7 +112,7 @@ struct DeviceData
      * If the container is empty, the returned iterator will be equal to `end()`.
      * @return An iterator to the first `ModelData`
      */
-    const_iterator cbegin();
+    const_iterator cbegin() const;
 
     /**
      * Returns a const iterator to the element following the last element of the container.
@@ -120,7 +120,7 @@ struct DeviceData
      * behavior.
      * @return Iterator to the element following the last `ModelData`.
      */
-    const_iterator cend();
+    const_iterator cend() const;
 
     /**
      * Returns the number of models contained by this object

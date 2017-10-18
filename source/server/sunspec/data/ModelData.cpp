@@ -87,7 +87,7 @@ ModelData ModelData::from_xml( const std::string &model_record )
         xml_parser::read_xml<ptree>(iss, xml);
     } catch ( xml_parser_error e )
     {
-        throw XMLException("Malformed XML");
+        throw XMLException("Malformed XML near " + model_record);
     }
 
     try
@@ -118,12 +118,12 @@ ModelData::iterator ModelData::end()
     return points.end();
 }
 
-ModelData::const_iterator ModelData::cbegin()
+ModelData::const_iterator ModelData::cbegin() const
 {
     return points.cbegin();
 }
 
-ModelData::const_iterator ModelData::cend()
+ModelData::const_iterator ModelData::cend() const
 {
     return points.cend();
 }

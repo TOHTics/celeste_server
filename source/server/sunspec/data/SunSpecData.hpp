@@ -97,7 +97,7 @@ struct SunSpecData
      * If the container is empty, the returned iterator will be equal to `end()`.
      * @return An iterator to the first `DeviceData`
      */
-    const_iterator cbegin();
+    const_iterator cbegin() const;
 
     /**
     * Returns a const iterator to the element following the last element of the container.
@@ -105,7 +105,7 @@ struct SunSpecData
     * behavior.
     * @return Iterator to the element following the last `DeviceData`.
     */
-    const_iterator cend();
+    const_iterator cend() const;
 
 
     /**
