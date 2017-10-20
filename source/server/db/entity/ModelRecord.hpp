@@ -25,7 +25,18 @@ namespace entity
  * No full length description available.
  */
 struct ModelRecord
-{
+{   
+    typedef std::string string_type;
+
+    enum Column
+    {
+        model_idx_col,
+        model_id_col,
+        device_record_idx_col,
+        device_id_col
+    };
+
+
     int device_id;
     std::string model_id;
     int device_record_idx;

@@ -26,11 +26,22 @@ namespace entity
  */
 struct Device
 {
-    int id;
-    std::string client_id;
-    std::string man;
-    std::string mod;
-    std::string sn;
+    typedef std::string string_type;
+
+    enum Column
+    {
+        id_col,
+        client_id_col,
+        man_col,
+        mod_col,
+        sn_col
+    }; ///< Positions of the columns of the table Device
+
+    int id;                 ///< Id of device
+    string_type client_id;  ///< Id of the client which owns this device
+    string_type man;        ///< Manufacturer of the device
+    string_type mod;        ///< Model of device
+    string_type sn;         ///< Serial number
 };
 }
 }

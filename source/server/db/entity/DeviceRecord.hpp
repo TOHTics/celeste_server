@@ -28,13 +28,24 @@ namespace entity
 struct DeviceRecord
 {
     typedef boost::posix_time::ptime timestamp_type;
+    typedef std::string              string_type;
+
+    enum Column
+    {
+        idx_col,
+        device_id_col,
+        t_col,
+        cid_col,
+        if_col,
+        lid_col
+    };
 
     int device_id;
-    int index;
+    int idx;
     timestamp_type t;
-    std::string cid;
-    std::string lif;
-    std::string lid;
+    string_type cid;
+    string_type lif;
+    string_type lid;
 
 };
 }

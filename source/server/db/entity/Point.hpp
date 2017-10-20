@@ -25,12 +25,13 @@ namespace entity
  * No full lenght description available. 
  */
 struct Point
-{
-    std::string id;
-    std::string model_id;
-    std::string type;
-    std::string u;
-    std::string d;
+{   
+    typedef std::string string_type;
+    string_type id;
+    string_type model_id;
+    string_type type;
+    string_type u;
+    string_type d;
 };
 }
 }

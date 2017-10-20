@@ -25,11 +25,17 @@ namespace entity
  * No full length description available.
  */
 struct Model
-{
-    std::string id;
-    int index;
-    int device_id;
-    std::string ns;
+{   
+    typedef std::string string_type;
+
+    enum Column
+    {
+        id_col,
+        ns_col
+    };
+
+    string_type id;
+    string_type ns;
 };
 }
 }

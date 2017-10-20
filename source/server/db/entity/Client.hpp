@@ -28,18 +28,24 @@ namespace entity
  * - First and last name
  * - Date of Birth
  * - Home address
- * For the purposes of persisting data to the database and
- * logging Points we only require the id of the client,
- * preferably an `int`.
  */
 struct Client
 {
-    typedef boost::gregorian::date date_type;
+    typedef std::string              string_type;
+    typedef boost::gregorian::date   date_type;
 
-    std::string id;
-    std::string first_name;
-    std::string last_name;
-    date_type dob;
+    enum Column
+    {
+        id_col,
+        first_name_col,
+        last_name_col,
+        dob_col
+    }; ///< Positions of the columns of the table Client
+
+    string_type      id;            ///< Id of the client
+    string_type      first_name;    ///< First name of the client
+    string_type      last_name;     ///< Last name of the client
+    date_type        dob;           ///< Date of birth 
 };
 }
 }
