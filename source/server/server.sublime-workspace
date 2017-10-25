@@ -1,0 +1,1715 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"get",
+				"getColumnNames\tstd::vector<key_type> getColumnNames()"
+			],
+			[
+				"key",
+				"key_type\tkey_type"
+			],
+			[
+				"as",
+				"as_column_list"
+			],
+			[
+				"name",
+				"namespace"
+			],
+			[
+				"ke",
+				"key_type"
+			],
+			[
+				"typ",
+				"typedef"
+			],
+			[
+				"strin",
+				"string_type"
+			],
+			[
+				"value",
+				"value_type"
+			],
+			[
+				"with",
+				"with_prefix_suffix"
+			],
+			[
+				"ut",
+				"util.hpp"
+			],
+			[
+				"string",
+				"string_view"
+			],
+			[
+				"str",
+				"string\tstring"
+			],
+			[
+				"handl",
+				"handle_db_error\tvoid handle_db_error(const shared_ptr<restbed::Session> session, Error &&e)"
+			],
+			[
+				"db",
+				"dbSession"
+			],
+			[
+				"han",
+				"handle_db_error\tvoid handle_db_error(const shared_ptr<restbed::Session> session, Error &&e)"
+			],
+			[
+				"ins",
+				"insert\tmysqlx::TableInsert insert()"
+			],
+			[
+				"Device",
+				"DeviceRecord"
+			],
+			[
+				"Po",
+				"PointRecord.hpp"
+			],
+			[
+				"Mode",
+				"ModelRecord.hpp"
+			],
+			[
+				"Dev",
+				"DeviceRecord.hpp"
+			],
+			[
+				"Sun",
+				"SunSpecToEntity"
+			],
+			[
+				"Suns",
+				"SunSpecData\tSunSpecData"
+			],
+			[
+				"pair",
+				"pair_compare"
+			],
+			[
+				"handle_",
+				"handle_db_error\tvoid handle_db_error(const shared_ptr<restbed::Session> session, Error &&e)"
+			],
+			[
+				"make",
+				"make_db_session"
+			],
+			[
+				"device",
+				"device_record_idx"
+			],
+			[
+				"ty",
+				"typedef\ttypedef type name"
+			],
+			[
+				"do",
+				"dob_pos\tsolarplant::db::entity::Client::ColumnPos dob_pos"
+			],
+			[
+				"st",
+				"string_type\tstring_type"
+			],
+			[
+				"Cli",
+				"ClientColumn"
+			],
+			[
+				"type",
+				"typename"
+			],
+			[
+				"last",
+				"last_name"
+			],
+			[
+				"g",
+				"getName\tconst mysqlx::string & Db_object::getName() const"
+			],
+			[
+				"getT",
+				"getTables\tTableList getTables()"
+			],
+			[
+				"getCol",
+				"getCollections\tCollectionList getCollections()"
+			],
+			[
+				"inse",
+				"insert\tmysqlx::TableInsert insert(const T &t...)"
+			],
+			[
+				"find",
+				"find_package\tcommand"
+			],
+			[
+				"static",
+				"static_assert\tstatic_assert(expression, message)"
+			],
+			[
+				"nu",
+				"number_of_columns"
+			],
+			[
+				"Mo",
+				"ModelRecord\tModelRecord"
+			],
+			[
+				"Devi",
+				"DeviceRecord\tDeviceRecord"
+			],
+			[
+				"dev",
+				"dev_dao\tdao::DeviceRecordDAO dev_dao"
+			],
+			[
+				"attr",
+				"attr_name\tstd::string attr_name"
+			],
+			[
+				"rea",
+				"reason\tstd::string reason"
+			],
+			[
+				"set",
+				"set_port\tvoid set_port(const uint16_t value)"
+			],
+			[
+				"re",
+				"resource\tresource"
+			],
+			[
+				"Model",
+				"ModelRecordDAO\tModelRecordDAO"
+			],
+			[
+				"De",
+				"DeviceRecordDAO\tDeviceRecordDAO"
+			],
+			[
+				"frm",
+				"time_from_string\tboost::posix_time::ptime time_from_string(const std::string &s)"
+			],
+			[
+				"getS",
+				"getString\tsql::SQLString getString(uint32_t columnIndex) const"
+			],
+			[
+				"stati",
+				"static_for\tstatic_for<int First, int Last>"
+			],
+			[
+				"dao",
+				"dao_obj\tdao::DeviceRecordDAO dao_obj"
+			],
+			[
+				"second",
+				"second_clock\tsecond_clock"
+			],
+			[
+				"p",
+				"posix_time"
+			],
+			[
+				"smt",
+				"stmt_str"
+			],
+			[
+				"from",
+				"time_from_string\tboost::posix_time::ptime time_from_string(const std::string &s)"
+			],
+			[
+				"gets",
+				"getString\tsql::SQLString getString(uint32_t columnIndex) const"
+			],
+			[
+				"Point",
+				"PointDAO.hpp"
+			],
+			[
+				"SQL",
+				"SQLException\tSQLException"
+			],
+			[
+				"c",
+				"connect\tsql::Connection * connect(const sql::SQLString &hostName, const sql::SQLString &userName, const sql::SQLString &password)"
+			],
+			[
+				"DeviceD",
+				"DeviceDAO.hpp"
+			],
+			[
+				"date",
+				"date_type"
+			],
+			[
+				"t",
+				"typedef"
+			],
+			[
+				"inc",
+				"include"
+			],
+			[
+				"Client",
+				"ClientDAO\tClientDAO"
+			],
+			[
+				"mac",
+				"max_acc\tstatement"
+			],
+			[
+				"La",
+				"Laplacian"
+			],
+			[
+				"ran",
+				"random_state"
+			],
+			[
+				"sub",
+				"subplots\tfunction"
+			],
+			[
+				"max",
+				"max_acc\tstatement"
+			],
+			[
+				"bes",
+				"best_acc_list"
+			],
+			[
+				"mat",
+				"matplotlib\tmodule"
+			],
+			[
+				"lm",
+				"lm_vals\tstatement"
+			],
+			[
+				"c_",
+				"c_vals\tstatement"
+			],
+			[
+				"best",
+				"best_c_list\tstatement"
+			],
+			[
+				"be",
+				"best_c\tstatement"
+			],
+			[
+				"bst",
+				"best_c\tstatement"
+			],
+			[
+				"acc",
+				"acc_list\tstatement"
+			],
+			[
+				"sco",
+				"score_list\tstatement"
+			],
+			[
+				"score",
+				"score_list"
+			],
+			[
+				"sc",
+				"score"
+			],
+			[
+				"k",
+				"k_cross_validation_mean"
+			],
+			[
+				"ma",
+				"max_acc\tstatement"
+			],
+			[
+				"ra",
+				"random_state"
+			],
+			[
+				"phi",
+				"phi_laplacian\tfunction"
+			],
+			[
+				"y",
+				"y_test\tstatement"
+			],
+			[
+				"cont",
+				"contourf\tfunction"
+			],
+			[
+				"X",
+				"X_2D\tstatement"
+			],
+			[
+				"lin",
+				"linspace\tfunction"
+			],
+			[
+				"fi",
+				"fit_transform\tfunction"
+			],
+			[
+				"ph",
+				"phi_laplacian\tfunction"
+			],
+			[
+				"Clie",
+				"Client_id"
+			],
+			[
+				"l",
+				"len\tfunction"
+			],
+			[
+				"inp",
+				"inputs\tstatement"
+			],
+			[
+				"all",
+				"__all__\tstatement"
+			],
+			[
+				"prin",
+				"print_function\tstatement"
+			],
+			[
+				"bo",
+				"boto3\tmodule"
+			],
+			[
+				"buf",
+				"buf_size\tparam"
+			],
+			[
+				"bu",
+				"buffers"
+			],
+			[
+				"read",
+				"_read_frame"
+			],
+			[
+				"b",
+				"buf_lock\tstatement"
+			],
+			[
+				"fir",
+				"first_time_pushing"
+			],
+			[
+				"Ring",
+				"RingIterator\tclass"
+			],
+			[
+				"e",
+				"Exception\tclass"
+			],
+			[
+				"fill",
+				"fill_value\tparam"
+			],
+			[
+				"fra",
+				"frame_lock"
+			],
+			[
+				"cap",
+				"cap_lock\tstatement"
+			],
+			[
+				"ge",
+				"getFrame\tfunction"
+			],
+			[
+				"frame",
+				"frame_lock\tstatement"
+			],
+			[
+				"capt",
+				"capture_thread\tstatement"
+			],
+			[
+				"Camer",
+				"CameraAlreadyRunningError\tclass"
+			],
+			[
+				"h",
+				"hpy\tfunction"
+			],
+			[
+				"thre",
+				"thresh2\tstatement"
+			],
+			[
+				"CONST",
+				"CONST_ROWS\tstatement"
+			],
+			[
+				"model",
+				"model_name\tstatement"
+			],
+			[
+				"cam",
+				"camera_width\tstatement"
+			],
+			[
+				"Ini",
+				"init\tfunction"
+			],
+			[
+				"fit",
+				"fit_generator\tfunction"
+			],
+			[
+				"Image",
+				"ImageDataGenerator\tclass"
+			],
+			[
+				"spl",
+				"train_test_split\tfunction"
+			],
+			[
+				"gen",
+				"genfromtxt\tfunction"
+			],
+			[
+				"d",
+				"decomposition\tmodule"
+			],
+			[
+				"Con",
+				"Conv2D\tclass"
+			],
+			[
+				"In",
+				"InteractiveSession\tclass"
+			],
+			[
+				"_t",
+				"_timeout\tstatement"
+			],
+			[
+				"_c",
+				"_CONST_TOTAL_SLOTS\tstatement"
+			],
+			[
+				"ite",
+				"iteritems\tfunction"
+			],
+			[
+				"aut",
+				"auto_upload\tfunction"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "srv/resource/logger_upload.cpp",
+			"settings":
+			{
+				"buffer_size": 8223,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "db/entity/Client.hpp",
+			"settings":
+			{
+				"buffer_size": 826,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "db/entity/AbstractEntity.hpp",
+			"settings":
+			{
+				"buffer_size": 4106,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/Users/carlos/Desktop/test.cpp",
+			"settings":
+			{
+				"buffer_size": 299,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "db/util.hpp",
+			"settings":
+			{
+				"buffer_size": 10106,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "db/entity/Device.hpp",
+			"settings":
+			{
+				"buffer_size": 738,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "db/entity/DeviceRecord.hpp",
+			"settings":
+			{
+				"buffer_size": 825,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "db/entity/Model.hpp",
+			"settings":
+			{
+				"buffer_size": 644,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "test/tests.cpp",
+			"settings":
+			{
+				"buffer_size": 688,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "db/db.hpp",
+			"settings":
+			{
+				"buffer_size": 301,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "srv/resource/logger_upload.hpp",
+			"settings":
+			{
+				"buffer_size": 4008,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "db/util.cpp",
+			"settings":
+			{
+				"buffer_size": 1127,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "main.cpp",
+			"settings":
+			{
+				"buffer_size": 1681,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/Users/carlos/Documents/Trabajo/solarplant/db/create_db.sql",
+			"settings":
+			{
+				"buffer_size": 5214,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "CMakeLists.txt",
+			"settings":
+			{
+				"buffer_size": 1645,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+		[
+			[
+				[
+					"Packages/C++/C++ Single File.sublime-build",
+					""
+				],
+				[
+					"Packages/C++/C++ Single File.sublime-build",
+					"Run"
+				]
+			],
+			[
+				"Packages/C++/C++ Single File.sublime-build",
+				""
+			]
+		]
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 179.0,
+		"last_filter": "instal",
+		"selected_items":
+		[
+			[
+				"instal",
+				"Package Control: Install Package"
+			],
+			[
+				"in",
+				"Package Control: Install Package"
+			],
+			[
+				"insta",
+				"Package Control: Install Package"
+			],
+			[
+				"remo",
+				"Package Control: Remove Package"
+			],
+			[
+				"remove",
+				"Package Control: Remove Package"
+			],
+			[
+				"ENA",
+				"Package Control: Enable Package"
+			],
+			[
+				"DIS",
+				"Package Control: Disable Package"
+			],
+			[
+				"enab",
+				"Package Control: Enable Package"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"inst",
+				"Package Control: Install Package"
+			],
+			[
+				"d",
+				"Package Control: Disable Package"
+			],
+			[
+				"disa",
+				"Package Control: Disable Package"
+			],
+			[
+				"en",
+				"Package Control: Enable Package"
+			],
+			[
+				"ena",
+				"Package Control: Enable Package"
+			],
+			[
+				"dis",
+				"Package Control: Disable Package"
+			],
+			[
+				"enabl",
+				"Package Control: Enable Package"
+			],
+			[
+				"disab",
+				"Package Control: Disable Package"
+			],
+			[
+				"upda",
+				"Package Control: Upgrade/Overwrite All Packages"
+			],
+			[
+				"ints",
+				"Package Control: Install Package"
+			],
+			[
+				"INS",
+				"Package Control: Install Package"
+			],
+			[
+				"REMO",
+				"Package Control: Remove Package"
+			],
+			[
+				"ins",
+				"Package Control: Install Package"
+			],
+			[
+				"pyth",
+				"Build With: Python"
+			],
+			[
+				"p",
+				"Package Control: List Packages"
+			],
+			[
+				"re",
+				"Package Control: Remove Package"
+			],
+			[
+				"local",
+				"Preferences: Local Packages Settings – Default"
+			],
+			[
+				"add",
+				"Package Control: Add Repository"
+			],
+			[
+				"dashd",
+				"DashDoc: invoke Dash with selected word"
+			],
+			[
+				"dss",
+				"Indexing Status"
+			],
+			[
+				"kite",
+				"Package Control: List Unmanaged Packages"
+			],
+			[
+				"pac",
+				"Package Control: Upgrade/Overwrite All Packages"
+			],
+			[
+				"kit",
+				"Package Control: List Packages"
+			],
+			[
+				"di",
+				"Package Control: Disable Package"
+			],
+			[
+				"them",
+				"Colorsublime: Install Theme"
+			],
+			[
+				"e",
+				"Package Control: Enable Package"
+			],
+			[
+				"enable",
+				"Package Control: Enable Package"
+			],
+			[
+				"disabl",
+				"Package Control: Disable Package"
+			],
+			[
+				"packagel",
+				"Package Control: List Packages"
+			],
+			[
+				"INSTALL",
+				"Package Control: Install Package"
+			],
+			[
+				"colors",
+				"Color Scheme Editor: Edit current color scheme"
+			],
+			[
+				"remov",
+				"Package Control: Remove Package"
+			],
+			[
+				"insa",
+				"Colorsublime: Install Theme"
+			],
+			[
+				"is",
+				"Indentation: Convert to Spaces"
+			],
+			[
+				"colorsu",
+				"Color Scheme Editor: Edit current color scheme"
+			],
+			[
+				"codein",
+				"SublimeCodeIntel: Reset"
+			],
+			[
+				"rem",
+				"Package Control: Remove Package"
+			]
+		],
+		"width": 572.0
+	},
+	"console":
+	{
+		"height": 136.0,
+		"history":
+		[
+			"import urllib.request,os,hashlib; h = '2915d1851351e5ee549c20394736b442' + '8bc59f460fa1548d1514676163dafc88'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/db",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/db/entity",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/srv",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/srv/resource",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/test",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/test"
+	],
+	"file_history":
+	[
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/db/entity/Conversions.hpp",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/db/db.hpp",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/srv/resource/logger_upload.cpp",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/sunspec/data/SunSpecData.hpp",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/sunspec/data/SunSpecData.cpp",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/db/entity/Point.hpp",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/db/entity/Client.hpp",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/db/util.cpp",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/srv/resource/logger_upload.hpp",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/db/util.hpp",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/main.cpp",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/db/entity/PointRecord.hpp",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/db/entity/ModelRecord.hpp",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/db/entity/Model.hpp",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/db/entity/DeviceRecord.hpp",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/db/entity/Device.hpp",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/db/entity/Inventory.hpp",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/db/entity/EValue.hpp",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/db/entity/AbstractEntity.hpp",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/db/dao/ClientDAO.cpp",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/db/dao/ClientDAO.hpp",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/compile_commands.json",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/CMakeLists.txt",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/db/dao/DeviceRecordDAO.cpp",
+		"/private/etc/mysql/my.cnf",
+		"/private/etc/my.cnf",
+		"/opt/local/etc/mysql57/my.cnf",
+		"/Users/carlos/.my.cnf",
+		"/usr/local/mysql/etc/my.cnf",
+		"/etc/mysql/my.cnf",
+		"/etc/my.cnf",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/db/dao/PointRecordDAO.hpp",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/db/dao/PointDAO.cpp",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/db/dao/DeviceRecordDAO.hpp",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/db/dao/EvenMoreGenericDAO.hpp",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/db/dao/ModelDAO.hpp",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/db/dao/ModelRecordDAO.hpp",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/db/dao/ModelRecordDAO.cpp",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/db/dao/PointRecordDAO.cpp",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/db/dao/ModelDAO.cpp",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/db/dao/DeviceDAO.cpp",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/db/dao/EvenMoreGenericDAO.cpp",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/EvenMoreGenericDAO.cpp",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/EvenMoreGenericDAO.hpp",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/db/dao/DeviceDAO.hpp",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/sunspec/data/DeviceData.hpp",
+		"/Users/carlos/Desktop/create_db.sql",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/db/dao/dao.hpp",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/sunspec/data/SunSpecDataResponse.hpp",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/sunspec/data/PointData.cpp",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/sunspec/data/SunSpecDataResponse.cpp",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/sunspec/data/DeviceData.cpp",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/sunspec/data/ModelData.cpp",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/sunspec/data/ModelData.hpp",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/test/tests.cpp",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/ModelRecordDAO.cpp",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/db/exceptions.hpp",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/db/entity/entity.hpp",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/db/dao/PointDAO.hpp",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/db/dao/GenericDAO.hpp",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/srv/resource/resource.hpp",
+		"/Users/carlos/Desktop/laura",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/db/dao/DeviceRecord.cpp",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/db/dao/DeviceRecord.hpp",
+		"/Users/carlos/Documents/Trabajo/solarplant/db/create_db.sql",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/sunspec/data/PointData.hpp",
+		"/Users/carlos/Library/Application Support/Sublime Text 3/Packages/User/Preferences.sublime-settings",
+		"/Users/carlos/Library/Application Support/Sublime Text 3/Packages/AutoFileName/autofilename.sublime-settings",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/server.sublime-project",
+		"/Users/carlos/Library/Application Support/Sublime Text 3/Packages/FuzzyFilePath/FuzzyFilePath.sublime-settings",
+		"/Users/carlos/Library/Application Support/Sublime Text 3/Packages/User/FuzzyFilePath.sublime-settings",
+		"/Users/carlos/Library/Application Support/Sublime Text 3/Packages/FileSystem Autocompletion/Default (OSX).sublime-keymap",
+		"/Users/carlos/Documents/Trabajo/solarplant/source/server/sunspec/sunspec.hpp",
+		"/Users/carlos/Library/Application Support/Sublime Text 3/Packages/User/ClangAutoComplete.sublime-settings",
+		"/Users/carlos/Library/Application Support/Sublime Text 3/Packages/ClangAutoComplete/ClangAutoComplete.sublime-settings",
+		"/Users/carlos/Documents/Trabajo/solarplant/.travis.yml",
+		"/Users/carlos/Documents/Trabajo/solarplant/.trabis.yml",
+		"/Users/carlos/Documents/School/Undergraduate/Tesis/br.py",
+		"/Users/carlos/Packages/mysql-connector-cpp/examples/standalone_example.cpp",
+		"/Users/carlos/Documents/Trabajo/solarpanels/db/create_db.sql",
+		"/Users/carlos/Documents/School/Undergraduate/Tesis/cross_validate_br.py",
+		"/Users/carlos/Documents/School/Undergraduate/Tesis/cross_validate_lr.py",
+		"/Users/carlos/Documents/School/Undergraduate/Tesis/param_heatmap_br.py",
+		"/Users/carlos/Documents/School/Undergraduate/Tesis/param_heatmap_lr.py",
+		"/Users/carlos/Documents/Trabajo/solarpanels/source/server/srv/db/cppsqlconn_docs.txt",
+		"/Users/carlos/Documents/School/Undergraduate/Tesis/br_moon.py",
+		"/Users/carlos/Documents/School/Undergraduate/Tesis/br_moon_param_search.py",
+		"/Users/carlos/Documents/School/Undergraduate/Tesis/br_circles_param_search.py",
+		"/Users/carlos/Documents/School/Undergraduate/Tesis/lr_moon.py",
+		"/Users/carlos/Documents/ip_table",
+		"/Users/carlos/Documents/School/Undergraduate/Tesis/param_heatmap.py",
+		"/Users/carlos/Documents/Trabajo/solarpanels/.gitignore",
+		"/Users/carlos/Documents/School/Undergraduate/Tesis/lr_moon_param_search.py",
+		"/Users/carlos/Documents/School/Undergraduate/Tesis/lr.py",
+		"/Users/carlos/Documents/School/Undergraduate/Tesis/test_contours.py",
+		"/Users/carlos/Documents/School/Undergraduate/Tesis/br_simple.py",
+		"/Users/carlos/79b939d9ee4985f7d6e7e27e27280633/README_BEFORE_DELETING",
+		"/Users/carlos/'",
+		"/Users/carlos/Desktop/flaquistuff",
+		"/Users/carlos/Desktop/ip_table",
+		"/Users/carlos/Documents/School/Undergraduate/Tesis/datasets/breast_cancer/WDBC.csv",
+		"/Users/carlos/Documents/School/Undergraduate/Tesis/datasets/breast_cancer/WDBC.dat",
+		"/Users/carlos/.bash_profile",
+		"/Users/carlos/Documents/School/Undergraduate/Tesis/breast_cancer/WDBC.dat",
+		"/Users/carlos/Desktop/reset.txt",
+		"/Users/carlos/Documents/Trabajo/solarpanels/source/server/SRV_DOXYFILE",
+		"/Users/carlos/Documents/Projects/MyRegex/src/Automata/NFA.h",
+		"/Users/carlos/Packages/pysunspec/sunspec/core/data.py",
+		"/Users/carlos/Packages/pysunspec/sunspec/core/util.py",
+		"/Users/carlos/Packages/pysunspec/sunspec/core/suns.py",
+		"/Users/carlos/Packages/pysunspec/sunspec/core/pics.py",
+		"/Users/carlos/Packages/pysunspec/sunspec/core/test/test_device.py",
+		"/Users/carlos/Packages/pysunspec/sunspec/core/device.py",
+		"/Users/carlos/Packages/pysunspec/sunspec/core/smdx.py",
+		"/Users/carlos/Packages/pysunspec/sunspec/core/client.py",
+		"/Users/carlos/Packages/pysunspec/sunspec/core/__init__.py",
+		"/Users/carlos/Documents/Trabajo/solarpanels/source/python/test_obj.xml",
+		"/Users/carlos/Documents/Trabajo/solarpanels/source/python/pro.xml",
+		"/Users/carlos/Documents/Trabajo/solarpanels/source/python/from_data.py",
+		"/Users/carlos/Library/Preferences/PyCharm2017.1/settingsRepository/repository/colors.scheme.xml",
+		"/Users/carlos/Library/Preferences/PyCharm2017.1/settingsRepository/repository/keymaps/ Sublimish.xml",
+		"/Users/carlos/Library/Preferences/PyCharm2017.1/settingsRepository/repository/keymaps/Test.xml",
+		"/Users/carlos/Desktop/settings.jar",
+		"/Users/carlos/Documents/Trabajo/solarpanels/source/python/test_data.py",
+		"/Users/carlos/Documents/Trabajo/solarpanels/source/python/test_ob.xml",
+		"/Users/carlos/Documents/Trabajo/solarpanels/source/python/test.py",
+		"/Users/carlos/.vimrc",
+		"/Users/carlos/log.txt"
+	],
+	"find":
+	{
+		"height": 39.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"colname",
+			"DB_CLIENT",
+			"std::array",
+			">",
+			"std::array<",
+			"std::vector",
+			"as_comma_list",
+			"with_pref",
+			"typename",
+			"Entity",
+			"pair_compare",
+			"persist_records",
+			"->",
+			"ss_r",
+			"rr_body",
+			"ss_r",
+			"std::string",
+			"_pos",
+			"id_pos",
+			"Cient",
+			"ClientColumn",
+			"CLIENT_HPP",
+			"String",
+			"SERVER_DB_ENTITY_HPP",
+			"IdType",
+			"CLIENT_HPP",
+			"CLIENT",
+			"std::string",
+			"client_cols",
+			"client",
+			"ClientRows",
+			"index",
+			"EvenMoreGenericDAO::",
+			"EvenMoreGeneric",
+			"ClientDAO",
+			"columns",
+			"dit",
+			"malforme",
+			"dr",
+			"dre",
+			"data_response_tr",
+			"std::",
+			"ModelRecord",
+			"modelRecord.",
+			"modelRecord",
+			"ModelRecord",
+			"modelRecord",
+			"ModelRecord",
+			"modelRecord",
+			"_PointRecord",
+			"ModelRecord",
+			"modelRecord",
+			"ModelRecord",
+			"apply",
+			"deviceRecord",
+			"DeviceRecord",
+			"deviceRecord",
+			"DeviceRecord",
+			"_ModelRecord",
+			"DeviceRecord",
+			"cid",
+			"last_name",
+			"DeviceRecord",
+			"Device",
+			"Model",
+			"Point",
+			"client",
+			"Client",
+			"client",
+			"Client",
+			"client",
+			"Client",
+			"client",
+			"Client",
+			"client",
+			"Client",
+			"client",
+			"Client",
+			"_CLIENTDAO_",
+			"_CLIENT",
+			"_ModelDAO_",
+			"Point",
+			"POINT",
+			"Point",
+			"POINT",
+			"Point",
+			"device",
+			"Device",
+			"_PointDAO_",
+			"DEVICE",
+			"device",
+			"Device",
+			"device",
+			"Device",
+			"DEVICE",
+			"Device",
+			"CLIENT",
+			"Device",
+			"client",
+			"Client",
+			"client",
+			"Client",
+			"dob",
+			"last_name",
+			"client",
+			"Client",
+			"client",
+			"Client",
+			"client",
+			"_DeviceDAO_",
+			"CLIENTDAO",
+			"ClientDAO",
+			"CLIENTDAO",
+			"SERVER_DB_DEVICEDAO_HPP",
+			"CLIENT",
+			"DeviceDAO",
+			"Client",
+			"client",
+			"Client",
+			"client",
+			"Client",
+			"client",
+			"Client",
+			"CLIENTD",
+			"CLIENT",
+			"client",
+			"Client",
+			"client"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 9,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "srv/resource/logger_upload.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 8223,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2970,
+								3080
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax"
+						},
+						"translation.x": 19.0,
+						"translation.y": 2499.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 7,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "db/entity/Client.hpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 826,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								808,
+								808
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 95.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "db/entity/AbstractEntity.hpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 4106,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								933,
+								933
+							]
+						],
+						"settings":
+						{
+							"open_with_edit": true,
+							"syntax": "Packages/C++/C++.sublime-syntax"
+						},
+						"translation.x": 5.0,
+						"translation.y": 1876.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "/Users/carlos/Desktop/test.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 299,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								81,
+								81
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 10,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "db/util.hpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 10106,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								5108,
+								5108
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 2740.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 8,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "db/entity/Device.hpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 738,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								721,
+								721
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 25.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "db/entity/DeviceRecord.hpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 825,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								568,
+								568
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "db/entity/Model.hpp",
+					"semi_transient": true,
+					"settings":
+					{
+						"buffer_size": 644,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 97.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "test/tests.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 688,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								590,
+								590
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 27.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 12,
+					"type": "text"
+				},
+				{
+					"buffer": 9,
+					"file": "db/db.hpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 301,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3,
+								3
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 10,
+					"file": "srv/resource/logger_upload.hpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 4008,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3155,
+								3155
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 1815.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 11,
+					"type": "text"
+				},
+				{
+					"buffer": 11,
+					"file": "db/util.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1127,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								333,
+								333
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 313.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 9,
+					"type": "text"
+				},
+				{
+					"buffer": 12,
+					"file": "main.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1681,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								407,
+								407
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 511.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 13,
+					"file": "/Users/carlos/Documents/Trabajo/solarplant/db/create_db.sql",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 5214,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								5214,
+								5214
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/SQL/SQL.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 2127.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 14,
+					"type": "text"
+				},
+				{
+					"buffer": 14,
+					"file": "CMakeLists.txt",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1645,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								139,
+								139
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/CMake/CMake.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 6.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 13,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 26.0
+	},
+	"input":
+	{
+		"height": 38.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.CppYCM.2":
+	{
+		"height": 0.0
+	},
+	"output.CppYCM.5":
+	{
+		"height": 0.0
+	},
+	"output.cc":
+	{
+		"height": 112.0
+	},
+	"output.exec":
+	{
+		"height": 259.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "server.sublime-project",
+	"replace":
+	{
+		"height": 48.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": false,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 204.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
