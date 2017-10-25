@@ -4,3 +4,6 @@
 [submodule "dependency/property_tree"]
 	path = dependency/property_tree
 	url = https://github.com/boostorg/property_tree.git
+[submodule "dependency/mysql-connector-cpp"]
+	path = dependency/mysql-connector-cpp
+	url = https://github.com/mysql/mysql-connector-cpp.git
