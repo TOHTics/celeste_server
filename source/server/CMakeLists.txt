@@ -2,9 +2,10 @@ cmake_minimum_required(VERSION 3.0)
 project(server)
 
 include_directories(".")
+link_directories("/usr/local/lib")
 
-set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_CXX_FLAGS "-O2")
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_FLAGS "-O2 -stdlib=libc++")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # -- Sunspec ----------------
@@ -55,6 +56,7 @@ set(SOURCE_FILES
 # Find packages
 find_package(Boost COMPONENTS date_time REQUIRED)
 find_library(Restbed_Library librestbed.dylib)
+find_library(XDEVAPI libmysqlcppconn8.dylib)
 find_library(MySQL_Library libmysqlcppconn.dylib)
 
 # Link executable
@@ -62,6 +64,7 @@ add_executable(server ${SOURCE_FILES})
 target_link_libraries(server ${Boost_LIBRARIES})
 target_link_libraries(server ${Restbed_Library})
 target_link_libraries(server ${MySQL_Library})
+target_link_libraries(server ${XDEVAPI})
 
 # Add our own Sunspec library
 add_library(sunspec SHARED ${sunspec})
