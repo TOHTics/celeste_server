@@ -1,0 +1,6 @@
+[submodule "dependency/restbed"]
+	path = dependency/restbed
+	url = https://github.com/Corvusoft/restbed.git
+[submodule "dependency/property_tree"]
+	path = dependency/property_tree
+	url = https://github.com/boostorg/property_tree.git
