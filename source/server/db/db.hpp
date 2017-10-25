@@ -8,7 +8,6 @@
  */
 #ifndef SERVER_DB_HPP
 #define SERVER_DB_HPP
-#include "dao/dao.hpp"
 #include "entity/entity.hpp"
 #include "exceptions.hpp"
 #include "util.hpp"

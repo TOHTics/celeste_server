@@ -47,53 +47,6 @@ std::string date_to_string(date_type date)
     return boost::gregorian::to_iso_string(date);
 }
 
-std::string quote(const std::string& str, char q) {
-    return q + str + q;
-}
-
-std::string build_insert_statement( const std::vector<std::string> & value_vector,
-                                    const std::vector<std::string> & column_vector,
-                                    const std::string & table_name )
-{
-    assert(! table_name.empty());
-    assert(! value_vector.empty() && ! column_vector.empty());
-    assert(value_vector.size() == column_vector.size());
-
-    std::string result;
-    result += "INSERT INTO " + table_name + " ";
-
-    result += "(" + as_comma_list(as_quote_vector(column_vector, '`')) + ")";
-    result += " VALUES (" + as_comma_list(as_quote_vector(value_vector)) + ");";
-
-    return result;
-}
-
-std::string build_select_statement( const std::vector<std::string> & column_vector,
-                                    const std::string & table_name)
-{
-
-    assert(! table_name.empty());
-    assert(! column_vector.empty());
-
-    std::string result;
-    result += "SELECT (" + as_comma_list(as_quote_vector(column_vector)) + ") ";
-    result += "FROM " + table_name + ";";
-    return result;
-
-}
-
-std::string build_select_all_statement (const std::string & table_name)
-{
-
-    assert(! table_name.empty());
-
-    std::string result;
-    result += "SELECT * ";
-    result += "FROM " + table_name + ";";
-    return result;
-
-}
-
 }
 }
 }

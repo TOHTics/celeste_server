@@ -16,6 +16,7 @@
 #include <iterator>
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
+#include "sunspec/data/data.hpp"
 
 namespace solarplant
 {
@@ -24,16 +25,32 @@ namespace db
 namespace util
 {
 
-typedef boost::gregorian::date date_type; ///< `date_type` is typedefed with `boost::gregorian::date`
-typedef boost::posix_time::ptime timestamp_type;
+typedef boost::gregorian::date date_type;           ///< `date_type` is typedefed with `boost::gregorian::date`
+typedef boost::posix_time::ptime timestamp_type;    ///< typedef of `boost::posix_time::ptime`
 
-inline std::string to_string(const std::string &str)
-{
-    return str;
-}
-
+/**
+ * @brief      Converts to string a timestamp
+ *
+ * @param[in]  t     Timestamp to convert to string
+ *
+ * @return     String representation of the object.
+ */
 std::string to_string(timestamp_type t);
+
+/**
+ * @brief      Returns a string representation of the object.
+ *
+ * @param[in]  date  The date
+ *
+ * @return     String representation of the object.
+ */
 std::string to_string(date_type date);
+
+/**
+ * @brief      Gets the universal time.
+ *
+ * @return     The universal time.
+ */
 timestamp_type get_universal_time();
 
 /**
@@ -64,57 +81,10 @@ std::string date_to_string(date_type date);
  *
  * @return     A string but with quotes around it.
  */
-std::string quote(const std::string& str, char q = '\'');
-
-/**
- * @brief      Builds a SQL insert statement string.
- *
- * @param[in]  value_vector   Vector containing the values to insert. The values must be in
- * the order of their respective columns. I.e. If `column_vector` has `"age"` as its first entry,
- * then `value_vector` should contain the value for `"age"` in its first entry. 
- * @param[in]  column_vector  Vector of columns.
- * @param[in]  table_name     Name of table to insert to.
- *
- * @return     A string containing the insert statement.
- * 
- * In general it will return a string that looks like:
- * ````
- * 
- * ````
- */
-std::string build_insert_statement( const std::vector<std::string> & value_vector,
-                                    const std::vector<std::string> & column_vector,
-                                    const std::string & table_name );
-
-/**
- * @brief      Builds a SQL select statement string.
- *
- * @param[in]  column_vector  Vector containing the columns to be retrieved from the db.
- * @param[in]  table_name     Name of table to select from.
- *
- * @return     A string containing the select statement.
- * 
- * In general it will return a string that looks like:
- * ````sql
- * SELECT column1, column2, ... FROM table_name;
- * ````
- */
-std::string build_select_statement( const std::vector<std::string> & column_vector,
-                                    const std::string & table_name);
-
-/**
- * @brief      Builds a SQL select statement for selecting all the columns from the table.
- * 
- * @param[in]  table_name  The table name
- *
- * @return     A string containing the select statement
- * 
- * In general it will return a string that looks like:
- * ````sql
- * SELECT * FROM table_name; 
- * ````
- */
-std::string build_select_all_statement (const std::string & table_name);
+std::string quote(const std::string& str, std::string q = "\'")
+{
+    return q + str + q;
+}
 
 /**
  * @brief      Creates a comma list from elements in a container. The container must contain strings.
@@ -126,7 +96,7 @@ std::string build_select_all_statement (const std::string & table_name);
  *
  * @return     A `std::string` comma list of all the elements between `begin` and `end`.
  */
-template < typename It > 
+template <typename It> 
 std::string as_comma_list(const It &begin, const It &end)
 {
     /* We have to assert that the container contains strings */
@@ -145,53 +115,84 @@ std::string as_comma_list(const It &begin, const It &end)
     return result;
 }
 
-/**
- * @brief      Quotes all the elements of a container, *which contains* `std::string`.
- *
- * @param[in]  container  Instance of Container
- *
- * @tparam     Container  Container type which should contain `std::string`.
- *
- * @return     A string of comma separated list of the elements from `container.`
- */
-template < typename Container >
-std::string as_comma_list(const Container& container)
+std::string as_comma_list(std::string s)
 {
-    return as_comma_list(std::begin(container), std::end(container));
+    return s;
+}
+
+template <typename... Args>
+std::string as_comma_list(std::string s, Args... args)
+{   
+    return s + "," + as_comma_list(args...);
 }
 
 /**
- * @brief      Returns a string of each individual element of the container
- * concatenated but each element has a prefix or suffix. The container must
- * contain strings.
+ * @brief      Base case for `n=1` of `as_column_list`
  *
- * @param[in]  begin   Iterator pointing to beginning of the container.
- * @param[in]  end     Iterator pointing to the end of the container.
- * @param[in]  prefix  Prefix to add to each element.
- * @param[in]  suffix  Suffix to add to each element.
+ * @param[in]  str   Value.
  *
- * @tparam     It      Type of iterator
- *
- * @return     String of all elements concatenated 
+ * @return     Returns the quoted string.
  */
-template < typename It > 
-std::string with_prefix_suffix(const It &begin, const It &end, std::string prefix, std::string suffix)
+std::string as_column_list(std::string str)
 {
-    /* Assert container contains strings */
+    return quote(str, "`");
+}
+
+/**
+ * @brief      Returns a comma separated, quoted string with the values being separated
+ * being those passed in the container.
+ *
+ * @param[in]  str   Value.
+ * @param[in]  args  The values to be separated.
+ *
+ * @tparam     Args  Pack of values.
+ *
+ * @return     String of concatenated values separated by commas and quoted by `'`.
+ */
+template <typename... Args>
+std::string as_column_list(std::string str, Args... args)
+{   
+    return quote(str, "`") + ", " + as_column_list(args...);
+}
+
+/**
+ * @brief      Returns a comma separated, quoted string with the values being separated
+ * being those passed in the container.
+ *
+ * @param[in]  begin  Beginning of container.
+ * @param[in]  end    End of container.
+ *
+ * @tparam     It     Iterator type.
+ *
+ * @return     String of concatenated values separated by commas and quoted by `'`.
+ */
+template <typename It>
+std::string as_column_list(const It &begin, const It &end)
+{
     static_assert(std::is_same<std::string,
                     typename std::iterator_traits<It>::value_type>::value,
-                "Iterator value type must be std::string");
+                "Iterator value type must be a std::string type");
     std::string result;
     for (auto it = begin; it != end; )
     {
+        result += quote(*it, "`");
         if (++it != end)
-        {   
-            result += prefix;
-            result += *it;
-            result += suffix;
-        }
+            result += ",";
     }
-    return result;
+}
+
+std::string as_value_list(std::string str)
+{
+    return quote(str, "\'");
+}
+
+template <typename... Args>
+std::string as_value_list(std::string str, Args... args)
+{   
+    if (str[0] == '@' || str == "NULL")
+        return str + "," + as_value_list(args...);
+    else
+        return quote(str, "\'") + "," + as_value_list(args...);
 }
 
 /**
@@ -230,8 +231,8 @@ std::string with_prefix_suffix(const It &begin, const It &end, std::string prefi
  * ````
  * 
  */
-template < typename It >
-std::vector<std::string> as_quote_vector(const It& begin, const It& end, char q = '\'')
+template <typename It>
+std::vector<std::string> as_quote_vector(const It& begin, const It& end, std::string q = "\'")
 {
     /* Assert container contains strings */
     static_assert(std::is_same<std::string,
@@ -256,8 +257,8 @@ std::vector<std::string> as_quote_vector(const It& begin, const It& end, char q 
  *
  * @return     A vector of quoted elements from the container.
  */
-template < typename Container >
-std::vector<std::string> as_quote_vector(const Container& container, char q = '\'')
+template <typename Container>
+std::vector<std::string> as_quote_vector(const Container& container, std::string q = "\'")
 {
     return as_quote_vector(std::begin(container), std::end(container), q);
 }
@@ -280,6 +281,42 @@ inline void static_for(Lambda const& f)
          static_for<First + 1, Last>(f);
       }
 }
+
+/**
+ * @brief      Compares two pairs of same types. This method assumes
+ * that `T` has the operator `==` defined/overloaded.
+ *
+ * @param[in]  a     First element to be compared.
+ * @param[in]  b     Second element to be compared.
+ *
+ * @tparam     T     Type of both elements
+ *
+ * @return     `true` if they are the same. 
+ */
+template<typename T> 
+bool pair_equal(T a, T b) {
+  return a == b;
+}
+
+/**
+ * @brief      { function_description }
+ *
+ * @param[in]  a     { parameter_description }
+ * @param[in]  b     { parameter_description }
+ * @param[in]  args  The arguments
+ *
+ * @tparam     T     { description }
+ * @tparam     Args  { description }
+ *
+ * @return     { description_of_the_return_value }
+ */
+template<
+    typename T,
+    typename... Args
+> bool pair_equal(T a, T b, Args... args) {
+    return pair_equal(a, b) && pair_equal(args...);
+}
+
 }   
 }
 }
