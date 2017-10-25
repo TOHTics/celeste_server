@@ -123,7 +123,7 @@ SunSpecData::const_iterator SunSpecData::cend() const
     return devices.cend();
 }
 
-size_t SunSpecData::size()
+size_t SunSpecData::size() const
 {
     return devices.size();
 }

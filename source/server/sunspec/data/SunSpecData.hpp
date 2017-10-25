@@ -112,7 +112,7 @@ struct SunSpecData
      * Returns the number of devices contained by this object
      * @return Number of devices contained
      */
-    size_t size();
+    size_t size() const;
 
     /**
      * Builds a `SunSpecData` instance from a element tree (`ptree`) representation of the

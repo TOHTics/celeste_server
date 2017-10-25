@@ -71,14 +71,14 @@ struct ModelData
      * Constructs the ModelData with `id`
      * @param id The id of the model. The Device Model Identifier.
      */
-    ModelData( std::string id ) : id(id)
+    ModelData(std::string id) : id(id)
     { }
 
     /**
      * Constructs the ModelData with a given point list
      * @param point_list List of points
      */
-    ModelData( const point_list_type &point_list ) : points(point_list)
+    ModelData(const point_list_type &point_list) : points(point_list)
     { }
 
     /**
@@ -87,19 +87,19 @@ struct ModelData
      * points.
      * @param n Number of spaces to reserve
      */
-    ModelData( size_t n );
+    ModelData(size_t n);
 
 
     /**
      * Copy constructor. Copies the data from `other` over to `this`.
      * @param other The other ModelData.
      */
-    ModelData( const ModelData &other ) = default;
+    ModelData(const ModelData &other) = default;
 
     /**
      * @param p `PointData` to add to the list of point records of this model.
      */
-    void add_point( const PointData &p );
+    void add_point(const PointData &p);
 
     /**
      * Returns an iterator to the first element of the container.
@@ -147,7 +147,7 @@ struct ModelData
      * @throws XMLException Throws if there was an error parsing the XML. This will mean
      * that the data contained in the `model_element` is empty or is malformed.
      */
-    static ModelData from_xml( const boost::property_tree::ptree &model_element );
+    static ModelData from_xml(const boost::property_tree::ptree &model_element);
 
     /**
      * Builds the ModelData out of a SDX specification. This specification
@@ -160,7 +160,7 @@ struct ModelData
      * @throws XMLException Throws if there was an error parsing the XML. This will mean
      * that the data contained in the `model_record` is empty or is malformed.
      */
-    static ModelData from_xml( const std::string &model_record );
+    static ModelData from_xml(const std::string &model_record);
 };
 }
 }
