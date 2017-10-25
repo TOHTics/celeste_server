@@ -9,7 +9,9 @@
 #ifndef SERVER_RESOURCE_LOGGER_UPLOAD_HPP
 #define SERVER_RESOURCE_LOGGER_UPLOAD_HPP
 
+#include <memory>
 #include <restbed>
+#include <mysql_devapi.h>
 #include "sunspec/data/SunSpecData.hpp"
 
 namespace solarplant
@@ -25,7 +27,92 @@ namespace handler
  * 
  * This method tries to stick to the SunSpec Data Exchange HTTP communication protocol.
  */
-void logger_upload_handler( const std::shared_ptr<restbed::Session> session );
+void logger_upload_handler(const std::shared_ptr<restbed::Session> session);
+
+
+/**
+ * @brief      Handles an unknown error. Replies with an XML SunSpecDataResponse
+ * and closes the session.
+ *
+ * @param[in]  session    Client-Server session.
+ * @param[in]  e          Error that was thrown.
+ *
+ * @tparam     Error      Type of error. Must have member function `e.what()` defined.
+ */
+template <typename Error>
+void handle_unknown_error(const std::shared_ptr<restbed::Session> session, Error &&e);
+
+/**
+ * @brief      Handles a database error. Replies with an XML SunSpecDataResponse
+ * and closes the session.
+ *
+ * @param[in]  session    Client-Server session.
+ * @param[in]  e          Error that was thrown.
+ *
+ * @tparam     Error      Type of error. Must have member function `e.what()` defined.
+ */
+template <typename Error>
+void handle_db_error(const std::shared_ptr<restbed::Session> session, Error &&e);
+
+
+/**
+ * @brief      Handles a parsing error that may have ocurred while parsing the received
+ * XML encoded SunSpec Data Object. Replies with an XML SunSpecDataResponse and closes
+ * the session.
+ *
+ * @param[in]  session    Client-Server session.
+ * @param[in]  e          Error that was thrown.
+ *
+ * @tparam     Error      Type of error. Must have member function `e.what()` defined.
+ */
+template <typename Error>
+void handle_parsing_error(const std::shared_ptr<restbed::Session> session, Error &&e);
+
+
+/**
+ * @brief      Handles an acceptance response.
+ *
+ * @param[in]  session  Client-Server session.
+ */
+void handle_accept(const std::shared_ptr<restbed::Session> session);
+
+
+/**
+ * @brief      Persists the received data into the DB.
+ *
+ * @param[in]  data       Data containing DeviceRecords.
+ * @param[in]  dbSession  MySQL database session.
+ */
+void persist_data(const sunspec::data::SunSpecData &data, const std::shared_ptr<mysqlx::Session> dbSession);
+
+
+/**
+ * @brief      Makes a MySQL database session.
+ *
+ * @param[in]  args  Arguments.
+ *
+ * @tparam     Args  Argument pack.
+ *
+ * @return     MySQL database session.
+ * 
+ * In general, we may use this function like:
+ * `auto dbSession = make_db_session("localhost", 33060, "user", "password")`
+ */
+template<typename... Args>
+std::shared_ptr<mysqlx::Session> make_db_session(Args... args);
+
+/**
+ * @brief      Makes a MySQL database session.
+ *
+ * @param[in]  host  The host
+ * @param[in]  port  The port
+ * @param[in]  user  The user
+ * @param[in]  pwd   The password
+ *
+ * @return     MySQL database session.
+ */
+std::shared_ptr<mysqlx::Session> make_db_session(std::string host, size_t port, std::string user, std::string pwd);
+
 }
 
 namespace resource
@@ -44,7 +131,7 @@ namespace resource
  * as per SDX. If no errors where found, then the Host will respond
  * back with a success message.
  */
-std::shared_ptr<restbed::Resource> make_logger_upload( std::string path );
+std::shared_ptr<restbed::Resource> make_logger_upload(std::string path);
 }
 }
 }
