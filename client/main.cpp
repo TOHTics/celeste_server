@@ -17,7 +17,7 @@
 using namespace std;
 using namespace restbed;
 using namespace sunspec;
-void print( const shared_ptr< Response >& response )
+void print( const shared_ptr< Response > response )
 {
     fprintf( stderr, "*** Response ***\n" );
     fprintf( stderr, "Status Code:    %i\n", response->get_status_code( ) );
@@ -41,11 +41,16 @@ void print( const shared_ptr< Response >& response )
 
     string xml_body = xml_body_c;
 
+    cout << "Body:\n-------------------\n" 
+         << xml_body
+         << "\n--------------------------"
+         << endl;
+
     data::SunSpecDataResponse rr;
     try
     {
         rr = data::SunSpecDataResponse::from_xml(xml_body);
-    } catch (data::XMLError e)
+    } catch (data::XMLException e)
     {
         cout << e.what() << endl;
     }
@@ -53,26 +58,27 @@ void print( const shared_ptr< Response >& response )
     cout << rr << endl;
 }
 
-int main( const int, const char** )
+int main( const int, const char**)
 {
     std::string body = "<SunSpecData v=\"1\">\n"
-            "<d lid=\"11:22:33:44:55:66\" man=\"gsc\" mod=\"r100\" sn=\"A123456\" t=\"2011-05-\n"
-            "12T09:20:50Z\" cid=\"AR45\"> <m id=\"401\">\n"
+            "<d id=\"111\" lid=\"11:22:33:44:55:66\" man=\"gsc\" mod=\"r100\" sn=\"A123456\" t=\"2011-05-12 09:20:50\" cid=\"AR45\"> <m id=\"401\">\n"
             "<p id=\"DCA_Max\">100</p>\n"
             "<p id=\"N\">3</p>\n"
             "<p id=\"DCV\">489</p>\n"
-            "<p id=\"DCA\" x=\"1\">4.78</p> <p id=\"DCA\" x=\"2\">12.30</p> <p id=\"DCA\" x=\"3\">0.42</p>\n"
+            "<p id=\"DCA\" x=\"1\">4.78</p>"
+            "<p id=\"DCA\" x=\"2\">12.30</p>"
+            "<p id=\"DCA\" x=\"3\">0.42</p>\n"
             "</m> </d>\n"
             "</SunSpecData>";
 
-    auto request = make_shared< Request >( Uri( "http://localhost:10000/resource/logger_upload" ) );
+    auto request = make_shared< Request >(Uri("http://localhost:10000/resource/logger_upload"));
     request->set_method("POST");
     request->set_body(body);
     request->set_header( "Host", "localhost" );
     request->set_header("Content-Length", to_string(body.size()));
 
-    auto response = Http::sync( request );
-    print( response );
+    auto response = Http::sync(request);
+    print(response);
 
     return EXIT_SUCCESS;
 }

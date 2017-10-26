@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.0)
-project(server)
+
+project(celeste_server VERSION 0.0.1 LANGUAGES CXX)
 
 include_directories(".")
 link_directories("/usr/local/lib")
@@ -22,13 +23,6 @@ file(GLOB_RECURSE SRV_SRC
     )
 set(srv ${SRV_SRC})
 
-# -- Database ---------------
-file(GLOB_RECURSE DB_SRC
-    "db/*.hpp"
-    "db/*.cpp"
-    )
-set(db ${DB_SRC})
-
 # -- Tests ------------------
 file(GLOB_RECURSE TEST_SRC
     "test/*.hpp"
@@ -36,37 +30,23 @@ file(GLOB_RECURSE TEST_SRC
     )
 set(tests ${TEST_SRC})
 
-# -- Translators ------------
-file(GLOB_RECURSE TRANSLATOR_SRC
-    "translator/*.hpp"
-    "translator/*.cpp"
-    )
-set(translator ${TRANSLATOR_SRC})
-
 # -- Mix all source files --
 set(SOURCE_FILES 
         main.cpp
         ${sunspec}
         ${srv}
-        ${db}
         ${tests}
-        ${translator}
     )
 
 # Find packages
-find_package(Boost COMPONENTS date_time REQUIRED)
-find_library(Restbed_Library librestbed.dylib)
-find_library(XDEVAPI libmysqlcppconn8.dylib)
-find_library(MySQL_Library libmysqlcppconn.dylib)
+find_library(restbed librestbed.dylib)
+find_library(MySQL libmysqlcppconn8.dylib)
 
 # Link executable
-add_executable(server ${SOURCE_FILES})
-target_link_libraries(server ${Boost_LIBRARIES})
-target_link_libraries(server ${Restbed_Library})
-target_link_libraries(server ${MySQL_Library})
-target_link_libraries(server ${XDEVAPI})
+add_executable(celeste_server ${SOURCE_FILES})
+target_link_libraries(celeste_server ${restbed})
+target_link_libraries(celeste_server ${MySQL})
 
 # Add our own Sunspec library
 add_library(sunspec SHARED ${sunspec})
 set_target_properties(sunspec PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(sunspec ${Boost_LIBRARIES})

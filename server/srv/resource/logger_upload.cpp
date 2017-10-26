@@ -14,11 +14,10 @@
 #include "logger_upload.hpp"
 #include "sunspec/data/data.hpp"
 #include "sunspec/util/util.hpp"
-#include "db/db.hpp"
+#include "srv/util.hpp"
 
 
 using namespace sunspec;
-using namespace solarplant::db;
 using namespace std;
 
 namespace solarplant

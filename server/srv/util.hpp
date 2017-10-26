@@ -6,11 +6,10 @@
  * @file
  * @brief Contains function declarations and template function definitions.
  */
-#ifndef SERVER_DB_UTIL_HPP
-#define SERVER_DB_UTIL_HPP
+#ifndef SERVER_SRV_UTIL_HPP
+#define SERVER_SRV_UTIL_HPP
 
 #include <iostream>
-
 #include <string>
 #include <vector>
 #include <iterator>
@@ -20,59 +19,10 @@
 
 namespace solarplant
 {
-namespace db
+namespace srv
 {
 namespace util
 {
-
-typedef boost::gregorian::date date_type;           ///< `date_type` is typedefed with `boost::gregorian::date`
-typedef boost::posix_time::ptime timestamp_type;    ///< typedef of `boost::posix_time::ptime`
-
-/**
- * @brief      Converts to string a timestamp
- *
- * @param[in]  t     Timestamp to convert to string
- *
- * @return     String representation of the object.
- */
-std::string to_string(timestamp_type t);
-
-/**
- * @brief      Returns a string representation of the object.
- *
- * @param[in]  date  The date
- *
- * @return     String representation of the object.
- */
-std::string to_string(date_type date);
-
-/**
- * @brief      Gets the universal time.
- *
- * @return     The universal time.
- */
-timestamp_type get_universal_time();
-
-/**
- * @brief      Returns an object of `date_type` with the given
- * date in the string. It expects the format of the date to be in
- * ISO format: `YYYYMMDD`
- *
- * @param[in]  str   The date formatted as `YYYYMMDD`.
- *
- * @return     { description_of_the_return_value }
- */
-date_type string_to_date(std::string str);
-
-/**
- * @brief      Returns a string in ISO format: `YYYYMMDD`.
- *
- * @param[in]  date  A `date_type` object.
- *
- * @return     A string in ISO date format: `YYYMMDD`.
- */
-std::string date_to_string(date_type date);
-
 /**
  * @brief      Returns the string but with quotes around it.
  *
@@ -193,74 +143,6 @@ std::string as_value_list(std::string str, Args... args)
         return str + "," + as_value_list(args...);
     else
         return quote(str, "\'") + "," + as_value_list(args...);
-}
-
-/**
- * @brief      Returns a vector of strings such that each element is
- * the quoted element from the container the iterators belong to. The
- * container's `value_type` must be string.
- *
- * @param[in]  begin  Iterator pointing to beginning of container.
- * @param[in]  end    Iterator pointing to end of container.
- * @param[in]  q      Quote character.
- *
- * @tparam     It     Iterator type
- * 
- * # Example
- * Using this function should give us a vector with quoted elements.
- *     
- * ````
- * using namespace std;
- * 
- * set<string> S{"Hello", "World", "This", "Is", "The", "Example"};
- * vector<string> QuoteVec;
- * 
- * QuoteVec = as_quote_vector(S.begin(), S.end());
- * 
- * for (auto it = QuoteVec.begin(); it != QuoteVec.end(); ++it)
- *     cout << *it << endl;
- * 
- * user $:
- * Output:
- * 'Hello'
- * 'World'
- * 'This'
- * 'Is'
- * 'The'
- * 'Example'
- * ````
- * 
- */
-template <typename It>
-std::vector<std::string> as_quote_vector(const It& begin, const It& end, std::string q = "\'")
-{
-    /* Assert container contains strings */
-    static_assert(std::is_same<std::string,
-                    typename std::iterator_traits<It>::value_type>::value,
-                "Iterator value type must be std::string");
-
-    std::vector<std::string> result(std::distance(begin, end));
-    int idx = 0;
-    for (auto it = begin; it != end; ++it, ++idx)
-        result[idx] = (quote(*it, q));
-
-    return result;
-}
-
-/**
- * @brief      Returns a vector of quoted string elements.
- *
- * @param[in]  container  A container of strings. I.e. their `value_type` is a string.
- * @param[in]  q          The quote character.
- *
- * @tparam     Container  Template type of a container.
- *
- * @return     A vector of quoted elements from the container.
- */
-template <typename Container>
-std::vector<std::string> as_quote_vector(const Container& container, std::string q = "\'")
-{
-    return as_quote_vector(std::begin(container), std::end(container), q);
 }
 
 /**
