@@ -23,6 +23,9 @@
 #define SERVER_TESTS_HPP
 
 
-bool SUNSPEC_DATA_XML_PARSE();
+bool sunspec_data_xml_parse();
+bool db_query_client();
+bool db_persist_client();
+
 
 #endif //SERVER_TESTS_HPP
