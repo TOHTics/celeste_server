@@ -1,12 +1,17 @@
 # Mac OS X
 .DS_Store
 
-# IDE
-.idea
-cmake-build-debug
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# CMake
+cmake-build-debug/
+build/
 
 # docs
 doc/
+reports/
 
 # Prerequisites
 *.d
