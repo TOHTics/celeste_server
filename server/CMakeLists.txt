@@ -1,51 +1,66 @@
-cmake_minimum_required(VERSION 3.0)
+# ---- Set cmake minimum version ---------------
+cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
+cmake_policy(SET CMP0048 NEW)
 
 project(celeste_server VERSION 0.0.1 LANGUAGES CXX)
+message("${gray}celeste_server v${PROJECT_VERSION} ${reset}")
+
+# ---- Set the module path ---------------------
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/../cmake/modules")
 
 include_directories(".")
-link_directories("/usr/local/lib")
 
+# ---- Configure compiler ----------------------
+set(CMAKE_CXX_FLAGS "-O2")
 set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_FLAGS "-O2 -stdlib=libc++")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# -- Sunspec ----------------
+# ---- Sunspec ---------------------------------
 file(GLOB_RECURSE SUNSPEC_SRC
     "sunspec/*.hpp"
     "sunspec/*.cpp"
     )
 set(sunspec ${SUNSPEC_SRC})
 
-# -- Server -----------------
+# ---- Server ----------------------------------
 file(GLOB_RECURSE SRV_SRC
     "srv/*.hpp"
     "srv/*.cpp"
     )
 set(srv ${SRV_SRC})
 
-# -- Tests ------------------
+# ---- Tests -----------------------------------
 file(GLOB_RECURSE TEST_SRC
     "test/*.hpp"
     "test/*.cpp"
     )
 set(tests ${TEST_SRC})
 
-# -- Mix all source files --
-set(SOURCE_FILES 
+# ---- Mix all source files --------------------
+set(SERVER_SOURCE_FILES 
         main.cpp
         ${sunspec}
         ${srv}
         ${tests}
     )
 
-# Find packages
-find_library(restbed librestbed.dylib)
-find_library(MySQL libmysqlcppconn8.dylib)
+# ---- Find packages ---------------------------
+# find_package(restbed        REQUIRED)
+    add_subdirectory("dependency/restbed")
+    add_subdirectory("dependency/mysql-connector-cpp/")
+# endif()
 
-# Link executable
-add_executable(celeste_server ${SOURCE_FILES})
-target_link_libraries(celeste_server ${restbed})
-target_link_libraries(celeste_server ${MySQL})
+# find_package(mysqlcppconn   REQUIRED)
+
+# find_library(restbedlib librestbed.a) 
+# find_library(MySQL libmysqlcppconn8.dylib)
+
+# ---- Add an executable -----------------------
+add_executable(celeste_server ${SERVER_SOURCE_FILES})
+
+# ---- Link executable -------------------------`
+target_link_libraries(celeste_server restbed)
+target_link_libraries(celeste_server mysqlcppconn8)
 
 # Add our own Sunspec library
 add_library(sunspec SHARED ${sunspec})
