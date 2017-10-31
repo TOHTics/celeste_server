@@ -11,5 +11,7 @@ addons:
       - cmake-data
 
 script:
-  - cmake source/server/
-  - make
+  - mkdir build
+  - cd build
+  - cmake ..
+  - make -j4
