@@ -7,5 +7,14 @@ choose to cut the power or detect faulty devices.
 
 ![diagram](diagrams/SolarPanels.png)
 
+# Building
+One can build the celeste server by creating another directory and just using cmake:
+````
+mkdir build
+cd build
+cmake ..
+make -j4
+````
+
 # About
 This software is licensed under the AGPL.
