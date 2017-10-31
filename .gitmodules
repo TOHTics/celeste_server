@@ -7,3 +7,12 @@
 [submodule "dependency/mysql-connector-cpp"]
 	path = dependency/mysql-connector-cpp
 	url = https://github.com/mysql/mysql-connector-cpp.git
+[submodule "server/dependency/restbed"]
+	path = server/dependency/restbed
+	url = https://github.com/Corvusoft/restbed
+[submodule "server/dependency/mysql-connector-cpp"]
+	path = server/dependency/mysql-connector-cpp
+	url = https://github.com/mysql/mysql-connector-cpp
+[submodule "server/dependency/property_tree"]
+	path = server/dependency/property_tree
+	url = https://github.com/boostorg/property_tree
