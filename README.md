@@ -10,6 +10,10 @@ choose to cut the power or detect faulty devices.
 # Building
 One can build the celeste server by creating another directory and just using cmake:
 ````
+git clone https://github.com/carlosb/celeste.git
+cd celeste
+git submodule update --init --recursive
+
 mkdir build
 cd build
 cmake ..
