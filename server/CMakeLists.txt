@@ -50,6 +50,7 @@ find_package(restbed        REQUIRED)
 find_package(mysqlcppconn   REQUIRED)
 add_subdirectory("dependency/restbed")
 add_subdirectory("dependency/mysql-connector-cpp/")
+
 include_directories(${mysqlcppconn_INCLUDE})
 include_directories(${restbed_INCLUDE})
 

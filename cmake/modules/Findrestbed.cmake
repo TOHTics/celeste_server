@@ -1,7 +1,7 @@
 # ---- Find Restbed ----------------------------
 message("${yellow}Looking for restbed...${reset}")
 find_path(restbed_INCLUDE restbed 
-          HINTS 
+          PATHS 
           "${PROJECT_SOURCE_DIR}/dependency/restbed/source"
           "/usr/include"
           "/usr/local/include"

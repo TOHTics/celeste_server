@@ -1,22 +1,48 @@
 #include <restbed>
 #include <iostream>
+#include <thread>
 // #include "db/entity/AbstractEntity.hpp"
 #include "srv/resource/resource.hpp"
 
 using namespace std;
 using namespace solarplant::srv::resource;
 
+
+void print_welcome_message()
+{
+    cout << "\e[37m";
+    cout << "| ---------------------------------------------------- |\n"
+                "|  _______ ____  _    _   _______ _____ _____  _____   |\n"
+                "| |__   __/ __ \\| |  | | |__   __|_   _/ ____|/ ____|  |\n"
+                "|    | | | |  | | |__| |    | |    | || |    | (___    |\n"
+                "|    | | | |  | |  __  |    | |    | || |     \\___\\    |\n"
+                "|    | | | |__| | |  | |    | |   _| || |____ ____) |  |\n"
+                "|    |_|  \\____/|_|  |_|    |_|  |_____\\_____|_____/   |\n" 
+             << "| ---------------------------------------------------- |\n";
+    cout << "\e[m";
+}
+
 int main( const int argc, const char** argv)
 {  
+    print_welcome_message();
 
+    cout << "\e[33m";
+    cout << "@ Making resources...\n";
     auto upload = make_logger_upload("/resource/logger_upload");
 
+    cout << "@ Configuring server...\n";
     auto settings = make_shared<restbed::Settings>();
     settings->set_port(10000);
 
     restbed::Service service;
+
+    cout << "@ Publishing resources...\n";
     service.publish(upload);
+
+    cout << "@ Starting server...\n";
+    cout << "\e[m";
     service.start(settings);
+
 
 
    //  sql::Driver *driver;

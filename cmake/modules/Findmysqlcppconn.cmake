@@ -1,11 +1,11 @@
 # ---- Find MySQL C++ connector ----------------
 message("${yellow}Looking for MySQL C++ connector...${reset}")
-find_path(mysqlcppconn_INCLUDE mysql_devapi.h 
-          HINTS 
-          "${PROJECT_SOURCE_DIR}/dependency/mysql-cpp-connector/include"
-          # "/usr/include"
-          # "/usr/local/include"
-          # "/opt/local/include"
+find_path(mysqlcppconn_INCLUDE mysql_devapi.h
+          PATHS 
+          "${PROJECT_SOURCE_DIR}/dependency/mysql-connector-cpp/include"
+          "/usr/include"
+          "/usr/local/include"
+          "/opt/local/include"
           )
 
 # find_library(mysqlcppconn_LIBRARY mysqlcppconn8
