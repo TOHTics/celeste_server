@@ -46,12 +46,12 @@ set(SERVER_SOURCE_FILES
     )
 
 # ---- Find packages ---------------------------
-# find_package(restbed        REQUIRED)
-    add_subdirectory("dependency/restbed")
-    add_subdirectory("dependency/mysql-connector-cpp/")
-# endif()
+find_package(restbed        REQUIRED)
+find_package(mysqlcppconn   REQUIRED)
+add_subdirectory("dependency/restbed")
+add_subdirectory("dependency/mysql-connector-cpp/")
 
-# find_package(mysqlcppconn   REQUIRED)
+
 
 # find_library(restbedlib librestbed.a) 
 # find_library(MySQL libmysqlcppconn8.dylib)
