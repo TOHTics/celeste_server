@@ -1,5 +1,4 @@
-# Celeste
-![Build Status](https://travis-ci.org/carlosb/celeste.svg?branch=master)
+# Celeste ![Build Status](https://travis-ci.org/carlosb/celeste.svg?branch=master)
 
 The system consists in obtaining data from "Solar Plants" which produce electricity
 and send relevant data, like power consumption, to the cloud. From there, we can
