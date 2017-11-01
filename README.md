@@ -1,4 +1,4 @@
-# Solar Plant Monitoring System
+# Celeste
 ![Build Status](https://travis-ci.org/carlosb/celeste.svg?branch=master)
 
 The system consists in obtaining data from "Solar Plants" which produce electricity
