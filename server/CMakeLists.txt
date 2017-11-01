@@ -61,7 +61,7 @@ add_executable(celeste_server ${SERVER_SOURCE_FILES})
 
 # ---- Link executable -------------------------`
 target_link_libraries(celeste_server restbed)
-target_link_libraries(celeste_server mysqlcppconn)
+target_link_libraries(celeste_server libconcpp )
 
 # Add our own Sunspec library
 add_library(sunspec SHARED ${sunspec})
