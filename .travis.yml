@@ -19,9 +19,11 @@ addons:
   apt:
     sources:
       - george-edison55-precise-backports # cmake 3.2.3 / doxygen 1.8.3
+      - boost-latest
     packages:
       - cmake
       - cmake-data
+      - libboost1.55-all-dev
 
 script:
   - mkdir build
