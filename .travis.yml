@@ -18,9 +18,7 @@ matrix:
             - cmake-data
             - libboost1.55-all-dev
             - g++-5
-
-
-      env:g++-5
+      env:
         - MATRIX_EVAL="CC=clang-4.0 && CXX=clang++-4.0"
 
 script:
