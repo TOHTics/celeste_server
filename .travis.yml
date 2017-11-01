@@ -10,18 +10,21 @@ matrix:
         apt:
           sources:
             - llvm-toolchain-trusty-4.0
-            - george-edison55-precise-backports # cmake 3.2.3 / doxygen 1.8.3
+            - george-edison55-precise-backports
             - boost-latest
           packages:
             - clang-4.0
             - cmake
             - cmake-data
             - libboost1.55-all-dev
-      env:
+            - g++-5
+
+
+      env:g++-5
         - MATRIX_EVAL="CC=clang-4.0 && CXX=clang++-4.0"
 
 script:
   - mkdir build
   - cd build
-  - cmake ..
+  - cmake .. -DBUILD_SSL=YES
   - make -j4
