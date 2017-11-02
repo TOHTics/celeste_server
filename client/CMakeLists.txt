@@ -1,11 +1,17 @@
 cmake_minimum_required(VERSION 3.8)
 project(client)
 
-include_directories(".")
-set(CMAKE_CXX_STANDARD 14)
+# link_directories("/usr/local/lib")
 
-include_directories(/Users/carlos/Documents/Trabajo/solarpanels/source/server)
-link_directories(.)
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/../cmake/modules")
+
+find_package(restbed        REQUIRED)
+
+include_directories(${restbed_INCLUDE})
+include_directories("/Users/carlos/Documents/Trabajo/celeste/solarplant/server")
+
+link_directories(".")
 
 set(SOURCE_FILES main.cpp)
 
