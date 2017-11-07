@@ -6,6 +6,12 @@ choose to cut the power or detect faulty devices.
 
 ![diagram](diagrams/SolarPanels.png)
 
+# TODO
+- Add error codes
+- Finish basic services
+- Add better parsing for the point values
+- Add JSON support for receiving data
+
 # Building
 One can build the celeste server by creating another directory and just using cmake:
 ````
