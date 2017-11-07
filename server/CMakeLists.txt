@@ -5,6 +5,13 @@ cmake_policy(SET CMP0048 NEW)
 project(celeste_server VERSION 0.0.1 LANGUAGES CXX)
 message("${gray}celeste_server v${PROJECT_VERSION} ${reset}")
 
+message("${gray}This project uses the following dependencies:")
+message("@ restbed")
+message("@ MySQL C++ connector v8")
+message("@ Boost property_tree")
+message("@ nhlomann JSON")
+message("${reset}")
+
 # ---- Set the module path ---------------------
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/../cmake/modules")
 
@@ -48,22 +55,33 @@ set(SERVER_SOURCE_FILES
 # ---- Find packages ---------------------------
 find_package(restbed        REQUIRED)
 find_package(mysqlcppconn   REQUIRED)
-add_subdirectory("dependency/restbed")
-add_subdirectory("dependency/mysql-connector-cpp/")
+find_package(json           REQUIRED)
 
 include_directories(${mysqlcppconn_INCLUDE})
 include_directories(${restbed_INCLUDE})
-
-
-# find_library(restbedlib librestbed.a) 
-# find_library(MySQL libmysqlcppconn8.dylib)
+include_directories(${json_INCLUDE})
 
 # ---- Add an executable -----------------------
 add_executable(celeste_server ${SERVER_SOURCE_FILES})
 
+# set(LIBRESTBED_FOUND NO)
+# set(LIBMYSQLCPPCONN_FOUND NO)
+
 # ---- Link executable -------------------------`
-target_link_libraries(celeste_server restbed)
-target_link_libraries(celeste_server libconcpp )
+if (NOT ${LIBRESTBED_FOUND})
+    add_subdirectory("dependency/restbed")
+    target_link_libraries(celeste_server restbed)
+else()
+    target_link_libraries(celeste_server ${restbed_LIBRARY})
+endif()
+
+if (NOT ${LIBMYSQLCPPCONN_FOUND})
+    add_subdirectory("dependency/mysql-connector-cpp/")
+    target_link_libraries(celeste_server libconcpp )
+else()
+    target_link_libraries(celeste_server ${mysqlcppconn_LIBRARY})
+endif()
+
 
 # Add our own Sunspec library
 add_library(sunspec SHARED ${sunspec})

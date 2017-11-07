@@ -13,11 +13,9 @@
 #include <string>
 #include <vector>
 #include <iterator>
-#include <boost/date_time/gregorian/gregorian.hpp>
-#include <boost/date_time/posix_time/posix_time.hpp>
 #include "sunspec/data/data.hpp"
 
-namespace solarplant
+namespace celeste
 {
 namespace srv
 {
@@ -31,10 +29,7 @@ namespace util
  *
  * @return     A string but with quotes around it.
  */
-std::string quote(const std::string& str, std::string q = "\'")
-{
-    return q + str + q;
-}
+std::string quote(const std::string& str, std::string q = "\'");
 
 /**
  * @brief      Creates a comma list from elements in a container. The container must contain strings.
@@ -65,10 +60,7 @@ std::string as_comma_list(const It &begin, const It &end)
     return result;
 }
 
-std::string as_comma_list(std::string s)
-{
-    return s;
-}
+std::string as_comma_list(std::string s);
 
 template <typename... Args>
 std::string as_comma_list(std::string s, Args... args)
@@ -83,11 +75,7 @@ std::string as_comma_list(std::string s, Args... args)
  *
  * @return     Returns the quoted string.
  */
-std::string as_column_list(std::string str)
-{
-    return quote(str, "`");
-}
-
+std::string as_column_list(std::string str);
 /**
  * @brief      Returns a comma separated, quoted string with the values being separated
  * being those passed in the container.
@@ -131,10 +119,7 @@ std::string as_column_list(const It &begin, const It &end)
     }
 }
 
-std::string as_value_list(std::string str)
-{
-    return quote(str, "\'");
-}
+std::string as_value_list(std::string str);
 
 template <typename... Args>
 std::string as_value_list(std::string str, Args... args)

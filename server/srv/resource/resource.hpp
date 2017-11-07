@@ -68,6 +68,7 @@
 #ifndef SERVER_RESOURCE_HPP
 #define SERVER_RESOURCE_HPP
 
-#include "logger_upload.hpp"
+#include "logger_upload/logger_upload.hpp"
+#include "query/query.hpp"
 
 #endif //SERVER_RESOURCE_HPP

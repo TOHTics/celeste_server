@@ -167,11 +167,11 @@
  * 3. Declare a function `make_my_resource` under the namespace `solarplant::srv:resource` in `my_resource.hpp` file
  * 4. In the `.cpp` file implement the handler and internals under the namespace `solarplant::srv::handler`
  * 5. Implement the handler and make methods
- * 6. Publish the resource in some service!
+ * 6. Publish the resource in some service.
  *
  * Important notes:
  * - The handler should be `void` and take a `std::shared_ptr<restbed::Session>` as parameter.
  * - The make function should return a `std::shared_ptr<restbed::Resource>` and take a `std::string`
  * as a parameter for setting the path
- * - Check the resources already implemented to get an idea!
+ * - Check the resources already implemented to get an idea.
  */

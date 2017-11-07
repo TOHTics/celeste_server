@@ -1,11 +1,13 @@
 #include <restbed>
 #include <iostream>
 #include <thread>
-// #include "db/entity/AbstractEntity.hpp"
+#include <json.hpp>
 #include "srv/resource/resource.hpp"
+#include "srv/db/db.hpp"
 
 using namespace std;
-using namespace solarplant::srv::resource;
+using namespace celeste::srv::resource;
+using namespace celeste::srv::db;
 
 
 void print_welcome_message()
@@ -27,55 +29,30 @@ int main( const int argc, const char** argv)
     print_welcome_message();
 
     cout << "\e[33m";
+
+    cout << "@ Connecting to DB..." << endl;
+    auto dbSession = make_db_session("localhost", 33060, "root", "root", "Celeste");
+
     cout << "@ Making resources...\n";
     auto upload = make_logger_upload("/resource/logger_upload");
+    auto query = make_query("/resource/query", dbSession);
 
     cout << "@ Configuring server...\n";
+
     auto settings = make_shared<restbed::Settings>();
     settings->set_port(10000);
-
-    restbed::Service service;
+    settings->set_worker_limit(4);
 
     cout << "@ Publishing resources...\n";
+    
+    restbed::Service service;
     service.publish(upload);
+    service.publish(query);
 
     cout << "@ Starting server...\n";
     cout << "\e[m";
     service.start(settings);
 
-
-
-   //  sql::Driver *driver;
-   //  shared_ptr<sql::Connection> conn;
-
-   //  try
-   //  {
-   //      driver = get_driver_instance();
-   //      conn = shared_ptr<sql::Connection>(driver->connect("localhost:3306", "root", "root"));
-   //      conn->setSchema("mydb");
-   // } catch (sql::SQLException e)
-   //  {
-   //      cout << e.what() << endl; 
-   //  }
-
-   //  dao::ModelRecordDAO dao_obj(conn);
-   //  entity::ModelRecord obj;
-
-   //  // obj.device_id = 12;
-   //  // obj.index = 1;
-   //  // obj.t = util::get_universal_time();
-   //  try
-   //  {
-   //      // dao_obj.save(obj);
-   //      std::tuple<int, std::string, int, int> id{42, "Thermometer", 1, 1};
-   //      obj = dao_obj.get(id);
-   //  } catch (sql::SQLException e)
-   //  {
-   //      cout << e.what() << endl;
-   //  }
-
-   //  cout << obj.device_id << endl
-   //       << obj.model_id << endl;
 
     return 0;
 }
