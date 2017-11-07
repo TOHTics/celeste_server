@@ -64,18 +64,15 @@ include_directories(${json_INCLUDE})
 # ---- Add an executable -----------------------
 add_executable(celeste_server ${SERVER_SOURCE_FILES})
 
-# set(LIBRESTBED_FOUND NO)
-# set(LIBMYSQLCPPCONN_FOUND NO)
-
-# ---- Link executable -------------------------`
-if (NOT ${LIBRESTBED_FOUND})
+# ---- Link executable -------------------------
+if (NOT restbed_LIBRARY)
     add_subdirectory("dependency/restbed")
     target_link_libraries(celeste_server restbed)
 else()
     target_link_libraries(celeste_server ${restbed_LIBRARY})
 endif()
 
-if (NOT ${LIBMYSQLCPPCONN_FOUND})
+if (NOT mysqlcppconn_LIBRARY)
     add_subdirectory("dependency/mysql-connector-cpp/")
     target_link_libraries(celeste_server libconcpp )
 else()
