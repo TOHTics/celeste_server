@@ -17,12 +17,6 @@ message("${blue} ------------------------------------------------------- ${reset
 message("${blue} --- Copyright (C) TOH Tics 2017 All rights reserved --- ${reset}")
 message("${blue} ------------------------------------------------------- ${reset}")
 
-message("${gray}This project uses the following dependencies:")
-message("@ restbed")
-message("@ MySQL C++ connector v8")
-message("@ Boost property_tree")
-message("${reset}")
-
 # ---- Build -----------------------------------
 message("${blue}Generating makefiles...${reset}")
 if (BUILD_SERVER)
