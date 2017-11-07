@@ -6,7 +6,7 @@ The system consists in obtaining data from "Solar Plants" which produce electric
 and send relevant data, like power consumption, to the cloud. From there, we can
 choose to cut the power or detect faulty devices.
 
-![diagram](diagrams/SolarPanels.png)
+![diagram](SolarPanels.png)
 
 # TODO
 - Add error codes
