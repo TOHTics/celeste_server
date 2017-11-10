@@ -8,119 +8,25 @@
 
 #include <string>
 #include <mysql_devapi.h>
-#include "methods.hpp"
-#include <type_traits>
+
+#include "srv/service/common.hpp"
+#include "srv/db/db.hpp"
+#include "getLastReading.hpp"
 
 using namespace std;
-using namespace celeste::srv;
 
 using json = nlohmann::json;
 
-
-namespace nlohmann {
-
-    template <>
-    struct adl_serializer<mysqlx::Value>
-    {
-        static void to_json(json &j, const mysqlx::Value& val)
-        {
-            if (val.isNull())
-            {
-                j = nullptr;
-                return;
-            }
-
-            auto type = val.getType();
-            using ValueType = mysqlx::Value::Type;
-            switch (type)
-            {
-                case ValueType::FLOAT:
-                    j = val.get<float>();
-                    break;
-                case ValueType::DOUBLE:
-                    j = val.get<double>();
-                    break;
-                case ValueType::INT64:
-                    j = val.get<int>();
-                    break;
-                case ValueType::STRING:
-                    j = val.get<mysqlx::string>();
-                    break;
-                case ValueType::BOOL:
-                    j = val.get<bool>();
-                    break;
-                default:
-                    throw invalid_argument("Critical Error. Unhandled data type.");
-            }
-        }   
-    };
-
-
-    template <>
-    struct adl_serializer<mysqlx::SqlResult>
-    {
-        static void to_json(json &j, mysqlx::SqlResult res)
-        {
-            json jr;
-            int i = 0;
-            for (const mysqlx::Row& row : res.fetchAll())
-            {
-                int j = 0;
-                for (const mysqlx::Column& column : res.getColumns())
-                {
-                    jr[to_string(i)][column.getColumnName()] = row[j];
-                    j++;
-                }
-                i++;
-            }
-            j = jr; 
-        }
-    };
-
-    template <>
-    struct adl_serializer<mysqlx::RowResult>
-    {
-        static void to_json(json &j, mysqlx::RowResult res)
-        {
-            json jr;
-            int i = 0;
-            for (const mysqlx::Row& row : res.fetchAll())
-            {
-                int j = 0;
-                for (const mysqlx::Column& column : res.getColumns())
-                {
-                    jr[to_string(i)][column.getColumnName()] = row[j];
-                    j++;
-                }
-                i++;
-            }
-            jr["count"] = i;
-
-            j = jr; 
-        }
-    };
-}
-
-
 namespace celeste
 {
-namespace srv
+namespace resource
 {
-namespace query
+namespace reading
 {
-    using ValueList = std::vector<mysqlx::Value>;
-
-    using ValueMap = std::map<std::string, mysqlx::Value>;
-
-    enum PointType
-    {
-        STRING = 0,
-        INT,
-        DOUBLE,
-        FLOAT
-    };
-
-    json getLastReading(const string& point_id, const string& model_id, int device_id, shared_ptr<mysqlx::Session> dbSession)
+    json getLastReading(const string& point_id,
+                        const string& model_id,
+                        int device_id,
+                        const shared_ptr<mysqlx::Session> dbSession)
     {
         // Get contents
         auto res = dbSession->sql(

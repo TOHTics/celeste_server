@@ -2,14 +2,11 @@
 #include <iostream>
 #include <thread>
 #include <json.hpp>
-#include "srv/resource/resource.hpp"
 #include "srv/db/db.hpp"
+#include "srv/service/services.hpp"
 
 using namespace std;
-using namespace celeste::srv::resource;
-using namespace celeste::srv::db;
-
-
+using namespace celeste;
 void print_welcome_message()
 {
     cout << "\e[37m";
@@ -31,11 +28,10 @@ int main( const int argc, const char** argv)
     cout << "\e[33m";
 
     cout << "@ Connecting to DB..." << endl;
-    auto dbSession = make_db_session("localhost", 33060, "root", "root", "Celeste");
+    auto dbSession = db::make_db_session("localhost", 33060, "root", "root", "Celeste");
 
     cout << "@ Making resources...\n";
-    auto upload = make_logger_upload("/resource/logger_upload");
-    auto query = make_query("/resource/query", dbSession);
+    auto upload = resource::make_logger_upload("/resource/logger_upload", dbSession);
 
     cout << "@ Configuring server...\n";
 
@@ -47,7 +43,6 @@ int main( const int argc, const char** argv)
     
     restbed::Service service;
     service.publish(upload);
-    service.publish(query);
 
     cout << "@ Starting server...\n";
     cout << "\e[m";

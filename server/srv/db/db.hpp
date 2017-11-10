@@ -3,11 +3,32 @@
 
 #include <memory>
 #include <restbed>
+#include <json.hpp>
 #include <mysql_devapi.h>
 
-namespace celeste
+namespace nlohmann
 {
-namespace srv
+    template <>
+    struct adl_serializer<mysqlx::Value>
+    {
+        static void to_json(json& j, const mysqlx::Value& value);
+        static void from_json(const json& j, mysqlx::Value& value);
+    };
+
+    template <>
+    struct adl_serializer<mysqlx::RowResult>
+    {
+        static void to_json(json& j, mysqlx::RowResult res);
+    };
+
+    template <>
+    struct adl_serializer<mysqlx::SqlResult>
+    {
+        static void to_json(json& j, mysqlx::SqlResult res);
+    };
+}
+
+namespace celeste
 {
     namespace db
     {
@@ -40,13 +61,8 @@ namespace srv
      *
      * @return     MySQL database session.
      */
-    std::shared_ptr<mysqlx::Session> make_db_session(std::string host, int port, std::string user, std::string pwd)
-    {
-        return std::shared_ptr<mysqlx::Session>(new mysqlx::Session(host, port, user, pwd));
-    }
+    std::shared_ptr<mysqlx::Session> make_db_session(std::string host, int port, std::string user, std::string pwd);
 
     }
 }
-}
-
 #endif

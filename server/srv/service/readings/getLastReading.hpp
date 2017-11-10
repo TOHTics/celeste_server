@@ -5,19 +5,21 @@
  * 
  * @file
  */
+#ifndef SERVER_RESOURCE_QUERY_LASTREADING_HPP
+#define SERVER_RESOURCE_QUERY_LASTREADING_HPP
 
+#include <restbed>
 #include <memory>
 #include <mysql_devapi.h>
 #include <json.hpp>
 
-#ifndef SERVER_RESOURCE_QUERY_LASTREADING_HPP
-#define SERVER_RESOURCE_QUERY_LASTREADING_HPP
-
 namespace celeste
 {
-namespace srv
+namespace resource
 {
-namespace query
+    std::shared_ptr<restbed::Resource> make_new_device(std::string path,
+                                                       const std::shared_ptr<mysqlx::Session> dbSession);
+namespace reading
 {
     /**
      * @brief      Gets the last measurement from one of the models on the device.
@@ -53,8 +55,9 @@ namespace query
     nlohmann::json getLastReading(const std::string& point_id,
                                   const std::string& model_id,
                                   int device_id,
-                                  std::shared_ptr<mysqlx::Session> dbSession);
+                                  const std::shared_ptr<mysqlx::Session> dbSession);
 }
 }
 }
+
 #endif

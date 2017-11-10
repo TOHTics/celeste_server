@@ -44,6 +44,13 @@ file(GLOB_RECURSE TEST_SRC
     )
 set(tests ${TEST_SRC})
 
+# ---- Sunspec ---------------------------------
+file(GLOB_RECURSE SUNSPEC_SRC
+    "db/*.hpp"
+    "db/*.cpp"
+    )
+set(db ${DB_SRC})
+
 # ---- Mix all source files --------------------
 set(SERVER_SOURCE_FILES 
         main.cpp

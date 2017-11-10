@@ -16,10 +16,26 @@
 
 namespace celeste
 {
-namespace srv
+namespace resource
 {
-    namespace handler
-    {
+    /**
+     * @brief      Makes a Logger Upload Resource. If a Logger gains access to
+     * this resource then it will get a response as per the SDX spec.
+     * 
+     * @param[in]  path  Path where the logger upload shall be located.
+
+     * @return     A `restbed::Resource` describing a logger upload.
+     * 
+     * This resource allows for a Logger to transmit the SDX data
+     * to the Host. The host will attempt to parse it and in any case
+     * of errors it will respond back with a description of the error
+     * as per SDX. If no errors where found, then the Host will respond
+     * back with a success message.
+     */
+    std::shared_ptr<restbed::Resource> make_logger_upload(const std::string& path,
+                                                          const std::shared_ptr<mysqlx::Session> dbSession);
+namespace logger_upload
+{
     /**
      * @brief      Method used to handle a request to the Logger Upload Resource.
      * 
@@ -85,25 +101,6 @@ namespace srv
      */
     void persist_data(const sunspec::data::SunSpecData &data, const std::shared_ptr<mysqlx::Session> dbSession);
 
-    }
-
-    namespace resource
-    {
-    /**
-     * @brief      Makes a Logger Upload Resource. If a Logger gains access to
-     * this resource then it will get a response as per the SDX spec.
-     * 
-     * @param[in]  path  Path where the logger upload shall be located.
-
-     * @return     A `restbed::Resource` describing a logger upload.
-     * 
-     * This resource allows for a Logger to transmit the SDX data
-     * to the Host. The host will attempt to parse it and in any case
-     * of errors it will respond back with a description of the error
-     * as per SDX. If no errors where found, then the Host will respond
-     * back with a success message.
-     */
-    std::shared_ptr<restbed::Resource> make_logger_upload(std::string path);
     }
 }
 }
