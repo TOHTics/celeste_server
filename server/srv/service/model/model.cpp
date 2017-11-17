@@ -58,14 +58,17 @@ namespace resource
                 auto sch = dbSession->getSchema("Celeste");
                 auto table = sch.getTable("Model");
 
-                table.insert("id", "ns").values(data["id"], data["ns"]).execute();
+                table.
+                insert("id", "ns").
+                values(data["id"].get<string>().c_str(),
+                       data["ns"].get<string>().c_str()).
+                execute();
             }
             catch (const mysqlx::Error& e)
             {
                 handle_error(restbed::INTERNAL_SERVER_ERROR,
                              "Could not save Model", session);
             }
-            
         });
     }
 
@@ -80,7 +83,11 @@ namespace resource
             auto sch = dbSession->getSchema("Celeste");
             auto table = sch.getTable("Model");
             
-            table.remove().where("id = :id").bind("id", id);
+            table.
+            remove().
+            where("id = :id").
+            bind("id", id);
+
         } catch (const mysqlx::Error& e)
         {
             handle_error(restbed::INTERNAL_SERVER_ERROR,

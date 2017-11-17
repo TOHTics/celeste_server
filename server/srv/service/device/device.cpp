@@ -86,9 +86,13 @@ namespace resource
                 int max_id = table.select("MAX(id)").execute().fetchOne().get(0);
 
                 table.
-                    insert("id", "Client_id", "man", "mod", "sn").
-                    values(++max_id, data["client_id"], data["man"], data["mod"], data["sn"]).
-                    execute();
+                insert("id", "Client_id", "man", "mod", "sn").
+                values(++max_id,
+                       data["client_id"].get<int>(),
+                       data["man"].get<string>().c_str(),
+                       data["mod"].get<string>().c_str(),
+                       data["sn"].get<string>().c_str()).
+                execute();
 
                 string rb = json(max_id).dump();
                 session->close(restbed::OK,
@@ -100,7 +104,12 @@ namespace resource
             } else
             {
                 table.insert("id", "Client_id", "man", "mod", "sn").
-                values(data["id"], data["client_id"], data["man"], data["mod"], data["sn"]).execute();
+                values(data["id"].get<int>(),
+                       data["client_id"].get<int>(),
+                       data["man"].get<string>().c_str(),
+                       data["mod"].get<string>().c_str(),
+                       data["sn"].get<string>().c_str()).
+                execute();
                 
                 string rb = json(data["id"].get<int>()).dump();
                 session->close(restbed::OK,
@@ -140,8 +149,15 @@ namespace resource
         {
             auto sch = dbSession->getSchema("Celeste");
             auto table = sch.getTable("Device");
-            table.remove().where("id = :id").bind(ValueMap{{"id", device_id}}).execute();
-            session->close(restbed::OK, "Succesfully deleted Device " + to_string(device_id) + " and all its records.");
+
+            table.
+            remove().
+            where("id = :id").
+            bind(ValueMap{{"id", device_id}}).
+            execute();
+
+            session->close(restbed::OK,
+                           "Succesfully deleted Device " + to_string(device_id) + " and all its records.");
         }
         catch (const mysqlx::Error& e)
         {

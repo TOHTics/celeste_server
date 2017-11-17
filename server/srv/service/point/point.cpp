@@ -33,26 +33,26 @@ namespace resource
                     auto res = table.
                         select("*").
                         where("Model_id = :ModelId").
-                        bind(ValueMap{{"ModelId", data["Model_id"]}}).
+                        bind(ValueMap{{"ModelId", data["Model_id"].get<string>().c_str()}}).
                         execute();
 
                     json rb = move(res);
-                    session->close(restbed::OK, rb.get<string>());
+                    session->close(restbed::OK, rb.dump());
                 } else
                 {
                     auto res = table.
                         select("*").
                         where("Model_id = :ModelId AND id = :PointId").
                         bind(ValueMap{
-                            {"ModelId", data["Model_id"]},
-                            {"PointId", data["Point_id"]}
+                            {"ModelId", data["Model_id"].get<string>().c_str()},
+                            {"PointId", data["Point_id"].get<string>().c_str()}
                         }).execute();
 
-                    json rb = move(res);
+                    string rb = json(move(res));
                     session->close(restbed::OK,
-                                   rb.dump(),
+                                   rb,
                                    {
-                                       { "Content-Length", to_string(rb.dump().size()) },
+                                       { "Content-Length", to_string(rb.size()) },
                                        { "Connection",     "close" }
                                    });
                 }
