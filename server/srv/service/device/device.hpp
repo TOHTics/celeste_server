@@ -15,51 +15,29 @@
 #include <mysql_devapi.h>
 #include <json.hpp>
 #include <restbed>
-
-using namespace std;
+#include <functional>
 
 namespace celeste
 {   
-    namespace service
-    {
-        struct Device
-        {
-            int id;
-            std::string client_id;
-            std::string man;
-            std::string mod;
-            std::string sn;
+namespace resource
+{
+    void get_device(const std::shared_ptr<restbed::Session> session,
+                    const std::shared_ptr<mysqlx::Session> dbSession);
 
-            static void
-            to_json(nlohmann::json& j, const Device& p);
+    void save_device(const std::shared_ptr<restbed::Session> session,
+                     const std::shared_ptr<mysqlx::Session> dbSession);
+    
+    void delete_device(const std::shared_ptr<restbed::Session> session,
+                     const std::shared_ptr<mysqlx::Session> dbSession);
 
-            static void
-            from_json(const nlohmann::json& j, Device& p);
-        };
+    void add_model(const std::shared_ptr<restbed::Session> session,
+                           const std::shared_ptr<mysqlx::Session> dbSession);
 
-        class Devices
-        {
-            const std::shared_ptr<mysqlx::Session> dbSession;
-            Devices(const std::shared_ptr<mysqlx::Session> session);
+    std::shared_ptr<restbed::Resource> make_device(const std::shared_ptr<mysqlx::Session> dbSession);
+    std::shared_ptr<restbed::Resource> make_add_model(const std::shared_ptr<mysqlx::Session> dbSession);
 
-        private:
-            nlohmann::json newDevice(const nlohmann::json& data);
-            nlohmann::json deleteDevice();
-            nlohmann::json updateDevice();
-
-        public:
-            void create(const Device& dev);
-            void erase(int id);
-            void update(const Device& dev);
-        };
-
-        std::shared_ptr<restbed::Resource> make_device_resource(std::string path);
-    }
-
-    namespace service
-    {
-        restbed::Service get_device_service();
-    }
 }
+}
+
 
 #endif

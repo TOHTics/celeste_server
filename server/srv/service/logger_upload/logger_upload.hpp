@@ -43,7 +43,8 @@ namespace logger_upload
      * 
      * This method tries to stick to the SunSpec Data Exchange HTTP communication protocol.
      */
-    void logger_upload_handler(const std::shared_ptr<restbed::Session> session);
+    void logger_upload_handler(const std::shared_ptr<restbed::Session> session,
+                               const std::shared_ptr<mysqlx::Session> dbSession);
 
 
     /**

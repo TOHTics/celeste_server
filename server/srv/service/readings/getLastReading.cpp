@@ -21,8 +21,6 @@ namespace celeste
 {
 namespace resource
 {
-namespace reading
-{
     json getLastReading(const string& point_id,
                         const string& model_id,
                         int device_id,
@@ -90,6 +88,5 @@ namespace reading
         }
         return j;
     }
-}
 }
 }

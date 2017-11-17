@@ -106,8 +106,6 @@ namespace nlohmann {
             }
             i++;
         }
-        jr["count"] = i;
-
         j = jr; 
     }
 }

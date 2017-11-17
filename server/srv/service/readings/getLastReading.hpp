@@ -17,10 +17,6 @@ namespace celeste
 {
 namespace resource
 {
-    std::shared_ptr<restbed::Resource> make_new_device(std::string path,
-                                                       const std::shared_ptr<mysqlx::Session> dbSession);
-namespace reading
-{
     /**
      * @brief      Gets the last measurement from one of the models on the device.
      *
@@ -56,7 +52,6 @@ namespace reading
                                   const std::string& model_id,
                                   int device_id,
                                   const std::shared_ptr<mysqlx::Session> dbSession);
-}
 }
 }
 
