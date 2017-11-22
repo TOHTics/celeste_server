@@ -30,11 +30,12 @@ This is the documentation for the Celeste HTTP API.
 
 A Device is that which contains the sensors (a.k.a Models) like a Voltmeter or a Thermometer. It is the one in charge of assembling the "Device Data Packets", which are the collection of readings from its models. The API offers these operations:
 
-| Operation   | Method  | Url                   | Description                        |
-|:-----------:|:-------:|-----------------------|------------------------------------|
-|   `get`     | GET     | `/celeste/devices/`   | Gets a device and its information. |
-|   `insert`  | POST    | `/celeste/devices/`   | Inserts a new device into the DB.  |
-|   `remove`  | DELETE  | `/celeste/devices/`   | Deletes a device on the DB along with its associated records.                                                              |
+| Operation   | Method  | Url                   | Description                           |
+|:-----------:|:-------:|-----------------------|---------------------------------------|
+|   `get`     | GET     | `/celeste/devices/`   | Gets a device and its information.    |
+|   `insert`  | POST    | `/celeste/devices/`   | Inserts a new device into the DB.     |
+|   `remove`  | DELETE  | `/celeste/devices/`   | Deletes a device on the DB along with its associated records. |
+| `add_model` | POST    | `/celeste/devices`    | Add a Model to the Device.            |
 
 ## `get`
 ### Request
@@ -53,16 +54,18 @@ Where:
 | `DeviceId`  | Required  | Unique identifier for the device. |
 
 ### Response
+````http
+Status Code:    200
+Status Message: OK
 ````
-[
-	{
-		"Client_id" : integer / null,
-		"id"  : integer,
-		"man" : string,
-		"mod" : string,
-		"sn"  : string
-	}
-]
+````
+{
+	"Client_id" : integer,
+	"id"  : integer,
+	"man" : string,
+	"mod" : string,
+	"sn"  : string
+}
 ````
 
 ## `insert`
@@ -93,7 +96,7 @@ Where:
 
 
 ### Response
-````
+````http
 Status Code:    200
 Status Message: OK
 ````
@@ -123,7 +126,7 @@ Where:
 | `DeviceId`  | Required  | Unique identifier for the device. |
 
 ### Response
-````
+````http
 Status Code:    200
 Status Message: OK
 ````
@@ -155,7 +158,7 @@ We can query the details for a device using the following JSON format:
 
 ````
 {
-	"DeviceId" : integer
+	"ModelId" : string
 }
 ````
 
@@ -163,19 +166,18 @@ Where:
 
 | Field       | R/O       | Description                       |
 |:-----------:|:---------:|-----------------------------------|
-| `DeviceId`  | Required  | Unique identifier for the device. |
+| `ModelId`   | Required  | Unique identifier for the model.  |
 
 ### Response
+````http
+Status Code:    200
+Status Message: OK
 ````
-[
-	{
-		"Client_id" : integer / null,
-		"id"  : integer,
-		"man" : string,
-		"mod" : string,
-		"sn"  : string
-	}
-]
+````
+{
+	"id": string,
+	"ns": string
+}
 ````
 
 ## `insert`
@@ -184,25 +186,18 @@ We can insert a new device into the database with the following format:
 
 ````
 {
-    "autogen"  : bool,
-    "DeviceId" : integer,
-    "ClientId" : integer / null,
-    "man" : string,
-    "mod" : string,
-    "sn"  : string    
+	"ModelId" : integer,
+	"ns" : string
 }
 ````
 
 Where:
 
-| Field       | R/O       | Description                                      |
-|:-----------:|:---------:|--------------------------------------------------|
-| `autogen`   | Required  | `true` to generate automatically the `DeviceId`. |
-| `DeviceId`  | Required  | Unique identifier for the device.                |
-| `ClientId`  | Optional  | Unique identifier that represents the client which *owns* the device. This field is optional and thus can be `null`.                   |
-| `man`       | Required  | Manufacturer of the device.                      |
-| `mod`       | Required  | Model of the device.                             |
-| `sn`        | Required  | Serial number of the device.                     |
+| Field       | R/O       | Description                          |
+|:-----------:|:---------:|--------------------------------------|
+| `ModelId`   | Required  | Unique identifier for the Model.     |
+| `ns`        | Optional  | Namespace or Notes for the Model. One may use this to annotate this particular model.                                  |
+
 
 
 ### Response
@@ -241,6 +236,7 @@ Status Code:    200
 Status Message: OK
 ````
 If one attempts to `remove` a device which does not exist in the database, then the operation will return the response.
+
 # Point
 
 ````
@@ -254,22 +250,37 @@ P @--------------/
 P @-------------/
 ````
 
-  Points are measurements taken by `Models`. These points can be samples
-  such as:
-  - Amperage
-  - Wattage
-  - Latitude
-  - Longitude
-  - Altitude
-  - Temperature
+Points are measurements taken by `Models`. These points can be samples
+such as:
+
+- Amperage
+- Wattage
+- Latitude
+- Longitude
+- Altitude
+- Temperature
 
 # Reading
+Not written yet.
 
 # Logger
-The Logger resource is one of the most important parts of the whole Celeste system. This is the part which processes the data sent to it. This being said, there are 3 specific formats which the server will accept; XML, JSON and CelesteRN. Currently only XML is supported.
+The Logger resource is one of the most important parts of the whole Celeste system. This is the resource which will listen for incoming records sent by the Devices. This being said, there are 3 specific formats which the logger will understand: XML, JSON and CelesteRN. Currently only XML is supported.
+
+It will be necessary to specify the following headers whenever you use the logger:
+
+````http
+Content-Length: length
+Content-Type:   application/xml
+````
+| Header            | Description                           |
+|:-----------------:|---------------------------------------|
+| `Content-Length`  | The number of characters in the body. |
+| `Content-Type`    | One of the following: <br/> `application/xml` <br/> `application/json`<br/> `application/CelesteRN`             |
+
+
 
 ## Uploading to the Logger
-To upload to the Logger, one must send their data to URL:
+To upload to the Logger, one must send their data to the URL:
 
 `http://[host]:[port]/celeste/logger/upload` 
 
@@ -307,17 +318,17 @@ The `...` is meant to indicate a list. So clearly  `SunSpecData` contains a list
 #### Tag Table
 Not all of the attributes defined in the grammar are mandatory. It proves useful to build a table to indicate what each of these tags mean and whether they are optional or mandatory.
 
-| Tag     | M/O     | Description                                                  |
-|:-------:|:-------:|--------------------------------------------------------------|
-| `v`     | M       | Version number of grammar.                                   |
-| `d.id`  | M       | Identifier of Device. E.g. 1443                              |
-| `d.t`   | M       | Timestamp at which the records were assembled.               |
-| `d.lid` | O       | Identifier of the Logger which the Device sends its data to. |
-| `m.id`  | M       | Identifier of the Model. E.g. Thermometer.                   |
-| `m.x`   | M       | Aggregated index of the Model on the Device. Used to differentiate between two identical models on the Device. |
-| `p.id`  | M       | Identifier of the Point on the Model. E.g. Celsius.
-| `p.sf`  | O       | Scale factor to use. Needed to calculate: `scaled_value = value * 10^(sf)`. If not specified then default value is `0`.
-| `p.t`   | O       | Timestamp at which the measurement was taken.
+| Tag     | R/O      | Description                                                  |
+|:-------:|:--------:|--------------------------------------------------------------|
+| `v`     | Required | Version number of grammar.                                   |
+| `d.id`  | Required | Identifier of Device. E.g. 1443                              |
+| `d.t`   | Required | Timestamp at which the records were assembled.               |
+| `d.lid` | Optional | Identifier of the Logger which the Device sends its data to. |
+| `m.id`  | Required | Identifier of the Model. E.g. Thermometer.                   |
+| `m.x`   | Required | Aggregated index of the Model on the Device. Used to differentiate between two identical models on the Device. |
+| `p.id`  | Required | Identifier of the Point on the Model. E.g. Celsius.
+| `p.sf`  | Optional | Scale factor to use. Needed to calculate: `scaled_value = value * 10^(sf)`. If not specified then default value is `0`.
+| `p.t`   | Optional | Timestamp at which the measurement was taken.
 
 ### Response
 #### Success
@@ -335,7 +346,7 @@ On failure, if `verbose?=1` then it will answer back with a verbose message. If 
 
 ##### Parsing Error
 
-````
+````http
 Status Code:    400
 Status Message: BAD REQUEST
 ````
@@ -354,7 +365,7 @@ Status Message: BAD REQUEST
 
 ##### Database Error
 
-````xml
+````http
 Status Code:    500
 Status Message: INTERNAL SERVER ERROR
 ````
@@ -406,11 +417,11 @@ Translating over to XML we get:
 ````xml
 <SunSpecData v="1.0">
     <d id="4001" t="2017-11-21 15:30:01">
-        <m id="Thermometer" x="1">
-        	<p id="Temperature">
-        		30
-        	</p>
-        </m> 
+    	<m id="Thermometer" x="1">
+    		<p id="Temperature">
+    			30
+    		</p>
+    	</m> 
     </d>
 </SunSpecData>
 ````
