@@ -1,7 +1,7 @@
-#Overview
+# Overview
 This is the documentation for the Celeste HTTP API. 
 
-#Table of Contents
+# Table of Contents
 
 
 1.  [Overview](#Overview)
@@ -24,7 +24,7 @@ A Device is that which contains the sensors (a.k.a Models) like a Voltmeter or a
 ### Request
 We can query the details for a device using the following JSON format:
 
-````json
+````
 {
 	"DeviceId" : integer
 }
@@ -37,7 +37,7 @@ Where:
 | `DeviceId`  | Required  | Unique identifier for the device. |
 
 ### Response
-````json
+````
 [
 	{
 		"Client_id" : null,
@@ -53,7 +53,7 @@ Where:
 ### Request
 We can insert a new device into the database with the following format:
 
-````json
+````
 {
     "autogen"  : bool,
     "DeviceId" : integer,
@@ -84,7 +84,7 @@ Status Message: OK
 
 If `autogen` was not set then it returns an empty body. Else:
 
-````json
+````
 {
 	DeviceId : integer
 }
