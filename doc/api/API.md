@@ -17,7 +17,7 @@ A Device is that which contains the sensors (a.k.a Models) like a Voltmeter or a
 | Operation   | Method  | Url                   | Description                        |
 |:-----------:|:-------:|-----------------------|------------------------------------|
 |   `get`     | GET     | `/celeste/devices/`   | Gets a device and its information. |
-|   `insert`  | POST    | `/celeste/devices/`   | Insert a new device into the DB.   |
+|   `insert`  | POST    | `/celeste/devices/`   | Inserts a new device into the DB.  |
 |   `remove`  | DELETE  | `/celeste/devices/`   | Deletes a device on the DB along with its associated records.                                                              |
 
 ## `get`
@@ -240,4 +240,22 @@ Status Message: INTERNAL SERVER ERROR
 		[Message explaining why the insertion to the database failed]
 	</message>
 </SunSpecDataResponse>
+````
+
+## XML Example
+To make the usage of the grammar simpler, we will give an example. Suppose we would like to save some records by a Device with only one Thermometer. Firstly we need to pinpoint the Device by its identifier. Say this Device in particular has the identifier `4001`. Also say that  the Device assembles all records at 
+
+````
+<SunSpecData v="1.0">
+    <d id="4001" t="2017-11-21 15:30:01">
+        <m id="Thermometer" x="1">
+        	<p id="[a-zA-Z]+" sf="[0-9]+" t="YYY-MM-DD HH:MM:SS">
+        		VALUE
+        	</p>
+        	...
+        </m> 
+    	...
+    </d>
+    ...
+</SunSpecData>
 ````
