@@ -10,7 +10,8 @@ cmake-build-debug/
 build/
 compile_commands.json
 # docs
-doc/
+doc/html/
+doc/latex/
 reports/
 
 # Prerequisites
