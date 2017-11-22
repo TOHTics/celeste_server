@@ -32,8 +32,7 @@ namespace resource
      * as per SDX. If no errors where found, then the Host will respond
      * back with a success message.
      */
-    std::shared_ptr<restbed::Resource> make_logger_upload(const std::string& path,
-                                                          const std::shared_ptr<mysqlx::Session> dbSession);
+    std::shared_ptr<restbed::Resource> make_logger_upload(const std::shared_ptr<mysqlx::Session> dbSession);
 namespace logger_upload
 {
     /**

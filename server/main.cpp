@@ -31,11 +31,12 @@ int main( const int argc, const char** argv)
     auto dbSession = db::make_db_session("localhost", 33060, "root", "root", "Celeste");
 
     cout << "@ Making resources...\n";
-    auto upload = resource::make_logger_upload("/logger_upload", dbSession);
+    auto upload = resource::make_logger_upload(dbSession);
     auto device = resource::make_device(dbSession);
     auto model = resource::make_model(dbSession);
     auto point = resource::make_point(dbSession);
     auto add_model = resource::make_add_model(dbSession);
+    auto reading = resource::make_reading(dbSession);
 
     cout << "@ Configuring server...\n";
 
@@ -52,6 +53,7 @@ int main( const int argc, const char** argv)
     service.publish(model);
     service.publish(point);
     service.publish(add_model);
+    service.publish(reading);
 
     cout << "@ Starting server...\n";
     cout << "\e[m";

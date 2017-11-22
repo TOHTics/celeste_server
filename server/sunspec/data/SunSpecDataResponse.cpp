@@ -179,9 +179,9 @@ SunSpecDataResponse SunSpecDataResponse::from_xml( const std::string &data_respo
 
 std::ostream &operator<<( std::ostream &os, const SunSpecDataResponse &obj )
 {
-    os << "Status: " << obj.status << std::endl
-       << "Code: " << obj.code << std::endl
-       << "Reason: " << obj.reason << std::endl
+    os << "Status: " << obj.status << "\n"
+       << "Code: " << obj.code << "\n"
+       << "Reason: " << obj.reason << "\n"
        << "Message: " << obj.message;
     return os;
 

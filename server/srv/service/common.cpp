@@ -32,11 +32,10 @@ namespace resource
                       string message,
                       const shared_ptr<restbed::Session> session)
     {
-        json error = message;
         session->close(status_code,
-                       error.dump(),
+                       message,
                        {
-                           { "Content-Length", to_string(error.dump().size()) },
+                           { "Content-Length", to_string(message.size()) },
                            { "Connection",     "close" }
                        });
     }

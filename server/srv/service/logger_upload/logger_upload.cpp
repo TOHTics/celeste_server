@@ -56,7 +56,7 @@ namespace logger_upload
 
         string rr_body = data::SunSpecDataResponse::to_xml(ssr);
 
-        session->close(sdx::FAILURE,
+        session->close(restbed::INTERNAL_SERVER_ERROR,
                        rr_body,
                        {
                                { "Content-Length", to_string(rr_body.size()) },
@@ -75,7 +75,7 @@ namespace logger_upload
 
         string rr_body = data::SunSpecDataResponse::to_xml(ssr);
 
-        session->close(sdx::FAILURE,
+        session->close(restbed::BAD_REQUEST,
                        rr_body,
                        {
                                { "Content-Length", to_string(rr_body.size()) },
@@ -85,19 +85,7 @@ namespace logger_upload
 
     void handle_accept(const shared_ptr<restbed::Session> session)
     {
-        data::SunSpecDataResponse ssr;
-        ssr.status = 400;
-        ssr.code = "SUCCESS";
-        ssr.reason = "No errors found";
-        ssr.message = "We have accepted the records :-)";
-
-        string rr_b = data::SunSpecDataResponse::to_xml(ssr);
-        session->close(sdx::SUCCESS,
-                       rr_b,
-                       {
-                               { "Content-Length", to_string(rr_b.size()) },
-                               { "Connection",     "close" }
-                       });
+        session->close(sdx::SUCCESS);
     }
 
     void persist_data(const data::SunSpecData &data, const shared_ptr<mysqlx::Session> dbSession)
@@ -243,11 +231,12 @@ namespace logger_upload
     }
 }
 
-    shared_ptr<restbed::Resource> make_logger_upload(const string& path,
-                                                     const shared_ptr<mysqlx::Session> dbSession)
+    shared_ptr<restbed::Resource> make_logger_upload(const shared_ptr<mysqlx::Session> dbSession)
     {
         auto resource = make_shared<restbed::Resource>();
-        resource->set_path(path);
+        resource->set_paths({
+            "/logger/upload/",
+            "/logger/upload/verbose?={(0|1)}"});
         resource->set_method_handler("POST", bind(logger_upload::logger_upload_handler, _1, dbSession));
         return std::move(resource);
     }

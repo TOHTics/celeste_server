@@ -40,8 +40,8 @@ namespace resource
             {
                 auto res = table.
                     select("*").
-                    where("id = :Id").
-                    bind(ValueMap{{"Id", data["id"].get<int>()}}).
+                    where("id = :DeviceId").
+                    bind(ValueMap{{"DeviceId", data["DeviceId"].get<int>()}}).
                     execute();
 
                     string rb = json(move(res)).dump();
@@ -55,7 +55,7 @@ namespace resource
             } catch (const mysqlx::Error& e)
             {
                 handle_error(restbed::INTERNAL_SERVER_ERROR,
-                             "Could not get Device " + to_string(data["id"].get<int>()),
+                             "Could not get Device " + to_string(data["DeviceId"].get<int>()),
                              session
                              );
             }
@@ -74,7 +74,6 @@ namespace resource
             // Get body
             string body;
             bytes2string(bytes, body);
-            cout << body << endl;
 
             json data = json::parse(body);
 
@@ -88,13 +87,15 @@ namespace resource
                 table.
                 insert("id", "Client_id", "man", "mod", "sn").
                 values(++max_id,
-                       data["client_id"].get<int>(),
+                       data["client_id"],
                        data["man"].get<string>().c_str(),
                        data["mod"].get<string>().c_str(),
                        data["sn"].get<string>().c_str()).
                 execute();
 
-                string rb = json(max_id).dump();
+                json response;
+                response["DeviceId"] = max_id;
+                string rb = response.dump();
                 session->close(restbed::OK,
                                    rb,
                                    {
@@ -105,19 +106,12 @@ namespace resource
             {
                 table.insert("id", "Client_id", "man", "mod", "sn").
                 values(data["id"].get<int>(),
-                       data["client_id"].get<int>(),
+                       data["client_id"],
                        data["man"].get<string>().c_str(),
                        data["mod"].get<string>().c_str(),
                        data["sn"].get<string>().c_str()).
                 execute();
-                
-                string rb = json(data["id"].get<int>()).dump();
-                session->close(restbed::OK,
-                                   rb,
-                                   {
-                                       { "Content-Length", to_string(rb.size()) },
-                                       { "Connection",     "close" }
-                                   });
+                session->close(restbed::OK);
             }
         });
     }
@@ -126,25 +120,20 @@ namespace resource
                        const shared_ptr<mysqlx::Session> dbSession)
     {
         const auto request = session->get_request();
+        size_t content_length = (size_t) request->get_header("Content-Length", 0);
 
-        if (! request->has_path_parameter("id"))
+        json data;
+        session->fetch(content_length,
+        [ request, dbSession, &data] (const shared_ptr<restbed::Session> session, const restbed::Bytes &bytes)
         {
-            handle_error(restbed::BAD_REQUEST,
-                         "Please specify the id of the Device to delete",
-                         session);
-            return;
-        }
+            // Get body
+            string body;
+            bytes2string(bytes, body);
 
-        int device_id;
-        try
-        {
-            device_id = stoi(request->get_path_parameter("id"));
-        } catch (const exception& e)
-        {
-            json error = "Device id must be a positive integer!";
-            handle_error(restbed::BAD_REQUEST, "Device id must be a positive integer!", session);
-        }
+            data = json::parse(body);
+        });
 
+        int device_id = data["DeviceId"];
         try
         {
             auto sch = dbSession->getSchema("Celeste");
@@ -152,12 +141,11 @@ namespace resource
 
             table.
             remove().
-            where("id = :id").
-            bind(ValueMap{{"id", device_id}}).
+            where("id = :DeviceId").
+            bind(ValueMap{{"DeviceId", device_id}}).
             execute();
 
-            session->close(restbed::OK,
-                           "Succesfully deleted Device " + to_string(device_id) + " and all its records.");
+            session->close(restbed::OK);
         }
         catch (const mysqlx::Error& e)
         {
@@ -185,7 +173,7 @@ namespace resource
 
             int max_idx = res.fetchOne().get(0);
             table.insert("idx", "Device_id", "Model_id").values(max_idx + 1, device_id, model_id.c_str()).execute();
-
+            session->close(restbed::OK);
         } catch (const mysqlx::Error& e)
         {
             handle_error(restbed::INTERNAL_SERVER_ERROR,
@@ -199,9 +187,9 @@ namespace resource
         auto resource = make_shared<restbed::Resource>();
         resource->set_paths({
             "/devices",
-            "/devices/{id: [0-9]+}"
+            "/devices/{DeviceId: [0-9]+}"
         });
-
+        resource->set_method_handler("GET", bind(get_device, placeholders::_1, dbSession));
         resource->set_method_handler("POST", bind(save_device, placeholders::_1, dbSession));
         resource->set_method_handler("DELETE", bind(delete_device, placeholders::_1, dbSession));
         return move(resource);

@@ -8,10 +8,11 @@
 
 #include <string>
 #include <mysql_devapi.h>
+#include <functional>
 
 #include "srv/service/common.hpp"
 #include "srv/db/db.hpp"
-#include "getLastReading.hpp"
+#include "readings.hpp"
 
 using namespace std;
 
@@ -21,10 +22,36 @@ namespace celeste
 {
 namespace resource
 {
-    json getLastReading(const string& point_id,
-                        const string& model_id,
-                        int device_id,
-                        const shared_ptr<mysqlx::Session> dbSession)
+    LastReading::LastReading(const shared_ptr<mysqlx::Session> _dbSession)
+        : dbSession(_dbSession)
+    {}
+
+
+    vector<string>
+    LastReading::required_fields() const
+    {
+        return {"PointId", "ModelId", "DeviceId"};
+    }
+
+
+    json
+    LastReading::get(json&& j) const
+    {
+        return get(forward<json>(j));
+    }
+
+
+    json
+    LastReading::get(const json& j) const
+    {
+        return get(j["PointId"], j["ModelId"], j["DeviceId"]);
+    }
+
+
+    json
+    LastReading::get(const string& point_id,
+                          const string& model_id,
+                          int device_id) const
     {
         // Get contents
         auto res = dbSession->sql(
@@ -53,7 +80,7 @@ namespace resource
                                         model_id.c_str(),
                                         device_id
                                     }).execute();
-        json j = std::move(res);
+        json j = move(res);
 
         // Add value converted to type
         int type = dbSession->sql(
@@ -66,7 +93,7 @@ namespace resource
 
         for (auto it = j.begin(); it != j.end(); it++)
         {
-            auto data = it->at("data").get<std::string>();
+            auto data = it->at("data").get<string>();
             switch(type)
             {
                 case PointType::INT:

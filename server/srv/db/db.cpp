@@ -75,37 +75,55 @@ namespace nlohmann {
         }
     }
 
+    // void adl_serializer<mysqlx::SqlResult>::to_json(json& j, mysqlx::SqlResult res)
+    // {
+    //     json jr;
+    //     int i = 0;
+    //     for (const mysqlx::Row& row : res.fetchAll())
+    //     {
+    //         int j = 0;
+    //         for (const mysqlx::Column& column : res.getColumns())
+    //         {
+    //             jr[std::to_string(i)][column.getColumnName()] = row[j];
+    //             j++;
+    //         }
+    //         i++;
+    //     }
+    //     j = jr; 
+    // }
+
     void adl_serializer<mysqlx::SqlResult>::to_json(json& j, mysqlx::SqlResult res)
     {
-        json jr;
+
+        std::vector<json> vec(res.count());
         int i = 0;
         for (const mysqlx::Row& row : res.fetchAll())
         {
             int j = 0;
             for (const mysqlx::Column& column : res.getColumns())
             {
-                jr[std::to_string(i)][column.getColumnName()] = row[j];
+                vec[i][column.getColumnName()] = row[j];
                 j++;
             }
             i++;
         }
-        j = jr; 
+        j = vec;
     }
 
     void adl_serializer<mysqlx::RowResult>::to_json(json& j, mysqlx::RowResult res)
     {
-        json jr;
+        std::vector<json> vec(res.count());
         int i = 0;
         for (const mysqlx::Row& row : res.fetchAll())
         {
             int j = 0;
             for (const mysqlx::Column& column : res.getColumns())
             {
-                jr[std::to_string(i)][column.getColumnName()] = row[j];
+                vec[i][column.getColumnName()] = row[j];
                 j++;
             }
             i++;
         }
-        j = jr; 
+        j = vec; 
     }
 }
