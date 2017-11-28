@@ -42,7 +42,6 @@ int main( const int argc, const char** argv)
 
     auto settings = make_shared<restbed::Settings>();
     settings->set_port(10000);
-    settings->set_worker_limit(4);
     settings->set_root("celeste");
 
     cout << "@ Publishing resources...\n";

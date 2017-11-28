@@ -44,7 +44,7 @@ namespace resource
                 bind(ValueMap{{"ModelId", data["ModelId"].get<string>().c_str()}}).
                 execute();
 
-                string rb = json(move(res)).dump();
+                string rb = json(move(res))[0].dump();
                 session->close(restbed::OK,
                                rb,
                                {
@@ -87,7 +87,7 @@ namespace resource
 
                 table.
                 insert("id", "ns").
-                values(data["id"].get<string>().c_str(),
+                values(data["ModelId"].get<string>().c_str(),
                        data["ns"].get<string>().c_str()).
                 execute();
 
@@ -105,46 +105,37 @@ namespace resource
                        const std::shared_ptr<mysqlx::Session> dbSession)
     {
         const auto request = session->get_request();
-        
-        if (! request->has_path_parameter("ModelId"))
-        {
-            handle_error(restbed::BAD_REQUEST,
-                         "You must specify the Id of the Model to delete",
-                         session);
-            return;
-        }
+        size_t content_length = (size_t) request->get_header("Content-Length", 0);
 
-        int id;
-        try
+        json data;
+        session->fetch(content_length,
+        [ request, dbSession, &data] (const shared_ptr<restbed::Session> session, const restbed::Bytes &bytes)
         {
-            id = stoi(request->get_path_parameter("id"));
-        }
-        catch (const invalid_argument& e)
-        {
-            handle_error(restbed::BAD_REQUEST, "Device id must be a positive integer!", session);
-            return;
-        } catch (const out_of_range& e)
-        {
-            handle_error(restbed::BAD_REQUEST, "Number too large. Nice try hackers.", session);
-            return;
-        }
-        
+            // Get body
+            string body;
+            bytes2string(bytes, body);
+
+            data = json::parse(body);
+        });
+
+        int model_id = data["ModelId"];
         try
         {
             auto sch = dbSession->getSchema("Celeste");
             auto table = sch.getTable("Model");
-            
+
             table.
             remove().
             where("id = :ModelId").
-            bind("ModelId", id).
+            bind(ValueMap{{"ModelId", model_id}}).
             execute();
 
             session->close(restbed::OK);
-        } catch (const mysqlx::Error& e)
+        }
+        catch (const mysqlx::Error& e)
         {
             handle_error(restbed::INTERNAL_SERVER_ERROR,
-                         "Could not delete Model " + to_string(id),
+                         "Failed to delete model with id " + to_string(model_id),
                          session);
         }
     }
@@ -152,9 +143,7 @@ namespace resource
     shared_ptr<restbed::Resource> make_model(const shared_ptr<mysqlx::Session> dbSession)
     {
         auto resource = make_shared<restbed::Resource>();
-        resource->set_paths({
-            "models/",
-            "models/{ModelId: [0-9]+}"});
+        resource->set_path("models/");
         resource->set_method_handler("POST", bind(save_model, placeholders::_1, dbSession));
         resource->set_method_handler("GET", bind(get_model, placeholders::_1, dbSession));
         resource->set_method_handler("DELETE", bind(delete_model, placeholders::_1, dbSession));

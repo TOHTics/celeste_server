@@ -94,10 +94,9 @@ namespace logger_upload
 
         try
         {   
-            
+            dbSession->startTransaction();
             for (auto devit = data.cbegin(); devit != data.cend(); devit++)
             {
-                dbSession->startTransaction();
                     dbSession->sql(
                                     "SELECT @devrr_idx := IFNULL(MAX(idx) + 1, 0) FROM "
                                     "( "
@@ -164,8 +163,9 @@ namespace logger_upload
                                 }).execute();
                         }
                     }
-                dbSession->commit();
-            }    
+            }  
+
+            dbSession->commit();  
         } catch (const mysqlx::Error &e)
         {
             dbSession->rollback();
