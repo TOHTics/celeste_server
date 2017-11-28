@@ -1,7 +1,5 @@
 # Overview
-The Celes
-
-- The timestamps must be in UTC format.
+The Celeste system to query and process readings from Loggers connected to Solar Panels is described in this document. This system is a [RESTful] (https://stackoverflow.com/questions/671118/what-exactly-is-restful-programming) API designed to access the information uploaded by the Loggers. In particular, this is a sub-system that is part of the whole energy-monitoring system. Please refer to the Table of Contents to see the different services offered. Also please see the section [Notes](#notes) to check various compatibility and implementation details.
 
 # Table of Contents
 
@@ -12,6 +10,7 @@ The Celes
 4.  [Point](#point)
 5.  [Reading](#reading)
 6.  [Logger](#logger)
+7.  [Notes](#notes)
 
 # Device
 
@@ -354,6 +353,7 @@ These three parameters allow the server to pinpoint exactly which measurement we
 	// ...
 }
 ````
+
 To summarize, every request shall require the four mentioned parameters.
 There, however, might be more parameters for other types of reading and each reading will have a different response depending on `method`. The following sections will formalize these details.
 
@@ -382,7 +382,7 @@ Where:
 
 ## `range` 
 
-To obtain a range of readings we first define what we mean. A *range of readings* is an ordered list of values. The list**\*** is ordered in **ascending order** starting with the earliest date, down to the latest. For this reading, we need two extra parameters: `start` and `end` where `end > start`. That is, `end` is the later date. To employ this method we set `"method" : "last"`.
+To obtain a range of readings we first define what we mean. A *range of readings* is an ordered list of values. The list* is ordered in **ascending order** starting with the earliest date, down to the latest. For this reading, we need two extra parameters: `start` and `end` where `end > start`. That is, `end` is the later date. To employ this method we set `"method" : "last"`.
 
 | Parameter   | Description                                      |
 |:-----------:|--------------------------------------------------|
@@ -623,3 +623,8 @@ One need not worry about the units of measurement since it is required to specif
 
 # Full Example
 To write.
+
+
+# Notes
+
+- All the timestamps must be in UTC Posix format.
