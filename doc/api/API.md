@@ -1,5 +1,7 @@
 # Overview
-This is the documentation for the Celeste HTTP API. 
+The Celes
+
+- The timestamps must be in UTC format.
 
 # Table of Contents
 
@@ -60,7 +62,7 @@ Status Message: OK
 ````
 ````
 {
-	"Client_id" : integer,
+	"ClientId" : integer,
 	"id"  : integer,
 	"man" : string,
 	"mod" : string,
@@ -357,7 +359,102 @@ There, however, might be more parameters for other types of reading and each rea
 
 ## `last`
 
+This action obtains the last reading recorded by a device. For example, we might have a Device which logs the temperature from a Thermometer every 10 minutes. There will be many records available in the DB. Namely, every single record from the start of logging to the current time. It is often of interest to consult the last reading logged by the device. In order to do this we set the method to `"method" : "last"`. No other parameters, except the ones mentioned in "Requesting a Reading" are needed.
+
+### Response
+````http
+Status Code:    200
+Status Message: OK
+````
+
+````
+{
+	"value" : string, integer, double
+	"t" : string
+}
+````
+Where:
+
+| Field     | Description                                      |
+|:---------:|--------------------------------------------------|
+|  `value`  | Value of the reading. The type of the value may be one of the following: `string`, `integer`, `double` |
+|  `t`      | Timestamp indicating time and date when the measurement took place.|
+
 ## `range` 
+
+To obtain a range of readings we first define what we mean. A *range of readings* is an ordered list of values. The list**\*** is ordered in **ascending order** starting with the earliest date, down to the latest. For this reading, we need two extra parameters: `start` and `end` where `end > start`. That is, `end` is the later date. To employ this method we set `"method" : "last"`.
+
+| Parameter   | Description                                      |
+|:-----------:|--------------------------------------------------|
+|  `start`    | Start date. |
+|  `end`      | End date.   |
+
+**\*The range is inclusive from both sides.**
+
+### Response
+The response an ordered JSON array of values with their timestamps in ascending order, starting with the earliest date.
+
+````http
+Status Code:    200
+Status Message: OK
+````
+````
+[
+	{
+		"value" : value1
+		"t" : timestamp1
+	},
+	{
+		"value" : value2
+		"t" : timestamp2
+	},
+	.
+	.
+	.
+	{
+		"value" : valueN
+		"t" : timestampN
+	}
+]
+````
+
+
+### Example
+An example might be taking requesting all the readings from a Thermometer on a Device with id `4001` from `21-12-2017 00:00:01` to `22-12-2017 00:00:01`. The request will look like:
+
+````
+{
+	"DeviceId" : 4001,
+	"ModelId" : "Thermometer",
+	"PointId" : "Temperature"
+	"method" : "range",
+	
+	"start" : "21-12-2017 00:00:01",
+	"end" : "22-12-2017 00:00:01"
+}
+````
+The response might look like:
+
+````
+[
+	{
+		"value" : 20.2
+		"t" : 21-12-2017 00:00:01
+	},
+	{
+		"value" : 27.4
+		"t" : 21-12-2017 08:00:01
+	},
+	{
+		"value" : 35.1
+		"t" : 21-12-2017 16:00:01
+	},
+	{
+		"value" : 21.7
+		"t" : 22-12-2017 00:00:01
+	}
+]
+````
 
 # Logger
 Like the [Reading](#reading) resource, the Logger resource is one of the most important parts of the whole Celeste system. This is the resource which will listen for incoming records sent by the Devices. This being said, there are 3 specific formats which the logger will understand: XML, JSON and CelesteRN. Currently only XML is supported.
@@ -523,3 +620,6 @@ Translating over to XML we get:
 ````
 
 One need not worry about the units of measurement since it is required to specify them when one first inserts a Point into the database.
+
+# Full Example
+To write.
