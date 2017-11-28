@@ -1,5 +1,5 @@
 # Overview
-The Celeste system to query and process readings from Loggers connected to Solar Panels is described in this document. This system is a [RESTful] (https://stackoverflow.com/questions/671118/what-exactly-is-restful-programming) API designed to access the information uploaded by the Loggers. In particular, this is a sub-system that is part of the whole energy-monitoring system. Please refer to the Table of Contents to see the different services offered. Also please see the section [Notes](#notes) to check various compatibility and implementation details.
+The Celeste system to query and process readings from Loggers connected to Solar Panels is described in this document. This system is a [RESTful](https://stackoverflow.com/questions/671118/what-exactly-is-restful-programming) API designed to access the information uploaded by the Loggers. In particular, this is a sub-system that is part of the whole energy-monitoring system. Please refer to the Table of Contents to see the different services offered. Also please see the section [Notes](#notes) to check various compatibility and implementation details.
 
 # Table of Contents
 
