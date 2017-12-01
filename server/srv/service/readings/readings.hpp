@@ -60,9 +60,36 @@ namespace resource
         
 
         nlohmann::json
-        get(const std::string& point_id,
-            const std::string& model_id,
-            int device_id) const;
+        get_data(const std::string& point_id,
+                 const std::string& model_id,
+                 int device_id) const;
+    };
+
+    class RangeReading : public Reading
+    {
+        const std::shared_ptr<mysqlx::Session> dbSession;
+
+    public:
+        RangeReading(const std::shared_ptr<mysqlx::Session>);
+
+        constexpr
+        std::vector<std::string>
+        required_fields() const override;
+
+        nlohmann::json
+        get(nlohmann::json&&) const override;
+
+
+        nlohmann::json
+        get(const nlohmann::json&) const override;
+        
+
+        nlohmann::json
+        get_data(const std::string& point_id,
+                 const std::string& model_id,
+                 int device_id,
+                 const std::string& start,
+                 const std::string& end) const;
     };
 
 }

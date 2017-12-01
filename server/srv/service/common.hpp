@@ -150,24 +150,6 @@ namespace resource
             return quote(str, "\'") + "," + as_value_list(args...);
     }
 
-    /**
-     * @brief      Static for function template. Requires C++1z compiler.
-     *
-     * @param      f       Lambda function to execute at each iteration.
-     *
-     * @tparam     First   Starting integer value.
-     * @tparam     Last    End value, not inclusive.
-     * @tparam     Lambda  A Lambda template parameter.
-     */
-    template <int First, int Last, typename Lambda>
-    inline void static_for(Lambda const& f)
-    {
-        if constexpr (First < Last)
-          {
-             f(std::integral_constant<int, First>{});
-             static_for<First + 1, Last>(f);
-          }
-    }
 
     /**
      * @brief      Compares two pairs of same types. This method assumes

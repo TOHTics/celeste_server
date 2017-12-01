@@ -3,16 +3,9 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Copyright (C) 8/18/17 Carlos Brito
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- */
-//</editor-fold>
-
-//<editor-fold desc="Description">
-/**
  * @file
  * @brief Contains the definitions for SunSpec Data Exchange (SDX) tags.
- *
  */
-//</editor-fold>
 #ifndef SUNSPEC_SDX_TAGS_HPP
 #define SUNSPEC_SDX_TAGS_HPP
 

@@ -120,31 +120,28 @@ namespace resource
         auto sch = dbSession->getSchema("Celeste");
         auto table = sch.getTable("Point");
 
-        if (! request->has_path_parameter("ModelId"))
+        json data;
+        session->fetch(content_length,
+        [ request, dbSession, &data] (const shared_ptr<restbed::Session> session, const restbed::Bytes &bytes)
         {
-            handle_error(restbed::BAD_REQUEST,
-                         "Please specify the ModelId that the Point belongs to",
-                         session);
-            return;
-        }
+            // Get body
+            string body;
+            bytes2string(bytes, body);
 
-        if (! request->has_path_parameter("PointId"))
-        {
-            handle_error(restbed::BAD_REQUEST,
-                         "Please specify the Id of the Point to delete",
-                         session);
-            return;
-        }
+            data = json::parse(body);
+        });
 
-        map<string, string> params = request->get_path_parameters();
+        string point_id = data["PointId"];
+        string model_id = data["ModelId"];
+
         try
         {
             table.
             remove().
             where("Point_id = :PointId AND Model_id = :ModelId").
             bind(ValueMap{
-                {"PointId", params["PointId"].c_str()},
-                {"ModelId", params["ModelId"].c_str()}
+                {"PointId", point_id.c_str()},
+                {"ModelId", model_id.c_str()}
             }).
             execute();
 
@@ -152,7 +149,7 @@ namespace resource
         } catch (const mysqlx::Error& e)
         {
             handle_error(restbed::INTERNAL_SERVER_ERROR,
-                         "Could not delete Point " + params["PointId"] + " on Model " + params["ModelId"],
+                         "Could not delete Point " + point_id + " on Model " + model_id,
                          session);
         }
     }
@@ -161,8 +158,7 @@ namespace resource
     {
         auto resource = make_shared<restbed::Resource>();
         resource->set_paths({
-            "/points",
-            "/points/{PointId: [a-zA-Z]+}/{ModelId: [a-zA-Z]+}"
+            "/points"
         });
 
         resource->set_method_handler("GET", bind(get_point, placeholders::_1, dbSession));

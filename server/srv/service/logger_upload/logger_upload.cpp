@@ -12,6 +12,7 @@
 #include <string>
 #include <functional>
 #include "logger_upload.hpp"
+#include "srv/service/common.hpp"
 #include "sunspec/data/data.hpp"
 #include "sunspec/util/util.hpp"
 
@@ -55,6 +56,8 @@ namespace logger_upload
         ssr.reason = "Database Error";
 
         string rr_body = data::SunSpecDataResponse::to_xml(ssr);
+
+        cout << "hubo error!\n";
 
         session->close(restbed::INTERNAL_SERVER_ERROR,
                        rr_body,
@@ -181,9 +184,13 @@ namespace logger_upload
         size_t content_length = (size_t) request->get_header("Content-Length", 0);
 
         // Fetch bytes from request and handle using callback function
+        string body;
         session->fetch(content_length, 
-            [ request, dbSession ] (const shared_ptr<restbed::Session> session, const restbed::Bytes &body)
+            [ request, dbSession, &body ] (const shared_ptr<restbed::Session> session,
+                                    const restbed::Bytes &bytes)
             {
+                bytes2string(bytes, body);
+            });
                 // Try the following block and catch
                 try 
                 {
@@ -193,6 +200,7 @@ namespace logger_upload
 
                     // Convert char* to string
                     string req_body_str = req_body_c;
+                    cout << "Cuerpo:\n" << req_body_str << "\n";
 
                     // Attempt to parse data
                     data::SunSpecData data;
@@ -215,19 +223,20 @@ namespace logger_upload
                 catch (const data::XMLException &e)
                 {
                     handle_parsing_error(session, e);
+                    return;
                 }
                 catch (const mysqlx::Error &e)
                 {
                     handle_db_error(session, e);
+                    return;
                 }
                 catch (const std::exception &e)
                 {
                     handle_unknown_error(session, e);
+                    return;
                 }
-
                 // If all went well then handle acceptance response
                 handle_accept(session);
-        });
     }
 }
 

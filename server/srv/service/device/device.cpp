@@ -159,8 +159,21 @@ namespace resource
                    const shared_ptr<mysqlx::Session> dbSession)
     {
         const auto request = session->get_request();
-        int device_id = stoi(request->get_path_parameter("DeviceId"));
-        string model_id = request->get_path_parameter("ModelId");
+        size_t content_length = (size_t) request->get_header("Content-Length", 0);
+
+        json data;
+        session->fetch(content_length,
+        [ request, dbSession, &data] (const shared_ptr<restbed::Session> session, const restbed::Bytes &bytes)
+        {
+            // Get body
+            string body;
+            bytes2string(bytes, body);
+
+            data = json::parse(body);
+        });
+
+        int device_id = data["DeviceId"];
+        string model_id = data["ModelId"];
 
         try
         {
@@ -171,9 +184,16 @@ namespace resource
                 where("Device_id = :DeviceId AND Model_id = :ModelId").
                 bind(ValueMap{{"DeviceId", device_id}, {"ModelId", model_id.c_str()}}).execute();
 
-            int max_idx = res.fetchOne().get(0);
+            int max_idx = 0;
+            if (res.count() > 0)
+                max_idx = res.fetchOne().get(0);
+
             table.insert("idx", "Device_id", "Model_id").values(max_idx + 1, device_id, model_id.c_str()).execute();
-            session->close(restbed::OK);
+            
+            json rp;
+            rp["x"] = max_idx + 1;
+
+            session->close(restbed::OK, rp.dump());
         } catch (const mysqlx::Error& e)
         {
             handle_error(restbed::INTERNAL_SERVER_ERROR,
@@ -198,7 +218,7 @@ namespace resource
     shared_ptr<restbed::Resource> make_add_model(const shared_ptr<mysqlx::Session> dbSession)
     {
         auto resource = make_shared<restbed::Resource>();
-        resource->set_path("/devices/{DeviceId: [0-9]+}/add_model/{ModelId: [a-zA-Z][a-zA-Z0-9]+}");
+        resource->set_path("/devices/add_model");
 
         resource->set_method_handler("POST", bind(add_model, placeholders::_1, dbSession));
         return move(resource);
