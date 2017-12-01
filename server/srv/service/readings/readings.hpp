@@ -72,7 +72,6 @@ namespace resource
     public:
         RangeReading(const std::shared_ptr<mysqlx::Session>);
 
-        constexpr
         std::vector<std::string>
         required_fields() const override;
 
