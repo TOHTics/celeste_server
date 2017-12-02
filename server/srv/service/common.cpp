@@ -27,6 +27,27 @@ namespace resource
     {
         return quote(str, "\'");
     }
+
+    void handle_error(const int code,
+                      std::string message,
+                      const std::shared_ptr<restbed::Session> session)
+    {
+        if (session->is_open())
+        {
+            session->close(code,
+                           message,
+                           {
+                               { "Content-Length", std::to_string(message.size()) },
+                               { "Connection",     "close" }
+                           });
+        }
+        else
+        {
+            // TODO
+            // The session closed before we could send back the error
+            // must explicitly log that on the server
+        }
+    }
 }
 }
 
