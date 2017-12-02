@@ -46,17 +46,17 @@ int main( const int argc, const char** argv)
 
     cout << "@ Publishing resources...\n";
     
-    restbed::Service service;
-    service.publish(upload);
-    service.publish(device);
-    service.publish(model);
-    service.publish(point);
-    service.publish(add_model);
-    service.publish(reading);
+    restbed::Service api;
+    api.publish(upload);
+    api.publish(device);
+    api.publish(model);
+    api.publish(point);
+    api.publish(add_model);
+    api.publish(reading);
 
     cout << "@ Starting server...\n";
     cout << "\e[m";
-    service.start(settings);
+    api.start(settings);
 
     return 0;
 }

@@ -15,6 +15,7 @@ namespace nlohmann
         static void from_json(const json& j, mysqlx::Value& value);
     };
 
+
     template <>
     struct adl_serializer<mysqlx::RowResult>
     {

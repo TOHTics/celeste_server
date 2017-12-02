@@ -27,18 +27,6 @@ namespace resource
     {
         return quote(str, "\'");
     }
-
-    void handle_error(int status_code,
-                      string message,
-                      const shared_ptr<restbed::Session> session)
-    {
-        session->close(status_code,
-                       message,
-                       {
-                           { "Content-Length", to_string(message.size()) },
-                           { "Connection",     "close" }
-                       });
-    }
 }
 }
 

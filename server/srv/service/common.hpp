@@ -6,6 +6,7 @@
 #include <mysql_devapi.h>
 #include <json.hpp>
 #include <restbed>
+#include <utility>
 
 namespace celeste
 {
@@ -186,10 +187,48 @@ namespace resource
         return pair_equal(a, b) && pair_equal(args...);
     }
 
-    void handle_error(int status_code,
-                      std::string message,
-                      const std::shared_ptr<restbed::Session> session);
+    template <class APIError>
+    void handle_error(APIError&& error,
+                      const std::shared_ptr<restbed::Session> session)
+    {
+        if (session->is_open())
+        {
+            std::string message = error.what();
+            session->close(error.code(),
+                       message,
+                       {
+                           { "Content-Length", std::to_string(message.size()) },
+                           { "Connection",     "close" }
+                       });
+        }
+        else
+        {
+            // TODO
+            // The session closed before we could send back the error
+            // must explicitly log that on the server
+        }
+    }
 
+    void handle_error(const int code,
+                      std::string message,
+                      const std::shared_ptr<restbed::Session> session)
+    {
+        if (session->is_open())
+        {
+            session->close(code,
+                           message,
+                           {
+                               { "Content-Length", std::to_string(message.size()) },
+                               { "Connection",     "close" }
+                           });
+        }
+        else
+        {
+            // TODO
+            // The session closed before we could send back the error
+            // must explicitly log that on the server
+        }
+    }
 }
 }
 

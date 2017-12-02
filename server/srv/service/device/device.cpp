@@ -8,6 +8,7 @@
 #include <iostream>
 #include "srv/db/db.hpp"
 #include "srv/service/common.hpp"
+#include "srv/service/error.hpp"
 #include "device.hpp"
 
 using namespace std;
@@ -25,42 +26,42 @@ namespace resource
         const auto request = session->get_request();
         size_t content_length = (size_t) request->get_header("Content-Length", 0);
 
+        json data;
         session->fetch(content_length,
-        [ request, dbSession ] (const shared_ptr<restbed::Session> session, const restbed::Bytes &bytes)
+        [ request, dbSession, &data ] (const shared_ptr<restbed::Session> session, const restbed::Bytes &bytes)
         {
             string body;
             bytes2string(bytes, body);
 
-            json data = json::parse(body);
-
-            auto sch = dbSession->getSchema("Celeste");
-            auto table = sch.getTable("Device");
-
-            try
-            {
-                auto res = table.
-                    select("*").
-                    where("id = :DeviceId").
-                    bind(ValueMap{{"DeviceId", data["DeviceId"].get<int>()}}).
-                    execute();
-
-                    string rb = json(move(res)).dump();
-                    session->close(restbed::OK,
-                                   rb,
-                                   {
-                                       { "Content-Length", to_string(rb.size()) },
-                                       { "Connection",     "close" }
-                                   });
-
-            } catch (const mysqlx::Error& e)
-            {
-                handle_error(restbed::INTERNAL_SERVER_ERROR,
-                             "Could not get Device " + to_string(data["DeviceId"].get<int>()),
-                             session
-                             );
-            }
+            data = json::parse(body);
         });
 
+        auto sch = dbSession->getSchema("Celeste");
+        auto table = sch.getTable("Device");
+
+        try
+        {
+            auto res = table.
+                select("*").
+                where("id = :DeviceId").
+                bind(ValueMap{{"DeviceId", data["DeviceId"].get<int>()}}).
+                execute();
+
+                string rb = json(move(res)).dump();
+                session->close(restbed::OK,
+                               rb,
+                               {
+                                   { "Content-Length", to_string(rb.size()) },
+                                   { "Connection",     "close" }
+                               });
+
+        } catch (const mysqlx::Error& e)
+        {
+            handle_error(restbed::INTERNAL_SERVER_ERROR,
+                         "Could not get Device " + to_string(data["DeviceId"].get<int>()),
+                         session
+                         );
+        }
     }
 
     void save_device(const shared_ptr<restbed::Session> session,
@@ -68,52 +69,62 @@ namespace resource
     {
         const auto request = session->get_request();
         size_t content_length = (size_t) request->get_header("Content-Length", 0);
+
+        json data;
         session->fetch(content_length,
-        [ request, dbSession ] (const shared_ptr<restbed::Session> session, const restbed::Bytes &bytes)
+        [ request, dbSession, &data] (const shared_ptr<restbed::Session> session, const restbed::Bytes &bytes)
         {
             // Get body
             string body;
             bytes2string(bytes, body);
 
-            json data = json::parse(body);
+            data = json::parse(body);
 
-            auto sch = dbSession->getSchema("Celeste");
-            auto table = sch.getTable("Device");
-
-            if (data["autogen"].get<bool>())
-            {
-                int max_id = table.select("MAX(id)").execute().fetchOne().get(0);
-
-                table.
-                insert("id", "Client_id", "man", "mod", "sn").
-                values(++max_id,
-                       data["client_id"],
-                       data["man"].get<string>().c_str(),
-                       data["mod"].get<string>().c_str(),
-                       data["sn"].get<string>().c_str()).
-                execute();
-
-                json response;
-                response["DeviceId"] = max_id;
-                string rb = response.dump();
-                session->close(restbed::OK,
-                                   rb,
-                                   {
-                                       { "Content-Length", to_string(rb.size()) },
-                                       { "Connection",     "close" }
-                                   });
-            } else
-            {
-                table.insert("id", "Client_id", "man", "mod", "sn").
-                values(data["id"].get<int>(),
-                       data["client_id"],
-                       data["man"].get<string>().c_str(),
-                       data["mod"].get<string>().c_str(),
-                       data["sn"].get<string>().c_str()).
-                execute();
-                session->close(restbed::OK);
-            }
         });
+
+        auto sch = dbSession->getSchema("Celeste");
+        auto table = sch.getTable("Device");
+
+        // should we autogen the key?
+        bool autogen;
+        if (data["autogen"].is_null())
+            autogen = false;
+        else 
+            autogen = data["autogen"].get<bool>();
+
+        if (autogen)
+        {
+            int autogen_id = dbSession->sql("SELECT IFNULL(MAX(id) + 1, 0) FROM Device").execute().fetchOne().get(0);
+
+            table.
+            insert("id", "Client_id", "man", "mod", "sn").
+            values(autogen_id,
+                   data["ClientId"],
+                   data["man"].get<string>().c_str(),
+                   data["mod"].get<string>().c_str(),
+                   data["sn"].get<string>().c_str()).
+            execute();
+
+            json response;
+            response["DeviceId"] = autogen_id;
+            string rb = response.dump();
+            session->close(restbed::OK,
+                               rb,
+                               {
+                                   { "Content-Length", to_string(rb.size()) },
+                                   { "Connection",     "close" }
+                               });
+        } else
+        {
+            table.insert("id", "Client_id", "man", "mod", "sn").
+            values(data["DeviceId"].get<int>(),
+                   data["ClientId"],
+                   data["man"].get<string>().c_str(),
+                   data["mod"].get<string>().c_str(),
+                   data["sn"].get<string>().c_str()).
+            execute();
+            session->close(restbed::OK);
+        }
     }
 
     void delete_device(const shared_ptr<restbed::Session> session,
@@ -161,11 +172,11 @@ namespace resource
         const auto request = session->get_request();
         size_t content_length = (size_t) request->get_header("Content-Length", 0);
 
+        // fetch data
         json data;
         session->fetch(content_length,
         [ request, dbSession, &data] (const shared_ptr<restbed::Session> session, const restbed::Bytes &bytes)
         {
-            // Get body
             string body;
             bytes2string(bytes, body);
 
@@ -188,7 +199,10 @@ namespace resource
             if (res.count() > 0)
                 max_idx = res.fetchOne().get(0);
 
-            table.insert("idx", "Device_id", "Model_id").values(max_idx + 1, device_id, model_id.c_str()).execute();
+            table.
+            insert("idx", "Device_id", "Model_id").
+            values(max_idx + 1,device_id, model_id.c_str()).
+            execute();
             
             json rp;
             rp["x"] = max_idx + 1;
@@ -205,10 +219,7 @@ namespace resource
     shared_ptr<restbed::Resource> make_device(const shared_ptr<mysqlx::Session> dbSession)
     {
         auto resource = make_shared<restbed::Resource>();
-        resource->set_paths({
-            "/devices",
-            "/devices/{DeviceId: [0-9]+}"
-        });
+        resource->set_path("/devices");
         resource->set_method_handler("GET", bind(get_device, placeholders::_1, dbSession));
         resource->set_method_handler("POST", bind(save_device, placeholders::_1, dbSession));
         resource->set_method_handler("DELETE", bind(delete_device, placeholders::_1, dbSession));
