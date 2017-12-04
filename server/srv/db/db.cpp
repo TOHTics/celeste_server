@@ -13,7 +13,6 @@ namespace db
 }
 }
 
-
 namespace nlohmann {
     void adl_serializer<mysqlx::Value>::to_json(json& j, const mysqlx::Value& value)
     {
