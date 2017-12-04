@@ -1,171 +1,225 @@
-#include <json.hpp>
+/**
+ * * * * * * * * * * * * * * * * * * * *
+ * Copyright (C) 7/Nov/17 Carlos Brito *
+ * * * * * * * * * * * * * * * * * * * *
+ * 
+ * @file
+ */
 #include "point.hpp"
-#include "srv/db/db.hpp"
+#include "srv/service/error.hpp"
 #include "srv/service/common.hpp"
 
 using namespace std;
-using json = nlohmann::json;
 
 namespace celeste
 {
 namespace resource
-{
-    void get_point(const std::shared_ptr<restbed::Session> session,
-                   const std::shared_ptr<mysqlx::Session> dbSession)
+{   
+    // --- CLASS DEFINITIONS ---------
+    Points<nlohmann::json>::Points(const mysqlx::SessionSettings& dbSettings)
+        :   dbSession(dbSettings),
+            celesteDB(dbSession.getSchema("Celeste")),
+            pointTable(celesteDB.getTable("Point"))
     {
-        auto request = session->get_request();
-        size_t content_length = (size_t) request->get_header("Content-Length", 0);
-
-        session->fetch(content_length,
-            [ request, dbSession ] (const shared_ptr<restbed::Session> session, const restbed::Bytes &bytes)
-            {
-                string body;
-                bytes2string(bytes, body);
-
-                json data = json::parse(body);
-
-                auto sch = dbSession->getSchema("Celeste");
-                auto table = sch.getTable("Point");
-
-                if (data["PointId"].is_null())
-                {
-                    auto res = table.
-                        select("*").
-                        where("Model_id = :ModelId").
-                        bind(ValueMap{{"ModelId", data["ModelId"].get<string>().c_str()}}).
-                        execute();
-
-                    string rb = json(move(res)).dump();
-                    session->close(restbed::OK,
-                               rb,
-                               {
-                                   { "Content-Length", to_string(rb.size()) },
-                                   { "Connection",     "close" }
-                               });
-                } else
-                {
-                    try
-                    {
-                        auto res = table.
-                            select("*").
-                            where("Model_id = :ModelId AND id = :PointId").
-                            bind(ValueMap{
-                                {"ModelId", data["ModelId"].get<string>().c_str()},
-                                {"PointId", data["PointId"].get<string>().c_str()}
-                            }).
-                            execute();
-
-                        string rb = json(move(res)).dump();
-                        session->close(restbed::OK,
-                                   rb,
-                                   {
-                                       { "Content-Length", to_string(rb.size()) },
-                                       { "Connection",     "close" }
-                                   });
-                    } catch (const mysqlx::Error& e)
-                    {
-                        handle_error(restbed::INTERNAL_SERVER_ERROR,
-                                     "Could not get Point " + data["Point_id"].get<string>(),
-                                     session);
-                    }
-                }
-            });
+        set_path("/Points");
+        set_method_handler("GET", [this] (const std::shared_ptr<restbed::Session> session) {GET(session);});
+        set_method_handler("POST",   [this] (const std::shared_ptr<restbed::Session> session) {POST(session);});
+        set_method_handler("DELETE", [this] (const std::shared_ptr<restbed::Session> session) {DELETE(session);});
     }
 
-    void save_point(const std::shared_ptr<restbed::Session> session,
-                    const std::shared_ptr<mysqlx::Session> dbSession)
+    Point Points<nlohmann::json>::get(const std::string& pointId,
+                                      const std::string& modelId)
     {
-        auto request = session->get_request();
-        size_t content_length = (size_t) request->get_header("Content-Length", 0);
-
-        session->fetch(content_length,
-            [ request, dbSession ] (const shared_ptr<restbed::Session> session, const restbed::Bytes &bytes)
-            {
-                string body;
-                bytes2string(bytes, body);
-
-                json data = json::parse(body);
-
-                auto sch = dbSession->getSchema("Celeste");
-                auto table = sch.getTable("Point");
-
-                try
-                {
-                    table.
-                    insert("id", "Model_id", "type", "u", "d").
-                    values(data["PointId"].get<string>().c_str(),
-                           data["ModelId"].get<string>().c_str(),
-                           data["type"].get<int>(),
-                           data["u"].get<string>().c_str(),
-                           data["d"].get<string>().c_str()
-                           ).
-                    execute();
-
-                    session->close(restbed::OK);
-                } catch (const mysqlx::Error& e)
-                {
-                    handle_error(restbed::INTERNAL_SERVER_ERROR,
-                                 "Could not add Point " + data["id"].get<string>() + " on Model " + data["Model_id"].get<string>(),
-                                 session);
-                }
-            });
-    }
-
-    void delete_point(const std::shared_ptr<restbed::Session> session,
-                      const std::shared_ptr<mysqlx::Session> dbSession)
-    {
-        auto request = session->get_request();
-        size_t content_length = (size_t) request->get_header("Content-Length", 0);
-
-        auto sch = dbSession->getSchema("Celeste");
-        auto table = sch.getTable("Point");
-
-        json data;
-        session->fetch(content_length,
-        [ request, dbSession, &data] (const shared_ptr<restbed::Session> session, const restbed::Bytes &bytes)
-        {
-            // Get body
-            string body;
-            bytes2string(bytes, body);
-
-            data = json::parse(body);
-        });
-
-        string point_id = data["PointId"];
-        string model_id = data["ModelId"];
-
-        try
-        {
-            table.
-            remove().
-            where("Point_id = :PointId AND Model_id = :ModelId").
+        auto res = 
+            pointTable.
+            select("*").
+            where("id = :PointId AND Model_id = :ModelId").
             bind(ValueMap{
-                {"PointId", point_id.c_str()},
-                {"ModelId", model_id.c_str()}
+                {"PointId", pointId.c_str()},
+                {"ModelId", modelId.c_str()}
             }).
             execute();
 
-            session->close(restbed::OK);
-        } catch (const mysqlx::Error& e)
-        {
-            handle_error(restbed::INTERNAL_SERVER_ERROR,
-                         "Could not delete Point " + point_id + " on Model " + model_id,
-                         session);
-        }
+        mysqlx::SerializableRow row = res.fetchOne();
+        json_type j = row.as<Point>();
+        return row.as<Point>();
     }
 
-    std::shared_ptr<restbed::Resource> make_point(const std::shared_ptr<mysqlx::Session> dbSession)
+    void Points<nlohmann::json>::insert(const value_type& Point)
     {
-        auto resource = make_shared<restbed::Resource>();
-        resource->set_paths({
-            "/points"
-        });
+        mysqlx::SerializableRow row;
+        row.from(Point);
 
-        resource->set_method_handler("GET", bind(get_point, placeholders::_1, dbSession));
-        resource->set_method_handler("POST", bind(save_point, placeholders::_1, dbSession));
-        resource->set_method_handler("DELETE", bind(delete_point, placeholders::_1, dbSession));
+        mysqlx::Row tmp = row;
 
-        return move(resource);
+        pointTable.
+        insert("id", "Model_id", "type", "u", "d").
+        values(tmp).
+        execute();
+    }
+
+    void Points<nlohmann::json>::remove(const std::string& pointId,
+                                        const std::string& modelId)
+    {
+        pointTable.
+        remove().
+        where("id = :PointId AND Model_id = :ModelId").
+        bind(ValueMap{
+            {"PointId", pointId.c_str()},
+            {"ModelId", modelId.c_str()}
+        }).
+        execute();
+    }
+
+    void Points<nlohmann::json>::GET(const std::shared_ptr<restbed::Session> session)
+    {   
+        // get request
+        const auto request = session->get_request();
+
+        // get headers
+        size_t content_length = (size_t) request->get_header("Content-Length", 0);
+
+        // fetch data to access later
+        session->fetch(content_length, [] (const shared_ptr<restbed::Session> session, const restbed::Bytes &bytes) {});
+
+        // get json from request
+        json_type data = get_json<json_type>(*request);
+
+        // validate data
+        if (data["PointId"].is_null())
+            throw 400;
+
+        if (data["ModelId"].is_null())
+            throw 400;
+
+        // get Point from db
+        json_type response = this->get(data["PointId"], data["ModelId"]);
+
+        // close
+        session->close(restbed::OK,
+                       response.dump(),
+                       {
+                            { "Content-Length", to_string(response.dump().size()) },
+                            { "Connection",     "close" }
+                       });
+    }
+
+    void Points<nlohmann::json>::POST(const std::shared_ptr<restbed::Session> session)
+    {
+        // get request
+        const auto request = session->get_request();
+
+        // get headers
+        size_t content_length = (size_t) request->get_header("Content-Length", 0);
+
+        // fetch data to access later
+        session->fetch(content_length, [] (const shared_ptr<restbed::Session> session, const restbed::Bytes &bytes) {});
+
+        // get json from request
+        json_type data = get_json<json_type>(*request);
+
+        // validate data
+        if (data["PointId"].is_null())
+            throw 400;
+
+        if (data["ModelId"].is_null())
+            throw 400;
+
+        if (data["type"].is_null())
+            throw 400;
+
+        if (data["u"].is_null())
+            data["u"] = nullptr;
+
+        if (data["d"].is_null())
+            data["d"] = nullptr;
+
+        this->insert(data.get<Point>());
+
+        // close
+        session->close(restbed::OK);
+    }
+
+    void Points<nlohmann::json>::DELETE(const std::shared_ptr<restbed::Session> session)
+    {
+        // get request
+        const auto request = session->get_request();
+
+        // get headers
+        size_t content_length = (size_t) request->get_header("Content-Length", 0);
+
+        // fetch data to access later
+        session->fetch(content_length, [] (const shared_ptr<restbed::Session> session, const restbed::Bytes &bytes) {});
+
+        // get json from request
+        json_type data = get_json<json_type>(*request);
+
+        // validate data
+        if (data["PointId"].is_null())
+            throw 400;
+
+        if (data["ModelId"].is_null())
+            throw 400;
+
+        // remove Point from DB.
+        this->remove(data["PointId"], data["ModelId"]);
+
+        // close
+        session->close(restbed::OK);
     }
 }
+}
+
+// --- SERIALIZERS -------------------
+namespace mysqlx
+{
+    using Point = celeste::resource::Point;
+
+    void row_serializer<Point>::to_row (SerializableRow& row, const celeste::resource::Point& obj)
+    {
+        row.set(0, EnhancedValue{obj.PointId});
+        row.set(1, EnhancedValue{obj.ModelId});
+        row.set(2, obj.type);
+        row.set(3, EnhancedValue{obj.u});
+        row.set(4, EnhancedValue{obj.d});
+    }
+
+    void row_serializer<Point>::from_row (const SerializableRow& row, Point& obj)
+    {
+        SerializableRow tmp = row; // row.get() is not marked const, hence we need this tmp
+        obj = Point {
+            .PointId = tmp.get(0).get<std::string>(),
+            .ModelId = tmp.get(1).get<std::string>(),
+            .type = tmp.get(2),
+            .u = tmp.get(3),
+            .d = tmp.get(4)
+        };
+    }
+}
+
+namespace nlohmann
+{
+    using namespace celeste::resource;
+
+    void adl_serializer<Point>::to_json(json& j, const Point& obj)
+    {
+        j = json {
+            {"PointId", obj.PointId},
+            {"ModelId", obj.ModelId},
+            {"type", obj.type},
+            {"u", obj.u},
+            {"d", obj.d}
+        };
+    }
+
+    void adl_serializer<Point>::from_json(const json& j, Point& obj)
+    {
+        obj = Point {
+            .PointId = j.at("PointId"),
+            .ModelId = j.at("ModelId"),
+            .type = j.at("type"),
+            .u = j.at("u"),
+            .d = j.at("d")
+        };
+    }
 }
