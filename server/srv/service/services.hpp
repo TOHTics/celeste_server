@@ -4,7 +4,7 @@
 #include "device/device.hpp"
 #include "model/model.hpp"
 #include "point/point.hpp"
-#include "logger_upload/logger_upload.hpp"
-#include "readings/reading.hpp"
+#include "logger_upload/LoggerUpload.hpp"
+#include "readings/ReadingDispatcher.hpp"
 
 #endif

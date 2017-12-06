@@ -77,7 +77,7 @@ namespace resource
          *
          * @return     Fetched Model.
          */
-        Model get(std::string modelId);
+        Model get(const std::string& modelId);
 
         /**
          * @brief      Inserts a Model into the DB.
@@ -91,7 +91,7 @@ namespace resource
          *
          * @param[in]  modelId  The Model identifier
          */
-        void remove(std::string modelId);
+        void remove(const std::string& modelId);
 
     private:
         // --- Private methods -------
@@ -126,7 +126,6 @@ namespace mysqlx
     {
         static void to_row (SerializableRow& row, const celeste::resource::Model& obj);
         static void from_row (const SerializableRow& row, celeste::resource::Model& obj);
-
     };
 }
 

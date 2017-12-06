@@ -1,5 +1,3 @@
-
-
 /**
  * * * * * * * * * * * * * * * * * * * *
  * Copyright (C) 7/Nov/17 Carlos Brito *

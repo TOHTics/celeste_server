@@ -5,7 +5,7 @@
  * 
  * @file
  */
-#include "device1.hpp"
+#include "device.hpp"
 #include "srv/service/error.hpp"
 #include "srv/service/common.hpp"
 #include <iostream>
@@ -145,7 +145,6 @@ namespace resource
 
         // insert device and get id
         // in case autogen was not set, will return null
-        Device device = data.get<Device>();
         auto autogen_id = this->insert(data.get<Device>(), autogen);
         json_type response{{"x", autogen_id}};
 
@@ -205,9 +204,9 @@ namespace mysqlx
         device = Device {
             .DeviceId   = tmp.get(0),
             .ClientId   = tmp.get(1),
-            .man        = static_cast<string>(tmp.get(2)),
-            .mod        = static_cast<string>(tmp.get(3)),
-            .sn         = static_cast<string>(tmp.get(4))
+            .man        = static_cast<std::string>(tmp.get(2)),
+            .mod        = static_cast<std::string>(tmp.get(3)),
+            .sn         = static_cast<std::string>(tmp.get(4))
         };
     }
 }
@@ -221,9 +220,9 @@ namespace nlohmann
         j = json {
             {"DeviceId",    device.DeviceId},
             {"ClientId",    device.ClientId},
-            {"man",         device.man},
-            {"mod",         device.mod},
-            {"sn",          device.sn}
+            {"man",         device.man.c_str()},
+            {"mod",         device.mod.c_str()},
+            {"sn",          device.sn.c_str()}
         };
     }
 

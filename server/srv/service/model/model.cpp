@@ -27,7 +27,7 @@ namespace resource
         set_method_handler("DELETE", [this] (const std::shared_ptr<restbed::Session> session) {DELETE(session);});
     }
 
-    Model Models<nlohmann::json>::get(std::string modelId)
+    Model Models<nlohmann::json>::get(const std::string& modelId)
     {
         auto res = 
             modelTable.
@@ -54,7 +54,7 @@ namespace resource
         execute();
     }
 
-    void Models<nlohmann::json>::remove(std::string modelId)
+    void Models<nlohmann::json>::remove(const std::string& modelId)
     {
         modelTable.
         remove().
