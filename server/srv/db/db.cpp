@@ -2,48 +2,42 @@
 
 using namespace std;
 
-namespace celeste
-{
-namespace db
-{
-    shared_ptr<mysqlx::Session> make_db_session(string host, int port, string user, string pwd)
-    {
-        return shared_ptr<mysqlx::Session>(new mysqlx::Session(host, port, user, pwd));
-    }
-}
-}
-
 namespace nlohmann {
     void adl_serializer<mysqlx::Value>::to_json(json& j, const mysqlx::Value& value)
-    {
+    {   
+        // if null just convert from nullptr and return
         if (value.isNull())
         {
             j = nullptr;
-            return;
         }
-
-        auto type = value.getType();
-        using ValueType = mysqlx::Value::Type;
-        switch (type)
+        else
         {
-            case ValueType::FLOAT:
-                j = value.get<float>();
-                break;
-            case ValueType::DOUBLE:
-                j = value.get<double>();
-                break;
-            case ValueType::INT64:
-                j = value.get<int>();
-                break;
-            case ValueType::STRING:
-                j = static_cast<std::string>(value.get<mysqlx::string>());
-                break;
-            case ValueType::BOOL:
-                j = value.get<bool>();
-                break;
-            default:
-                throw std::invalid_argument("Critical Error while parsing from mysqlx::Value to JSON."
-                                            "Unhandled data type.");
+            // get type information
+            auto type = value.getType();
+            using ValueType = mysqlx::Value::Type;
+
+            // check which type is correct
+            switch (type)
+            {
+                case ValueType::FLOAT:
+                    j = value.get<float>();
+                    break;
+                case ValueType::DOUBLE:
+                    j = value.get<double>();
+                    break;
+                case ValueType::INT64:
+                    j = value.get<int>();
+                    break;
+                case ValueType::STRING:
+                    j = static_cast<std::string>(value.get<mysqlx::string>());
+                    break;
+                case ValueType::BOOL:
+                    j = value.get<bool>();
+                    break;
+                default:
+                    throw std::invalid_argument("Critical Error while parsing from mysqlx::Value to JSON."
+                                                "Unhandled data type.");
+            }
         }
     }
 
@@ -74,26 +68,14 @@ namespace nlohmann {
         }
     }
 
-    // void adl_serializer<mysqlx::SqlResult>::to_json(json& j, mysqlx::SqlResult res)
-    // {
-    //     json jr;
-    //     int i = 0;
-    //     for (const mysqlx::Row& row : res.fetchAll())
-    //     {
-    //         int j = 0;
-    //         for (const mysqlx::Column& column : res.getColumns())
-    //         {
-    //             jr[std::to_string(i)][column.getColumnName()] = row[j];
-    //             j++;
-    //         }
-    //         i++;
-    //     }
-    //     j = jr; 
-    // }
-
+    /**
+     * @brief      Converts a SqlResult to a JSON array.
+     *
+     * @param[out]      j     Out JSON object.
+     * @param[in]       res   The SqlResult object
+     */
     void adl_serializer<mysqlx::SqlResult>::to_json(json& j, mysqlx::SqlResult res)
     {
-
         std::vector<json> vec(res.count());
         int i = 0;
         for (const mysqlx::Row& row : res.fetchAll())
@@ -109,6 +91,12 @@ namespace nlohmann {
         j = vec;
     }
 
+    /**
+     * @brief      Converts a RowResult to a JSON array.
+     *
+     * @param[out]      j     Out JSON object.
+     * @param[in]       res   The RowResult object
+     */
     void adl_serializer<mysqlx::RowResult>::to_json(json& j, mysqlx::RowResult res)
     {
         std::vector<json> vec(res.count());
