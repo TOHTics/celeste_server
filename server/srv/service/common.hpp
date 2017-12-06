@@ -7,11 +7,13 @@
 #include <json.hpp>
 #include <restbed>
 #include <utility>
+#include <boost/optional.hpp>
 
 namespace celeste
 {
 namespace resource
 {
+    // --- USEFUL TYPES --------------
     using ValueList = std::vector<mysqlx::Value>;
     using ValueMap = std::map<std::string, mysqlx::Value>;
 
@@ -23,6 +25,18 @@ namespace resource
         FLOAT
     };
 
+    // --- METHODS -------------------
+    
+    /**
+     * @brief      Converts bytes to a string.
+     *
+     * @param[in]  bytes      Bytes.
+     * @param      out        String.
+     *
+     * @tparam     CharT      Type of each string element.
+     * @tparam     Traits     Traits of string.
+     * @tparam     Allocator  String allocator.
+     */
     template <
         class CharT,
         class Traits = std::char_traits<CharT>, 
@@ -41,116 +55,6 @@ namespace resource
 
         out = str;
     }
-
-    /**
-     * @brief      Returns the string but with quotes around it.
-     *
-     * @param[in]  str   The string.
-     * @param[in]  q     The quote character.
-     *
-     * @return     A string but with quotes around it.
-     */
-    std::string quote(const std::string& str, std::string q = "\'");
-
-    /**
-     * @brief      Creates a comma list from elements in a container. The container must contain strings.
-     *
-     * @param[in]  begin  Iterator of template type `It` pointing to the beginning of the container.
-     * @param[in]  end    Iterator of template type `It` pointing to the end of the container.
-     *
-     * @tparam     It     Type of the iterator
-     *
-     * @return     A `std::string` comma list of all the elements between `begin` and `end`.
-     */
-    template <typename It> 
-    std::string as_comma_list(const It &begin, const It &end)
-    {
-        /* We have to assert that the container contains strings */
-        static_assert(std::is_same<std::string,
-                        typename std::iterator_traits<It>::value_type>::value,
-                    "Iterator value type must be std::string");
-
-        /* Build comma list */
-        std::string result;
-        for (auto it = begin; it != end; )
-        {
-            result += *it;
-            if (++it != end)
-                result += ",";
-        }
-        return result;
-    }
-
-    std::string as_comma_list(std::string s);
-
-    template <typename... Args>
-    std::string as_comma_list(std::string s, Args... args)
-    {   
-        return s + "," + as_comma_list(args...);
-    }
-
-    /**
-     * @brief      Base case for `n=1` of `as_column_list`
-     *
-     * @param[in]  str   Value.
-     *
-     * @return     Returns the quoted string.
-     */
-    std::string as_column_list(std::string str);
-    /**
-     * @brief      Returns a comma separated, quoted string with the values being separated
-     * being those passed in the container.
-     *
-     * @param[in]  str   Value.
-     * @param[in]  args  The values to be separated.
-     *
-     * @tparam     Args  Pack of values.
-     *
-     * @return     String of concatenated values separated by commas and quoted by `'`.
-     */
-    template <typename... Args>
-    std::string as_column_list(std::string str, Args... args)
-    {   
-        return quote(str, "`") + ", " + as_column_list(args...);
-    }
-
-    /**
-     * @brief      Returns a comma separated, quoted string with the values being separated
-     * being those passed in the container.
-     *
-     * @param[in]  begin  Beginning of container.
-     * @param[in]  end    End of container.
-     *
-     * @tparam     It     Iterator type.
-     *
-     * @return     String of concatenated values separated by commas and quoted by `'`.
-     */
-    template <typename It>
-    std::string as_column_list(const It &begin, const It &end)
-    {
-        static_assert(std::is_same<std::string,
-                        typename std::iterator_traits<It>::value_type>::value,
-                    "Iterator value type must be a std::string type");
-        std::string result;
-        for (auto it = begin; it != end; )
-        {
-            result += quote(*it, "`");
-            if (++it != end)
-                result += ",";
-        }
-    }
-
-    std::string as_value_list(std::string str);
-
-    template <typename... Args>
-    std::string as_value_list(std::string str, Args... args)
-    {   
-        if (str[0] == '@' || str == "NULL")
-            return str + "," + as_value_list(args...);
-        else
-            return quote(str, "\'") + "," + as_value_list(args...);
-    }
-
 
     /**
      * @brief      Compares two pairs of same types. This method assumes
@@ -187,10 +91,71 @@ namespace resource
         return pair_equal(a, b) && pair_equal(args...);
     }
 
-    void handle_error(const int code,
-                      std::string message,
-                      const std::shared_ptr<restbed::Session> session);
+    /**
+     * @brief      Handles an error that occurred in the service.
+     *
+     * @param[in]  code     The code
+     * @param[in]  message  The message
+     * @param[in]  session  The session
+     */
+    void
+    handle_error(const int code,
+                 std::string message,
+                 const std::shared_ptr<restbed::Session> session);
+
+    /**
+     * @brief      Gets the body of a request as a JSON object.
+     *
+     * @param[in]  request  Request.
+     *
+     * @tparam     Json     JSON type.
+     * @tparam     Request  Request type.
+     *
+     * @return     Body of request as JSON object.
+     */
+    template <class Json, class Request>
+    Json get_json(const Request& request);
+
+    /**
+     * @brief      Function template specialization. It specializes for
+     * `Json = nlohmann::json` and `Request = restbed::Request`
+     *
+     * @param[in]  request  The request
+     *
+     * @return     { description_of_the_return_value }
+     */
+    template<>
+    nlohmann::json
+    get_json<nlohmann::json, restbed::Request>(const restbed::Request& request);
 }
+}
+
+
+// --- JSON SERIALIZERS --------------
+namespace nlohmann 
+{
+    template <typename T>
+    struct adl_serializer<boost::optional<T>> 
+    {
+        static void to_json(json& j, const boost::optional<T>& opt) {
+            if (opt == boost::none) {
+                j = nullptr;
+            } else {
+              j = *opt; // this will call adl_serializer<T>::to_json which will
+                        // find the free function to_json in T's namespace!
+            }
+        }
+
+        static void from_json(const json& j, boost::optional<T>& opt) 
+        {
+            if (j.is_null()) {
+                opt = boost::none;
+            } else {
+                opt = j.get<T>(); // same as above, but with 
+                                  // adl_serializer<T>::from_json
+            }
+        }
+    };
 }
 
 #endif
