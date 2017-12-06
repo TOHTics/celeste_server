@@ -5,6 +5,7 @@
 #include "srv/db/db.hpp"
 #include "srv/service/services.hpp"
 
+#include "srv/service/readings/ReadRequest.hpp"
 using namespace std;
 using namespace celeste;
 void print_welcome_message()
@@ -23,20 +24,29 @@ void print_welcome_message()
 
 int main( const int argc, const char** argv)
 {  
+    mysqlx::SessionSettings dbSettings("localhost", 33060, "root", "root", "Celeste");
+
+    using DeviceResource = resource::Devices<nlohmann::json>;
+    using ModelResource = resource::Models<nlohmann::json>;
+    using PointResource = resource::Points<nlohmann::json>;
+    using LoggerResource = resource::LoggerUpload;
+    using ReadingResource = resource::ReadingDispatcher;
+
+    ReadingResource hello(dbSettings);
+    resource::LastReadRequest lrr{2, "23", "23"};
+    hello.dispatch<nlohmann::json>(lrr);
+
     print_welcome_message();
 
     cout << "\e[33m";
-
-    cout << "@ Connecting to DB..." << endl;
-    auto dbSession = db::make_db_session("localhost", 33060, "root", "root", "Celeste");
-
     cout << "@ Making resources...\n";
-    auto upload = resource::make_logger_upload(dbSession);
-    auto device = resource::make_device(dbSession);
-    auto model = resource::make_model(dbSession);
-    auto point = resource::make_point(dbSession);
-    auto add_model = resource::make_add_model(dbSession);
-    auto reading = resource::make_reading(dbSession);
+
+    auto devices = make_shared<DeviceResource>(dbSettings);
+    auto models = make_shared<ModelResource>(dbSettings);
+    auto points = make_shared<PointResource>(dbSettings);
+    auto upload = make_shared<LoggerResource>(dbSettings);
+    auto reading = make_shared<ReadingResource>(dbSettings);
+    // auto add_model = resource::make_add_model(dbSession);
 
     cout << "@ Configuring server...\n";
 
@@ -47,12 +57,13 @@ int main( const int argc, const char** argv)
     cout << "@ Publishing resources...\n";
     
     restbed::Service api;
+    api.publish(devices);
+    api.publish(models);
+    api.publish(points);
     api.publish(upload);
-    api.publish(device);
-    api.publish(model);
-    api.publish(point);
-    api.publish(add_model);
     api.publish(reading);
+
+    // api.publish(add_model);
 
     cout << "@ Starting server...\n";
     cout << "\e[m";
