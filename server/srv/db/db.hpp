@@ -6,6 +6,8 @@
 #include <json.hpp>
 #include <mysql_devapi.h>
 #include <boost/optional.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/date_time/gregorian/gregorian.hpp>
 #include <type_traits>
 #include <locale>
 #include <codecvt>
@@ -24,8 +26,30 @@ namespace mysqlx
     template <class T>
     struct row_serializer
     {
-        static void to_row (SerializableRow& row, const T& value);
-        static void from_row(const SerializableRow& row, T& value);
+        static 
+        void to_row (SerializableRow& row, const T& value);
+
+        static 
+        void from_row(const SerializableRow& row, T& value);
+    };
+
+    /**
+     * @brief      Translates between mysqlx::Value and some other
+     * External type.
+     *
+     * @tparam     External  Type that we want to convert to.
+     */
+    template<class External> 
+    struct value_translator 
+    {
+        typedef Value       internal_type;
+        typedef External    external_type;
+
+        static
+        External get(const Value& in);
+
+        static
+        Value put(const External& in);
     };
 
     /**
@@ -46,24 +70,25 @@ namespace mysqlx
 
     public:
         /**
+         * @brief      Constructs a null value.
+         */
+        EnhancedValue();
+
+        /**
          * @brief      Copy constructor for `mysqlx::Value`.
          * This is more of a compatibility constructor to ensure
          * we can copy content from `Value`.
          *
          * @param[in]  value  Value.
          */
-        EnhancedValue (Value&& value)
-            : Value (std::forward<Value>(value))
-        {}
+        EnhancedValue (Value&& value);
 
         /**
          * @brief      Copy constructor for base class.
          *
          * @param[in]  value  Base class instance.
          */
-        EnhancedValue (const Value& value)
-            : Value (value)
-        {}
+        EnhancedValue (const Value& value);
 
         /**
          * @brief      Copy constructor for any conversion.
@@ -75,9 +100,7 @@ namespace mysqlx
         template <class T>
         EnhancedValue (const T& value)
             : Value(value)
-        {
-            static_assert(std::is_convertible<T, Value>::value, "Cannot convert type T to mysqlx::Value.");
-        }
+        {}
 
         /**
          * @brief      Construct `EnhancedValue` from an optional value
@@ -96,33 +119,40 @@ namespace mysqlx
                 EnhancedValue(nullptr);
         }
 
+        EnhancedValue (const boost::posix_time::ptime& value);
+
         /**
          * @brief      Construct a null value from a `none_type` object.
          *
          * @param[in]  value  Null value.
          */
-        EnhancedValue (const none_type value)
-            : Value (nullptr)
-        {}
+        EnhancedValue (const none_type& value);
+
+        explicit
+        operator char() = delete;
+
+        explicit
+        operator mysqlx::string() = delete;
+
+        explicit
+        EnhancedValue(const mysqlx::string& value) = delete;
 
         /**
          * @brief      Enables compatibility with `std::string`.
          *
          * @param[in]  value  String value.
          */
-        explicit // prevent ambiguity with mysqlx::string
-        EnhancedValue (const std::string& value)
-            : Value (value.c_str())
-        {}
+        // explicit // prevent ambiguity with mysqlx::string
+        EnhancedValue (const std::string& value);
 
         /**
          * @brief      Converts a `std::string` to `mysqlx::Value`.
          */
-        explicit // prevent ambiguity with mysqlx::string
+        // explicit // prevent ambiguity with mysqlx::string
         operator std::string()
         {
             std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
-            return converter.to_bytes(this->get<string>());
+            return converter.to_bytes(this->Value::get<mysqlx::string>());
         }
 
         /**
@@ -152,6 +182,57 @@ namespace mysqlx
             static_assert(std::is_convertible<T, EnhancedValue>::value, "Type is not convertible to mysqlx::EnhancedValue.");
             return T(*this);
         }
+
+        operator boost::posix_time::ptime()
+        {
+            /*
+             * The following calculation of the year was derived
+             * based on how mysqlx stores timestamps from the DB.
+             * Basically, you get a response consisting of at most
+             * 7 bytes but at least 4 bytes. The structure of the bytes
+             * are desglossed below:
+             * 
+             * [x] [y] [month] [day] [hours] [minutes] [seconds]
+             * 
+             * If SS contains the value 0, you get 6 bytes instead of 7.
+             * If SS and MM contain the value 0, you get 5 bytes instead of 7.
+             * If SS, MM and HH contain the value 0, you get 4 bytes of 7.
+            */
+            auto bs = this->get<mysqlx::bytes>();
+
+            int x = *(bs.begin());
+            int y = *(bs.begin() + 1);
+            int year = 128 * (y - 1) + x;
+            int month = *(bs.begin() + 2);
+            int day = *(bs.begin() + 3);
+
+            std::cout << "Year: " << year << "\n";
+            std::cout << "x: " << x << "\n";
+            std::cout << "y: " << y << "\n";
+
+            int _hours = 0;
+            int _minutes = 0;
+            int _seconds = 0;
+
+            if (bs.size() >= 4)
+            {
+                _hours = *(bs.begin() + 4);
+                if (bs.size() >= 5)
+                {
+                    _minutes = *(bs.begin() + 5);
+
+                    if (bs.size() >= 6)
+                    {
+                        _seconds = *(bs.begin() + 6);
+                    }
+                }
+            }
+
+            using date = boost::gregorian::date;
+            using namespace boost::posix_time;
+
+            return ptime(date(year, month, day), hours(_hours) + minutes(_minutes) + seconds(_seconds));
+        }
     };
 
     /**
@@ -165,20 +246,14 @@ namespace mysqlx
         /**
          * @brief      Empty constructor.
          */
-        SerializableRow()
-            : Row()
-        {}
+        SerializableRow();
 
         /**
          * @brief      Copies a Row to a SerializableRow
          *
          * @param[in]  row Row to be serialized.
          */
-        SerializableRow (Row&& row)
-        {
-            for (int i = 0; i < row.colCount(); ++i)
-                this->set(i, row.get(i));
-        }
+        SerializableRow (Row&& row);
 
         /**
          * @brief      Serializes an object of type `T` to
@@ -220,10 +295,10 @@ namespace mysqlx
          *
          * @return     Value in column.
          */
-        EnhancedValue get(col_count_t pos)
-        {
-            return EnhancedValue(this->Row::get(pos));
-        }
+        EnhancedValue get(col_count_t pos);
+
+        void set(col_count_t pos, EnhancedValue&& value);
+        void set(col_count_t pos, const EnhancedValue& value);
     };
 }
 
@@ -235,6 +310,13 @@ namespace nlohmann
     {
         static void to_json(json& j, const mysqlx::Value& value);
         static void from_json(const json& j, mysqlx::Value& value);
+    };
+
+    template <>
+    struct adl_serializer<mysqlx::EnhancedValue>
+    {
+        static void to_json(json& j, const mysqlx::EnhancedValue& value);
+        static void from_json(const json& j, mysqlx::EnhancedValue& value);
     };
 
 
