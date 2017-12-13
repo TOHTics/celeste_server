@@ -14,20 +14,55 @@ namespace celeste
 {
 namespace resource
 {
-    template <
-        class DeviceId,
-        class ModelId,
-        class PointId
-    >
-    struct basic_read_request
+    struct LastReadRequest
     {
-        DeviceId  deviceId;
-        ModelId   modelId;
-        PointId   pointId;
+        int             DeviceId;
+        std::string     ModelId;
+        std::string     PointId;
     };
 
-    using read_request = basic_read_request<int, std::string, std::string>;
-    using LastReadRequest = read_request;
+    struct RangeReadRequest
+    {
+        int             DeviceId;
+        std::string     ModelId;
+        std::string     PointId;
+
+        std::string     start;
+        std::string     end;
+    };
+
+    struct TodayReadRequest
+    {
+        int             DeviceId;
+        std::string     ModelId;
+        std::string     PointId;
+    };
+
+    struct YesterdayReadRequest
+    {
+        int             DeviceId;
+        std::string     ModelId;
+        std::string     PointId;
+    };
+
+    struct MonthReadRequest
+    {
+        int             DeviceId;
+        std::string     ModelId;
+        std::string     PointId;
+
+        int             month;
+    };
+
+    struct YearReadRequest
+    {
+        int             DeviceId;
+        std::string     ModelId;
+        std::string     PointId;
+
+        int             year;
+    };
+
 }
 }
 

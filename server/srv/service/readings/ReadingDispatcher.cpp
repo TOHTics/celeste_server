@@ -12,7 +12,7 @@
 #include "ReadRequest.hpp"
 
 #include "srv/service/common.hpp"
-
+#include <utility>
 #include <iostream>
 
 using namespace std;
@@ -30,15 +30,21 @@ namespace resource
         set_method_handler("GET", [this] (const std::shared_ptr<restbed::Session> session) {GET(session);});
     }
 
+    // --- DISPATCH FUNCTIONS --------
     template <>
     json ReadingDispatcher::dispatch(const LastReadRequest& request) const
     {
-        static mysqlx::Session _temporary_sql_session(dbSettings);
+        auto reading = 
+            reading_fetcher.fetch<reading_type>(move(mysqlx::Session(dbSettings)), request);
+        return json(reading);
+    }
 
-        auto reading = reading_fetcher.fetch<atomic_type>(mysqlx::Session(dbSettings), request);
-        
-        cout << reading << "\n";
-        return json(boost::get<int>(reading));
+    template <>
+    json ReadingDispatcher::dispatch(const RangeReadRequest& request) const
+    {
+        auto reading = 
+            reading_fetcher.fetch<vector<reading_type>>(move(mysqlx::Session(dbSettings)), request);
+        return json(reading);
     }
 
     void ReadingDispatcher::GET(const std::shared_ptr<restbed::Session> session)
@@ -55,18 +61,59 @@ namespace resource
         // get json_type from request
         json data = get_json<json>(*request);
 
+        if (data["DeviceId"].is_null())
+            throw 400;
+        if (data["ModelId"].is_null())
+            throw 400;
+        if (data["PointId"].is_null())
+            throw 400;
         if (data["method"].is_null())
             throw 400;
 
+        // Action map
+        // TODO:
+        // Must replace this whole `if` with a map of functions
+        // Namely:
+        // map<string, function<response(request)>>
         string response_body;
-        if (data["method"].get<string>() == "last")
+        int code;
+        if (data["method"].get<std::string>() == "last")
         {
-            json response = dispatch<json>(LastReadRequest{3, "2", "1"});
+            json response = dispatch<json>
+            (LastReadRequest{
+                .DeviceId = data["DeviceId"],
+                .ModelId  = data["ModelId"],
+                .PointId  = data["PointId"]
+            });
             response_body = response.dump();
+            code = restbed::OK;
+        }
+        else if (data["method"].get<std::string>() == "range") 
+        {
+            json response = dispatch<json>
+            (RangeReadRequest{
+                .DeviceId = data["DeviceId"],
+                .ModelId  = data["ModelId"],
+                .PointId  = data["PointId"],
+                .start = data["start"],
+                .end = data["end"]
+            });
+            response_body = response.dump();
+            code = restbed::OK;
+        }
+        else
+        {
+            code = restbed::BAD_REQUEST;
+            response_body = "Error: Unknown method.";
         }
 
-        cout << response_body << "\n";
+        // close
+        session->close(code,
+                       response_body,
+                       {
+                            { "Content-Length", to_string(response_body.size()) },
+                            { "Connection",     "close" }
+                       });
     }
-
 }
 }

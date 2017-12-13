@@ -13,17 +13,19 @@
 #include <mysql_devapi.h>
 #include <restbed>
 
+#include <json.hpp>
+#include <unordered_map>
+
 #include "ReadingFetcher.hpp"
 
 namespace celeste
 {
 namespace resource
-{
+{   
     class ReadingDispatcher : public restbed::Resource
     {
     public:
-        // --- TYPEDEFS --------------
-        typedef ReadingFetcher::atomic_type atomic_type;
+        typedef Reading<mysqlx::EnhancedValue> reading_type;
 
         // --- CONSTRUCTORS ----------
         ReadingDispatcher(const mysqlx::SessionSettings& dbSettings);
@@ -40,6 +42,7 @@ namespace resource
         ReadingFetcher              reading_fetcher;
         mysqlx::SessionSettings     dbSettings;
     };
+    
 }
 }
 
