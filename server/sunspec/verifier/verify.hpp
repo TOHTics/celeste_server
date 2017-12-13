@@ -21,20 +21,14 @@ namespace sunspec
 {
 namespace data
 {
-namespace verifier
-{
-/**
- * Verifies that the `PointData` meets all the rules and it's
- * clear for manipulation. It will also check that the point
- * exists in the database.
- * @param point The `PointData` to be analyzed.
- */
-bool verify_point( const PointData &point );
+    struct verifier
+    {
+        template <class SunSpecDataObject>
+        static bool verify (const SunSpecDataObject& obj);
+    };
 
-bool verify_model( const ModelData &model );
-
-bool verify_device( const DeviceData &data );
-}
+    template <>
+    bool verifier::verify(const DeviceData& obj);
 }
 }
 

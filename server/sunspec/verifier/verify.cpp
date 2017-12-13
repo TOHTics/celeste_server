@@ -18,15 +18,10 @@ namespace sunspec
 {
 namespace data
 {
-namespace verifier
-{
-
-bool verify_point( const PointData &point )
-{
-
-}
-
-
-}
+    template <>
+    bool verifier::verify(const DeviceData& obj)
+    {
+        return true;
+    }
 }
 }
