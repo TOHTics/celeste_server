@@ -63,10 +63,14 @@ set(SERVER_SOURCE_FILES
 find_package(restbed        REQUIRED)
 find_package(mysqlcppconn   REQUIRED)
 find_package(json           REQUIRED)
+find_package(Boost          REQUIRED
+             COMPONENTS
+             date_time)
 
 include_directories(${mysqlcppconn_INCLUDE})
 include_directories(${restbed_INCLUDE})
 include_directories(${json_INCLUDE})
+include_directories(${Boost_INCLUDE_DIRS})
 
 # ---- Add an executable -----------------------
 add_executable(celeste_server ${SERVER_SOURCE_FILES})
@@ -85,7 +89,7 @@ if (NOT mysqlcppconn_LIBRARY)
 else()
     target_link_libraries(celeste_server ${mysqlcppconn_LIBRARY})
 endif()
-
+target_link_libraries(celeste_server ${Boost_LIBRARIES})
 
 # Add our own Sunspec library
 add_library(sunspec SHARED ${sunspec})

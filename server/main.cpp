@@ -29,12 +29,9 @@ int main( const int argc, const char** argv)
     using DeviceResource = resource::Devices<nlohmann::json>;
     using ModelResource = resource::Models<nlohmann::json>;
     using PointResource = resource::Points<nlohmann::json>;
+    using DeviceModelAssocResource = resource::DeviceModelAssocs<nlohmann::json>;
     using LoggerResource = resource::LoggerUpload;
     using ReadingResource = resource::ReadingDispatcher;
-
-    ReadingResource hello(dbSettings);
-    resource::LastReadRequest lrr{2, "23", "23"};
-    hello.dispatch<nlohmann::json>(lrr);
 
     print_welcome_message();
 
@@ -46,7 +43,7 @@ int main( const int argc, const char** argv)
     auto points = make_shared<PointResource>(dbSettings);
     auto upload = make_shared<LoggerResource>(dbSettings);
     auto reading = make_shared<ReadingResource>(dbSettings);
-    // auto add_model = resource::make_add_model(dbSession);
+    auto device_model = make_shared<DeviceModelAssocResource>(dbSettings);
 
     cout << "@ Configuring server...\n";
 
@@ -62,8 +59,7 @@ int main( const int argc, const char** argv)
     api.publish(points);
     api.publish(upload);
     api.publish(reading);
-
-    // api.publish(add_model);
+    api.publish(device_model);
 
     cout << "@ Starting server...\n";
     cout << "\e[m";
