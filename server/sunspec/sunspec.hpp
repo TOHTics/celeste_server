@@ -17,5 +17,6 @@
 
 #include "data/data.hpp"
 #include "util/util.hpp"
+#include "verifier/verify.hpp"
 
 #endif //SUNSPEC_HPP
