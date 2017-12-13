@@ -105,7 +105,7 @@ namespace resource
                 }
             }  
             // --- TRANSACTION ENDS --
-            dbSession.commit(); 
+            dbSession.commit();
             // -----------------------
         } catch (const mysqlx::Error& e)
         {
@@ -164,12 +164,16 @@ namespace resource
              * If they don't, then add to the SunSpecDataResponse all 
              * the failed devices and why they failed using DeviceResult.
              */
+            data::verifier sunspec_verifier;
             for ( auto dit = data.begin(); dit != data.end(); dit++ )
             {
                 data::DeviceData device = *dit;
-                // Check here
-            }
 
+                if(!sunspec_verifier.verify(device))
+                {
+                    // do stuff
+                }
+            }
             // Persist records
             persist_data(data);
         
@@ -188,6 +192,11 @@ namespace resource
                 session->close(400, e.what());
             else
                 throw 500;
+        }
+        catch (const exception& e)
+        {
+            cout << e.what() << "\n";
+
         }
     }
 }

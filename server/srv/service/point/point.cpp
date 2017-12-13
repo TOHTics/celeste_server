@@ -41,7 +41,6 @@ namespace resource
             execute();
 
         mysqlx::SerializableRow row = res.fetchOne();
-        json_type j = row.as<Point>();
         return row.as<Point>();
     }
 
@@ -175,7 +174,7 @@ namespace mysqlx
 {
     using Point = celeste::resource::Point;
 
-    void row_serializer<Point>::to_row (SerializableRow& row, const celeste::resource::Point& obj)
+    void row_serializer<Point>::to_row (SerializableRow& row, const Point& obj)
     {
         row.set(0, EnhancedValue{obj.PointId});
         row.set(1, EnhancedValue{obj.ModelId});

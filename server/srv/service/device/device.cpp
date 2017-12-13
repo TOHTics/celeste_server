@@ -38,26 +38,35 @@ namespace resource
             execute();
 
         mysqlx::SerializableRow row = res.fetchOne();
-        json_type j = row.as<Device>();
-        cout << j << "\n";
         return row.as<Device>();
     }
 
     boost::optional<int> Devices<nlohmann::json>::insert(const value_type& device, bool autogen)
     {
         Device dtmp = device;
-        if (autogen)
-            dtmp.DeviceId = dbSession.sql("SELECT IFNULL(MAX(id) + 1, 0) FROM Device").execute().fetchOne().get(0);
+        dbSession.startTransaction();
+        try
+        {
+            if (autogen)
+                dtmp.DeviceId = dbSession.sql("SELECT IFNULL(MAX(id) + 1, 0) FROM Device").execute().fetchOne().get(0);
 
-        mysqlx::SerializableRow row;
-        row.from(dtmp);
+            mysqlx::SerializableRow row;
+            row.from(dtmp);
 
-        mysqlx::Row rtmp = row;
+            mysqlx::Row rtmp = row;
 
-        deviceTable.
-        insert("id", "Client_id", "man", "mod", "sn").
-        values(rtmp).
-        execute();
+            deviceTable.
+            insert("id", "Client_id", "man", "mod", "sn").
+            values(rtmp).
+            execute();
+
+            dbSession.commit();
+        } catch (const mysqlx::Error& e)
+        {
+            dbSession.rollback();
+            throw e;
+        }
+        
 
         if (autogen)
             return dtmp.DeviceId;
@@ -141,8 +150,6 @@ namespace resource
         if (data["sn"].is_null())
             throw 400;
 
-        data["ClientId"] = 23;
-
         // insert device and get id
         // in case autogen was not set, will return null
         auto autogen_id = this->insert(data.get<Device>(), autogen);
@@ -193,7 +200,7 @@ namespace mysqlx
     {
         row.set(0, device.DeviceId);
         row.set(1, EnhancedValue(device.ClientId));
-        row.set(2, device.man.c_str());
+        row.set(2, device.man);
         row.set(3, device.mod.c_str());
         row.set(4, device.sn.c_str());
     }
@@ -204,9 +211,9 @@ namespace mysqlx
         device = Device {
             .DeviceId   = tmp.get(0),
             .ClientId   = tmp.get(1),
-            .man        = static_cast<std::string>(tmp.get(2)),
-            .mod        = static_cast<std::string>(tmp.get(3)),
-            .sn         = static_cast<std::string>(tmp.get(4))
+            .man        = tmp.get(2),
+            .mod        = tmp.get(3),
+            .sn         = tmp.get(4)
         };
     }
 }

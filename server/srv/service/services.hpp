@@ -6,5 +6,6 @@
 #include "point/point.hpp"
 #include "logger_upload/LoggerUpload.hpp"
 #include "readings/ReadingDispatcher.hpp"
+#include "DeviceModel/DeviceModel.hpp"
 
 #endif

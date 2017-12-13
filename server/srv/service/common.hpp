@@ -8,6 +8,7 @@
 #include <restbed>
 #include <utility>
 #include <boost/optional.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
 
 namespace celeste
 {
@@ -155,6 +156,14 @@ namespace nlohmann
                                   // adl_serializer<T>::from_json
             }
         }
+    };
+
+
+    template <>
+    struct adl_serializer<boost::posix_time::ptime>
+    {
+        static void to_json(json& j, const boost::posix_time::ptime& time);
+        static void from_json(const json& j, boost::posix_time::ptime& time);
     };
 }
 
