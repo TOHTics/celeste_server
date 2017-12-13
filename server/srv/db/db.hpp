@@ -37,13 +37,6 @@ namespace mysqlx
         Value put(const External& in);
     };
 
-    template <class T, std::size_t = sizeof(T)>
-    struct has_value_translator : std::false_type {};
-
-
-    template <class T>
-    struct has_value_translator<T, sizeof(value_translator<T>)> : std::true_type {};
-
     // --- DEFAULT TRANSLATIONS ---------------------
     template <> 
     struct value_translator<std::string>
