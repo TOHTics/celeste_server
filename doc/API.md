@@ -4,15 +4,18 @@ The Celeste system to query and process readings from Loggers connected to Solar
 # Table of Contents
 
 
-1.  [Overview](#overview)
-2.  [Device](#device)
-3.  [Model](#model)
-4.  [Point](#point)
-5.  [Reading](#reading)
-6.  [Logger](#logger)
-7.  [Notes](#notes)
+1. [Overview](#overview)
+2. [Device](#device)
+3. [Model](#model)
+4. [Device has Model](#device_has_model)
+5. [Point](#point)
+6. [Reading](#reading)
+7. [Logger](#logger)
+8. [Error Codes](#error_codes)
+9. [Notes](#notes)
 
 # Device
+---
 
 ````
 @ - - - - - - - - @
@@ -36,7 +39,6 @@ A Device is that which contains the sensors (a.k.a Models) like a Voltmeter or a
 |   `get`     | GET     | `/celeste/devices/`   | Gets a device and its information.    |
 |   `insert`  | POST    | `/celeste/devices/`   | Inserts a new device into the DB.     |
 |   `remove`  | DELETE  | `/celeste/devices/`   | Deletes a device on the DB along with its associated records. |
-| `add_model` | POST    | `/celeste/devices`    | Add a Model to the Device.            |
 
 ## `get`
 ### Request
@@ -61,6 +63,7 @@ Status Message: OK
 ````
 ````
 {
+	"DeviceId" : integer
 	"ClientId" : integer,
 	"id"  : integer,
 	"man" : string,
@@ -133,63 +136,11 @@ Status Message: OK
 ````
 If one attempts to `remove` a device which does not exist in the database, then the operation will return the response.
 
-## `add_model`
-Adds a model to a device. This action associates a model to a device so that it is understood as *the device with identifier `device_id` has a model `model_id`*.
 
-### Request
-````
-{
-	"DeviceId" : integer
-	"ModelId" : string
-	"note" : string
-}
-````
-Where:
-
-| Field       | R/O       | Description                       |
-|:-----------:|:---------:|-----------------------------------|
-| `DeviceId`  | Required  | Unique identifier for the model. Must already exist in the database.  |
-| `ModelId`   | Required  | Unique identifier for the model. Must already exist in the database. |
-| `note`   | Optional  | A note about the model. This may be used to differentiate a duplicate model that was already associated to the device. An example might be its location: `"note" : "Roof"`.|
-
-### Response
-````http
-Status Code:    200
-Status Message: OK
-````
-
-````
-{
-	"x" : integer
-}
-````
-The field `x` indicates the index of the inserted model. For example, it will return 
-`{
-	"x" : 2
-}`
-if a model duplicated model is added.
-
-### Example
-Let's assume we have a device with identifier `DeviceId = 4001`. Let's also assume that we have inserted a model named `PowerMeter` which measures, for example, watts. We would like to tell the server that Device `4001` has a model `PowerMeter`. 
-
-````
- -----------                       ------------
-|  Device   | - - - - - - - - - - | PowerMeter |
-| Id: 4001  |    reads from        ------------
- -----------
-````
-
-Our request would look like:
-
-````
-{
-	"DeviceId" : 4001
-	"ModelId" : "PowerMeter"
-}
-````
 
 
 # Model
+---
 ````
     is read by
 M @-------------\
@@ -240,7 +191,7 @@ Status Message: OK
 ````
 ````
 {
-	"id": string,
+	"ModelId": string,
 	"ns": string
 }
 ````
@@ -251,7 +202,7 @@ We can insert a new device into the database with the following format:
 
 ````
 {
-	"ModelId" : integer,
+	"ModelId" : string,
 	"ns" : string
 }
 ````
@@ -276,7 +227,7 @@ The `remove` operation will delete the model on the database **along with every 
 ### Request
 ````
 {
-	"ModelId" : integer
+	"ModelId" : string
 }
 ````
 Where:
@@ -292,7 +243,179 @@ Status Message: OK
 ````
 If one attempts to `remove` a device which does not exist in the database, then the operation will return the response.
 
+
+# Device has Model
+---
+
+This action associates a model to a device so that it is understood as *the device with identifier `device_id` has a model `model_id`*.
+
+| Operation   | Method  | Url                   | Description                           |
+|:-----------:|:-------:|-----------------------|---------------------------------------|
+|   `get`     | GET     | `/celeste/device_model/`   | Gets the details of the association between a Device and a Model.    |
+|   `associate`  | POST    | `/celeste/device_model/`   | Associates a Model to the Device.     |
+|   `dissasociate`  | DELETE  | `/celeste/device_model/`   | Dissasociates a Model from a Device. |
+
+## `get`
+This method has the following functionality:
+
+- Gets a particular association given by `DeviceId`, `ModelId`, `idx`. That is, gets the details of the association between the aggregated model `ModelId` and the `DeviceId` with index `idx`.
+- Gets all the associations of a `DeviceId` and `ModelId`. That is, gets the details of all the associations between the Model `ModelId` and the Device `DeviceId`.
+- Gets all the Model associations that the `DeviceId`. Gets all of the associations the Device `DeviceId` has.
+
+### Request
+````
+{
+	"DeviceId" : integer
+	"ModelId" : string
+	"idx" : string
+}
+````
+
+Where:
+
+| Field       | R/O       | Description                       |
+|:-----------:|:---------:|-----------------------------------|
+| `DeviceId`  | Required  | Unique identifier for the model. Must already exist in the database.  |
+| `ModelId`   | Optional  | Unique identifier for the model. Must already exist in the database. |
+| `idx`   | Optional | The aggregated index for Devices that may have multiple identical Models. If the Device only has one of `ModelId` then you should set `idx = 0`. |
+
+### Response
+````http
+Status Code:    200
+Status Message: OK
+````
+
+If all fields are set then:
+
+````
+{
+	"DeviceId" : integer,
+	"ModelId" : string,
+	"idx" : integer,
+	"note" : string
+}
+````
+
+If only `DeviceId` and `ModelId` are set:
+
+````
+{
+	[
+		{
+			"DeviceId" : integer,
+			"ModelId" : string,
+			"idx" : integer,
+			"note" : string
+		},
+		.
+		.
+		.
+	]
+}
+````
+
+If only `DeviceId` is set, then same as above.
+
+## `associate`
+
+Associates a Model with the Device. That is it "adds a Model to the Device". We may exemplify this by the sentence "We add a GPS to the Device with identifier 102". 
+
+### Request
+
+````
+{
+	"DeviceId" : integer,
+	"ModelId" : string,
+	"note" : string
+}
+````
+
+Where:
+
+| Field       | R/O       | Description                       |
+|:-----------:|:---------:|-----------------------------------|
+| `DeviceId`  | Required  | Unique identifier for the model. Must already exist in the database.  |
+| `ModelId`   | Required  | Unique identifier for the model. Must already exist in the database. |
+| `note`   | Optional  | A note about the association. This may be used to differentiate a duplicate model that was already associated to the device. For example, we may have two Thermometers on the Model; one in the garden and one on the roof. We may differentiate both by setting note to `"note" : "Garden"` and the other to `"note" : "Roof"`.|
+
+### Response
+````http
+Status Code:    200
+Status Message: OK
+````
+
+````
+{
+	"idx" : integer
+}
+````
+The field `idx` indicates the index of the inserted model. For example, if there is already a model with the same `ModelId` on the Device then the response will look like:
+
+````
+{
+	"idx" : 2
+}
+````
+
+#### Example
+Let's assume we have a device with identifier `DeviceId = 4001`. Let's also assume that we have inserted a model named `PowerMeter` which measures, for example, watts. We would like to tell the server that Device `4001` has a model `PowerMeter`. 
+
+````
+ -----------                       ------------
+|  Device   | - - - - - - - - - - | PowerMeter |
+| Id: 4001  |    reads from        ------------
+ -----------
+````
+
+Our request would look like:
+
+````
+{
+	"DeviceId" : 4001
+	"ModelId" : "PowerMeter"
+	"note" : "This sensor is located next to the Inverter!"
+}
+````
+
+And the response would look like:
+
+````
+{
+	"idx" : 0
+}
+````
+
+## `dissasociate`
+
+Dissasociates a Model from a Device.
+
+### Request
+
+````
+{
+	"DeviceId" : integer,
+	"ModelId" : string,
+	"idx" : int
+}
+````
+
+Where:
+
+| Field       | R/O       | Description                       |
+|:-----------:|:---------:|-----------------------------------|
+| `DeviceId`  | Required  | Unique identifier for the model. Must already exist in the database.  |
+| `ModelId`   | Required  | Unique identifier for the model. Must already exist in the database. |
+| `idx` | Required | The aggregated index of the Model. |
+
+### Response
+
+````http
+Status Code:    200
+Status Message: OK
+````
+
 # Point
+---
 
 ````
    is sampled by
@@ -315,6 +438,16 @@ such as:
 - Altitude
 - Temperature
 
+A Point needs to have a data type assigned to it. Currently the following types are supported:
+
+| Type      | id  |
+| :-------: | :-: |
+| `string`  | 0   |
+| `integer` | 1   |
+| `double`  | 2   |
+| `float`   | 3   |
+
+The API offers the following operations:
 
 | Operation   | Method  | Url                   | Description                           |
 |:-----------:|:-------:|-----------------------|---------------------------------------|
@@ -322,13 +455,112 @@ such as:
 |   `insert`  | POST    | `/celeste/points/`   | Inserts a new point into the DB.     |
 |   `remove`  | DELETE  | `/celeste/points/`   | Deletes a point on the DB along with its associated records. |
 
+
+## `get`
+
+### Request
+
+````
+{
+	"PointId" : string,
+	"ModelId" : string
+}
+````
+
+Where:
+
+| Field       | R/O       | Description                       |
+|:-----------:|:---------:|-----------------------------------|
+| `PointId`  | Required  | Unique identifier for the Point. Must already exist in the database.  |
+| `ModelId`   | Required  | Unique identifier for the Model. Must already exist in the database. |
+
+### Response
+
+````http
+Status Code:    200
+Status Message: OK
+````
+
+````
+{
+	"PointId" : string,
+	"ModelId" : string,
+	"type" : integer,
+	"u" : string,
+	"d" : string
+}
+````
+
+
+## `insert`
+
+### Request
+
+````
+{
+	"PointId" : string,
+	"ModelId" : string,
+	"type" : integer,
+	"u" : string,
+	"d" : string
+}
+````
+
+Where:
+
+| Field       | R/O       | Description                       |
+|:-----------:|:---------:|-----------------------------------|
+| `PointId`  | Required  | Unique identifier for the Point.  |
+| `ModelId`  | Required  | Unique identifier for the Model. Must already exist in the database. |
+| `type`     | Required  | Data type id of Point. |
+| `u`        | Required  | Measurement units of Point. Eg. watts, volts, celsius, meters, etc.
+| `d`        | Optional  | Description of Point. |   
+
+### Response
+
+````http
+Status Code:    200
+Status Message: OK
+````
+
+
+## `remove`
+
+### Request
+````
+{
+	"PointId" : string,
+	"ModelId" : string
+}
+````
+
+Where:
+
+| Field       | R/O       | Description                       |
+|:-----------:|:---------:|-----------------------------------|
+| `PointId`  | Required  | Unique identifier for the Point. Must already exist in the database.  |
+| `ModelId`   | Required  | Unique identifier for the Model. Must already exist in the database. |
+
+### Response
+
+````http
+Status Code:    200
+Status Message: OK
+````
+
+
 # Reading
+---
 The Reading resource is a very important part of the Celeste system. It allows to query the server for a measurement of, for example, the power consumption. There are various different types of reading such as `last` and `range`. The API user must know the difference between any of these. To this end, we the following table makes it easy to see all the types available.
 
 | Reading     | Description                                      |
 |:-----------:|--------------------------------------------------|
 |  `last`     | Gets the last reading from a sensor on a device. |
-|  `range`    | Gets a range of readings from one starting date to an ending date|
+|  `range`    | Gets a range of readings from one starting date to an ending date. |
+| `hour` | Gets a range of the last hour's readings. TODO. |
+| `today` | Gets a range of all the readings from the start of the current day, to the current time. TODO. |
+| `week` | Gets a range of all the readings from the start of the current week to the current time. Each week starts on `Monday 00:00:01`. TODO. | 
+| `year` | Gets a range of all the readings from the start of the year to the current time. Each year starts on `January 1st 00:00:01`. TODO. |
 
 ## Requesting a Reading
 To request the server for a reading, you must send certain parameters that allow the server to answer back with the data. In general, **all reading requests will require the following 4 parameters**:
@@ -369,7 +601,8 @@ Status Message: OK
 
 ````
 {
-	"value" : string, integer, double
+	"value" : string, integer, double,
+	"sf" : double
 	"t" : string
 }
 ````
@@ -377,7 +610,8 @@ Where:
 
 | Field     | Description                                      |
 |:---------:|--------------------------------------------------|
-|  `value`  | Value of the reading. The type of the value may be one of the following: `string`, `integer`, `double` |
+|  `value`  | Value of the reading. The type of the value may be one of the following: `string`, `integer`, `double` |\
+| `sf` | Scale factor to multiply by. That is, you should perform the following operation: `value * 10^sf` . This may be `null`. |
 |  `t`      | Timestamp indicating time and date when the measurement took place.|
 
 ## `range` 
@@ -401,18 +635,21 @@ Status Message: OK
 ````
 [
 	{
-		"value" : value1
+		"value" : value1,
+		"sf" : sf1,
 		"t" : timestamp1
 	},
 	{
-		"value" : value2
+		"value" : value2,
+		"sf" : sf2,
 		"t" : timestamp2
 	},
 	.
 	.
 	.
 	{
-		"value" : valueN
+		"value" : valueN,
+		"sf" : sfN,
 		"t" : timestampN
 	}
 ]
@@ -438,25 +675,30 @@ The response might look like:
 ````
 [
 	{
-		"value" : 20.2
+		"value" : 20.2,
+		"sf" : 0.0,
 		"t" : 21-12-2017 00:00:01
 	},
 	{
-		"value" : 27.4
+		"value" : 27.4,
+		"sf" : 0.0,
 		"t" : 21-12-2017 08:00:01
 	},
 	{
-		"value" : 35.1
+		"value" : 35.1,
+		"sf" : 0.0,
 		"t" : 21-12-2017 16:00:01
 	},
 	{
-		"value" : 21.7
+		"value" : 21.7,
+		"sf" : 0.0,
 		"t" : 22-12-2017 00:00:01
 	}
 ]
 ````
 
 # Logger
+---
 Like the [Reading](#reading) resource, the Logger resource is one of the most important parts of the whole Celeste system. This is the resource which will listen for incoming records sent by the Devices. This being said, there are 3 specific formats which the logger will understand: XML, JSON and CelesteRN. Currently only XML is supported.
 
 It will be necessary to specify the following headers whenever you use the logger:
@@ -482,9 +724,9 @@ as a POST method. The server will then answer back with a `200` code only if the
 | Operation   | Method  | Url                           |
 |:-----------:|:-------:|-------------------------------|
 |   `upload`  | POST    | `/celeste/logger/upload/`     |
-|   `upload`  | POST    | `/celeste/logger/upload/verbose?=[0 or 1]`      |
+|   `upload`  | POST    | `/celeste/logger/upload/verbose/`      |
 
-The first path will be interpreted as `verbose?=0`. That is, no verbose response.
+The first path will have no verbose response.
 
 ### Request
 We have said that the server will only accept a handful of structured formats. The intention of this section is to give the formal formats that are required.
@@ -624,6 +866,8 @@ One need not worry about the units of measurement since it is required to specif
 # Full Example
 To write.
 
+# Error Codes
+To write.
 
 # Notes
 
