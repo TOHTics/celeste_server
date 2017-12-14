@@ -30,6 +30,7 @@ namespace resource
     Point Points<nlohmann::json>::get(const std::string& pointId,
                                       const std::string& modelId)
     {
+        lock_guard<mutex> guard(point_mutex);
         auto res = 
             pointTable.
             select("*").
@@ -46,6 +47,8 @@ namespace resource
 
     void Points<nlohmann::json>::insert(const value_type& Point)
     {
+        lock_guard<mutex> guard(point_mutex);
+
         mysqlx::SerializableRow row;
         row.from(Point);
 
@@ -60,6 +63,8 @@ namespace resource
     void Points<nlohmann::json>::remove(const std::string& pointId,
                                         const std::string& modelId)
     {
+        lock_guard<mutex> guard(point_mutex);
+
         pointTable.
         remove().
         where("id = :PointId AND Model_id = :ModelId").

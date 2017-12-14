@@ -135,36 +135,23 @@ namespace resource
         if (data["DeviceId"].is_null())
             throw 400; // DeviceId is required for any request
 
-        bool fetchAll = false;
-        if (data["all"].is_null())
-        {
-            fetchAll = false;
-        }
-        else
-        {
-            fetchAll = data["all"].get<bool>();
-        }
-
-        if (!fetchAll)
-        {
-            if (data["ModelId"].is_null())
-                throw 400; // ModelId required when fetching a particular entry
-
-            if (data["idx"].is_null())
-                throw 400; // idx required when fetching a particular entry
-        }
-
         // get device from db
         json_type response;
-        if (fetchAll)
+
+        if (data["idx"].is_null() && data["ModelId"].is_null())
         {
-            if (data["ModelId"].is_null())
-                response = this->get_all(data["DeviceId"]);
-            else
-                response = this->get_all(data["DeviceId"], data["ModelId"]);
+            response = this->get(data["DeviceId"]);
+        }
+        else if (data["ModelId"].is_null())
+        {
+            response = this->get(data["DeviceId"], data["ModelId"]);
         }
         else
+        {
             response = this->get(data["DeviceId"], data["ModelId"], data["idx"]);
+        }
+        
+        
 
         // close
         session->close(restbed::OK,

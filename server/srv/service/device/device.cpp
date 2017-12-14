@@ -8,7 +8,7 @@
 #include "device.hpp"
 #include "srv/service/error.hpp"
 #include "srv/service/common.hpp"
-#include <iostream>
+#include <mutex>
 
 using namespace std;
 
@@ -30,6 +30,7 @@ namespace resource
 
     Device Devices<nlohmann::json>::get(int deviceId)
     {
+        lock_guard<mutex> guard(device_mutex);
         auto res = 
             deviceTable.
             select("*").
@@ -43,6 +44,7 @@ namespace resource
 
     boost::optional<int> Devices<nlohmann::json>::insert(const value_type& device, bool autogen)
     {
+        lock_guard<mutex> guard(device_mutex);
         Device dtmp = device;
         dbSession.startTransaction();
         try
@@ -76,6 +78,7 @@ namespace resource
 
     void Devices<nlohmann::json>::remove(int deviceId)
     {
+        lock_guard<mutex> guard(device_mutex);
         deviceTable.
         remove().
         where("id = :DeviceId").

@@ -73,8 +73,8 @@ namespace resource
          *
          * @return     An `std::vector<Model>`.
          */
-        std::vector<DeviceModelAssoc> get_all(int deviceId);
-        std::vector<DeviceModelAssoc> get_all(int deviceId, const std::string& modelId);
+        std::vector<DeviceModelAssoc> get(int deviceId);
+        std::vector<DeviceModelAssoc> get(int deviceId, const std::string& modelId);
 
         // TODO
         DeviceModelAssoc get(int deviceId, const std::string& modelId, int idx);

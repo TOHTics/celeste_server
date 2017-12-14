@@ -24,7 +24,8 @@ namespace resource
     using json = nlohmann::json;
 
     ReadingDispatcher::ReadingDispatcher(const mysqlx::SessionSettings& dbSettings)
-        : dbSettings(dbSettings)
+        :   dbSettings(dbSettings),
+            dbSession(dbSettings)
     {
         set_path("/readings");
         set_method_handler("GET", [this] (const std::shared_ptr<restbed::Session> session) {GET(session);});
@@ -35,7 +36,10 @@ namespace resource
     json ReadingDispatcher::dispatch(const LastReadRequest& request) const
     {
         auto reading = 
-            reading_fetcher.fetch<reading_type>(move(mysqlx::Session(dbSettings)), request);
+            reading_fetcher.fetch<
+                reading_type
+            >(move(mysqlx::Session(dbSettings)), request);
+
         return json(reading);
     }
 
@@ -43,7 +47,10 @@ namespace resource
     json ReadingDispatcher::dispatch(const RangeReadRequest& request) const
     {
         auto reading = 
-            reading_fetcher.fetch<vector<reading_type>>(move(mysqlx::Session(dbSettings)), request);
+            reading_fetcher.fetch<
+                vector<reading_type>
+            >(move(mysqlx::Session(dbSettings)), request);
+
         return json(reading);
     }
 

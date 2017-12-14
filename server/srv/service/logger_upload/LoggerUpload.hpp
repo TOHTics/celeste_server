@@ -11,6 +11,7 @@
 #include <memory>
 #include <mysql_devapi.h>
 #include <restbed>
+#include <mutex>
 
 #include "srv/db/db.hpp"
 #include "sunspec/sunspec.hpp"
@@ -39,11 +40,14 @@ namespace resource
         void get_db_error(Error &&e, const std::shared_ptr<restbed::Session> session);
 
         // --- Member attributes -----
-        mysqlx::Session     dbSession;
-        mysqlx::Schema      celesteDB;
-        mysqlx::Table       deviceRecordTable;
-        mysqlx::Table       modelRecordTable;
-        mysqlx::Table       pointRecordTable;
+        mysqlx::SessionSettings     dbSettings;
+        mysqlx::Session             dbSession;
+        mysqlx::Schema              celesteDB;
+        mysqlx::Table               deviceRecordTable;
+        mysqlx::Table               modelRecordTable;
+        mysqlx::Table               pointRecordTable;
+
+        std::mutex                  upload_mutex;
     };
 }
 }

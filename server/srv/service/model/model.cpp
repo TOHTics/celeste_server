@@ -29,6 +29,7 @@ namespace resource
 
     Model Models<nlohmann::json>::get(const std::string& modelId)
     {
+        lock_guard<mutex> guard(model_mutex);
         auto res = 
             modelTable.
             select("*").
@@ -43,6 +44,7 @@ namespace resource
 
     void Models<nlohmann::json>::insert(const value_type& model)
     {
+        lock_guard<mutex> guard(model_mutex);
         mysqlx::SerializableRow row;
         row.from(model);
 
@@ -56,6 +58,7 @@ namespace resource
 
     void Models<nlohmann::json>::remove(const std::string& modelId)
     {
+        lock_guard<mutex> guard(model_mutex);
         modelTable.
         remove().
         where("id = :ModelId").

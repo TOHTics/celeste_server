@@ -105,6 +105,8 @@ namespace resource
         mysqlx::Session     dbSession;
         mysqlx::Schema      celesteDB;
         mysqlx::Table       deviceTable;
+
+        std::mutex          device_mutex;
     };
 }
 }

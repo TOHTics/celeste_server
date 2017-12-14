@@ -104,6 +104,8 @@ namespace resource
         mysqlx::Session     dbSession;
         mysqlx::Schema      celesteDB;
         mysqlx::Table       pointTable;
+
+        std::mutex          point_mutex;
     };
 }
 }

@@ -17,6 +17,7 @@
 #include <restbed>
 #include <functional>
 #include <boost/optional.hpp>
+#include <mutex>
 
 #include "srv/db/db.hpp"
 
@@ -103,6 +104,8 @@ namespace resource
         mysqlx::Session     dbSession;
         mysqlx::Schema      celesteDB;
         mysqlx::Table       modelTable;
+
+        std::mutex          model_mutex;
     };
 }
 }

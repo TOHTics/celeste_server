@@ -18,7 +18,7 @@ namespace resource
 
         typedef T value_type;
 
-        boost::optional<double>                     sf = 0.0;
+        boost::optional<double>                     sf;
         boost::optional<boost::posix_time::ptime>   t;
         T                                           value;
     };

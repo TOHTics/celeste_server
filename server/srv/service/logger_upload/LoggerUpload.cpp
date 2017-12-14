@@ -9,7 +9,6 @@
 #include "srv/service/error.hpp"
 #include "srv/service/common.hpp"
 
-#include <iostream>
 using namespace std;
 using namespace sunspec;
 
@@ -20,6 +19,7 @@ namespace resource
     // --- CLASS DEFINITIONS ---------
     LoggerUpload::LoggerUpload(const mysqlx::SessionSettings& dbSettings)
         :   dbSession(dbSettings),
+            dbSettings(dbSettings),
             celesteDB(dbSession.getSchema("Celeste")),
             deviceRecordTable(celesteDB.getTable("DeviceRecord")),
             modelRecordTable(celesteDB.getTable("ModelRecord")),
@@ -32,6 +32,7 @@ namespace resource
 
     void LoggerUpload::persist_data(const sunspec::data::SunSpecData& data)
     {
+        lock_guard<mutex> guard(upload_mutex);
         try
         {   
             // --- START TRANSACTION -
@@ -188,6 +189,7 @@ namespace resource
         }
         catch (const mysqlx::Error& e)
         {
+            cout << e.what() << endl;
             if (verbose)
                 session->close(400, e.what());
             else

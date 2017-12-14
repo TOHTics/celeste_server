@@ -41,6 +41,7 @@ namespace resource
         // --- MEMBER ATTRIBUTES -----
         ReadingFetcher              reading_fetcher;
         mysqlx::SessionSettings     dbSettings;
+        mysqlx::Session             dbSession;
     };
     
 }
