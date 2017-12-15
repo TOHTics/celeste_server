@@ -7,11 +7,11 @@ The Celeste system to query and process readings from Loggers connected to Solar
 1. [Overview](#overview)
 2. [Device](#device)
 3. [Model](#model)
-4. [Device has Model](#device_has_model)
+4. [Device has Model](#device-has-model)
 5. [Point](#point)
 6. [Reading](#reading)
 7. [Logger](#logger)
-8. [Error Codes](#error_codes)
+8. [Error Codes](#error-codes)
 9. [Notes](#notes)
 
 # Device

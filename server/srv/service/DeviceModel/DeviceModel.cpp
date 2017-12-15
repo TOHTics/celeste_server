@@ -27,7 +27,7 @@ namespace resource
         set_method_handler("DELETE", [this] (const std::shared_ptr<restbed::Session> session) {DELETE(session);});
     }
 
-    std::vector<DeviceModelAssoc> DeviceModelAssocs<nlohmann::json>::get_all(int deviceId)
+    std::vector<DeviceModelAssoc> DeviceModelAssocs<nlohmann::json>::get(int deviceId)
     {
         auto res = 
             associationTable.
@@ -43,7 +43,7 @@ namespace resource
         return assocs;
     }
 
-    std::vector<DeviceModelAssoc> DeviceModelAssocs<nlohmann::json>::get_all(int deviceId, const std::string& modelId)
+    std::vector<DeviceModelAssoc> DeviceModelAssocs<nlohmann::json>::get(int deviceId, const std::string& modelId)
     {
         auto res = 
             associationTable.
