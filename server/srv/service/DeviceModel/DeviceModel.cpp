@@ -8,6 +8,8 @@
 #include "DeviceModel.hpp"
 #include "srv/service/error.hpp"
 #include "srv/service/common.hpp"
+#include "srv/service/device/device.hpp"
+#include "srv/service/model/model.hpp"
 
 using namespace std;
 
@@ -72,7 +74,7 @@ namespace resource
         return row.as<DeviceModelAssoc>();
     }
 
-    int DeviceModelAssocs<nlohmann::json>::associate(const DeviceModelAssoc& dm)
+    int DeviceModelAssocs<nlohmann::json>::associate(int deviceId, const std::string& modelId, const boost::optional<std::string>& note)
     {
         dbSession.startTransaction();
         try
@@ -88,14 +90,14 @@ namespace resource
                               ) as tmp 
                               )"
                 ).
-                bind(ValueList{dm.DeviceId, dm.ModelId.c_str()}).
+                bind(ValueList{deviceId, modelId.c_str()}).
                 execute().
                 fetchOne().
                 get(0);
 
             associationTable.
             insert("idx", "Device_id", "Model_id", "note").
-            values(idx, dm.DeviceId, dm.ModelId.c_str(), mysqlx::EnhancedValue{dm.note}).
+            values(idx, deviceId, modelId.c_str(), mysqlx::EnhancedValue{note}).
             execute();
 
             dbSession.commit();
@@ -183,7 +185,11 @@ namespace resource
         if (data["ModelId"].is_null())
             throw 400;
 
-        auto idx = this->associate(data.get<DeviceModelAssoc>());
+        if (data["note"].is_null())
+            data["note"] = nullptr;
+
+        DeviceModelAssoc dm = data.get<DeviceModelAssoc>();
+        auto idx = this->associate(dm.DeviceId, dm.ModelId, dm.note);
         json_type response{{"idx", idx}};
 
         // close

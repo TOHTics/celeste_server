@@ -17,8 +17,6 @@
 #include <boost/optional.hpp>
 
 #include "srv/db/db.hpp"
-#include "../device/device.hpp"
-#include "../model/model.hpp"
 
 namespace celeste
 {   
@@ -80,7 +78,7 @@ namespace resource
         DeviceModelAssoc get(int deviceId, const std::string& modelId, int idx);
 
         // TODO
-        int associate(const DeviceModelAssoc& dm);
+        int associate(int deviceId, const std::string& modelId, const boost::optional<std::string>& note = boost::none);
 
         // TODO
         void dissasociate(int deviceId, const std::string& modelId, int idx);

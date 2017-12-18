@@ -5,10 +5,10 @@
  * 
  * @file
  */
+#include <mutex>
 #include "device.hpp"
 #include "srv/service/error.hpp"
 #include "srv/service/common.hpp"
-#include <mutex>
 
 using namespace std;
 
@@ -20,7 +20,8 @@ namespace resource
     Devices<nlohmann::json>::Devices(const mysqlx::SessionSettings& dbSettings)
         :   dbSession(dbSettings),
             celesteDB(dbSession.getSchema("Celeste")),
-            deviceTable(celesteDB.getTable("Device"))
+            deviceTable(celesteDB.getTable("Device")),
+            modelAssociator(dbSettings)
     {
         set_path("/devices");
         set_method_handler("GET", [this] (const std::shared_ptr<restbed::Session> session) {GET(session);});
@@ -30,7 +31,7 @@ namespace resource
 
     Device Devices<nlohmann::json>::get(int deviceId)
     {
-        lock_guard<mutex> guard(device_mutex);
+        lock_guard<mutex> guard(sqlMutex);
         auto res = 
             deviceTable.
             select("*").
@@ -44,11 +45,12 @@ namespace resource
 
     boost::optional<int> Devices<nlohmann::json>::insert(const value_type& device, bool autogen)
     {
-        lock_guard<mutex> guard(device_mutex);
+        lock_guard<mutex> guard(sqlMutex);
         Device dtmp = device;
-        dbSession.startTransaction();
         try
         {
+            dbSession.startTransaction();
+
             if (autogen)
                 dtmp.DeviceId = dbSession.sql("SELECT IFNULL(MAX(id) + 1, 0) FROM Device").execute().fetchOne().get(0);
 
@@ -76,9 +78,27 @@ namespace resource
             return boost::none;
     }
 
+    // Note: The actions are already atomic so no need for the mutex lock
+    boost::optional<int> Devices<nlohmann::json>::insert(const value_type& device, bool autogen, std::vector<std::string> models)
+    {
+        boost::optional<int> autogenId = this->insert(device, autogen); // atomic
+        int deviceId;
+        if (autogenId)
+            deviceId = *autogenId;
+        else
+            deviceId = device.DeviceId;
+
+        // associate the passed models
+        for (const auto& modelId : models)
+            modelAssociator.associate(deviceId, modelId); // atomic
+
+        return autogenId;
+    }
+
+
     void Devices<nlohmann::json>::remove(int deviceId)
     {
-        lock_guard<mutex> guard(device_mutex);
+        lock_guard<mutex> guard(sqlMutex);
         deviceTable.
         remove().
         where("id = :DeviceId").
@@ -153,9 +173,17 @@ namespace resource
         if (data["sn"].is_null())
             throw 400;
 
+        data["ClientId"] = nullptr;
+
         // insert device and get id
         // in case autogen was not set, will return null
-        auto autogen_id = this->insert(data.get<Device>(), autogen);
+        boost::optional<int> autogen_id;
+
+        if (! data["models"].is_null())
+            autogen_id = this->insert(data.get<Device>(), autogen, data["models"].get<vector<string>>());
+        else
+            autogen_id = this->insert(data.get<Device>(), autogen);
+
         json_type response{{"x", autogen_id}};
 
         // close
