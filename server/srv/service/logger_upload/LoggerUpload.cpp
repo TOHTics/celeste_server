@@ -47,7 +47,7 @@ namespace resource
                     dbSession.sql(R"(
                                   SELECT IFNULL(MAX(idx) + 1, 0) FROM
                                   (
-                                    SELECT idx FROM Celeste.DeviceRecord
+                                    SELECT idx FROM DeviceRecord
                                     WHERE (Device_id = ?)
                                   ) as tmp 
                                   )"

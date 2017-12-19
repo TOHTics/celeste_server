@@ -13,14 +13,25 @@ namespace resource
     template <class T>
     struct Reading
     {
-        static_assert(std::is_default_constructible<T>::value,
-                      "Type T for Reading<T> must be default constructible");
-
         typedef T value_type;
 
         boost::optional<double>                     sf;
         boost::optional<boost::posix_time::ptime>   t;
         T                                           value;
+
+        Reading()
+        {
+            static_assert(std::is_default_constructible<T>::value,
+                      "Type T for Reading<T> must be default constructible.");
+        }
+
+        Reading(T&& _value)
+            : value(std::move(_value))
+        {}
+
+        Reading(const T& _value)
+            : value(_value)
+        {}
     };
 }
 }

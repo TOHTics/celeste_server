@@ -558,7 +558,17 @@ The Reading resource is a very important part of the Celeste system. It allows t
 | `accumulated` | Gets the accumalated (or total) value of a range of readings. This is only valid for numerical values.
 
 ## Requesting a Reading
-To request the server for a reading, you must send certain parameters that allow the server to answer back with the data. In general, **all reading requests will require the following 4 parameters**:
+To request the server for a reading, you must send certain parameters that allow the server to answer back with the data. 
+
+The API offers the following operations:
+
+| Operation   | Method  | Url                   | Description                           |
+|:-----------:|:-------:|-----------------------|---------------------------------------|
+|   `get`     | GET     | `/celeste/readings/`   | Gets a "reading" of information. This reading might be an actual reading, a statistic, a document, etc.   |
+
+
+
+In general, **all reading requests will require the following 4 parameters**:
 
 | Parameter   | Description                                      |
 |:-----------:|--------------------------------------------------|
@@ -691,6 +701,76 @@ The response might look like:
 	}
 ]
 ````
+
+## `accumulated`
+
+This method will get an accumulated total for all the readings in the specified range. The type of the readings must be numeric for this to work.
+
+### Request
+```
+{
+	"DeviceIds" : 
+	[
+		string,
+		string,
+		...
+	],
+	"ModelId" : string,
+	"PointId" : string,
+	"method" : "accumulated",
+
+	"start" : string,
+	"end" : string
+}
+```
+
+Where:
+
+| Parameter   | Description                                      |
+|:-----------:|--------------------------------------------------|
+|  `start`    | Start date. |
+|  `end`      | End date.   |
+
+### Response
+
+```
+{
+    "DeviceId1" : double,
+    "DeviceId2" : double,
+    ...
+}
+```
+
+Where:
+
+| Parameter   | Description                                      |
+|:-----------:|--------------------------------------------------|
+|  `DeviceIdxxx`    | Accumulated total. |
+
+### Example
+
+We might request this service like this:
+
+```
+{
+	"DeviceIds" : ["A001-3312-312B", "A002-3312-312B"],
+	"ModelId" : "potenciometro",
+	"PointId" : "consumo",
+
+	"method" : "accumulated",
+	"start" : "2017-12-19 17:18:20",
+	"end" : "2017-12-19 20:18:20"
+}
+```
+And get the following, example, response:
+
+```
+{
+	"A001-3312-312B": 3016.0,
+	"A002-3312-312B": 1661.0}
+```
+
+
 
 # Logger
 ---

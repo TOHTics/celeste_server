@@ -10,7 +10,7 @@
 #include <list>
 #include <mysql_devapi.h>
 #include <boost/variant.hpp>
-#include <mysql_xapi.h>
+#include <cmath>
 
 #include "ReadingFetcher.hpp"
 #include "ReadRequest.hpp"
@@ -115,11 +115,56 @@ namespace resource
     // --- AccumulatedReadRequest fetch implementations --
 
     template <>
-    double
+    std::vector<double>
     ReadingFetcher::fetch_impl(mysqlx::Session&& dbSession,
                                const AccumulatedReadRequest& req) const
     {
-        return 90.;
+        std::vector<double> totals(req.DeviceIds.size());
+
+        // calculate total for each DeviceId
+        int i = 0;
+        for (const auto& DeviceId : req.DeviceIds)
+        {   
+            // gets the entries for each point
+            auto res = dbSession.sql(
+                R"(
+                SELECT a.sf, a.data FROM PointRecord a
+                WHERE
+                Device_id = ? 
+                AND Model_id = ?
+                AND Point_id = ?
+                AND t > ?
+                AND t < ?
+                ;
+                )" // end literal
+                ).bind(ValueList{
+                    DeviceId,
+                    req.ModelId,
+                    req.PointId,
+                    req.start,
+                    req.end
+                }).execute();
+
+            // calculate the totals
+            if (res.count() > 0)
+            {
+                totals[i] = 0;
+                for (auto&& r : res.fetchAll())
+                {
+                    // VALUES MOST BE DOUBLE TO NOT TRIGGER AN INT OVERFLOW
+                    double sf = r.get(0);
+                    double value = stod(r.get(1));
+
+                    totals[i] += value * pow(10.0, sf);
+                }
+            } else
+            {
+                totals[i] = 0;
+            }
+            i++;
+        }
+
+        return totals;
     }
 }
 }

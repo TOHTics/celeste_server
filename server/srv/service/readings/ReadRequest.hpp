@@ -67,7 +67,7 @@ namespace resource
 
     struct AccumulatedReadRequest
     {
-        std::vector<std::string>    DeviceId;
+        std::vector<std::string>    DeviceIds;
         std::string                 ModelId;
         std::string                 PointId;
 

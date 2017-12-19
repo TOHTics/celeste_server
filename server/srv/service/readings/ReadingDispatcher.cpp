@@ -59,10 +59,15 @@ namespace resource
     {
         auto reading = 
             reading_fetcher.fetch<
-                double // fetch a double
+                vector<double> // fetch a double
             >(move(mysqlx::Session(dbSettings)), request);
 
-        return json(reading);
+        map<string, double> total_map;
+        int i = 0;
+        for (const auto& DeviceId : request.DeviceIds)
+            total_map[DeviceId] = reading[i++];
+
+        return json(total_map);
     }
 
     void ReadingDispatcher::GET(const std::shared_ptr<restbed::Session> session)
@@ -79,8 +84,8 @@ namespace resource
         // get json_type from request
         json data = get_json<json>(*request);
 
-        if (data["DeviceId"].is_null())
-            throw 400;
+        // if (data["DeviceId"].is_null())
+        //     throw 400;
         if (data["ModelId"].is_null())
             throw 400;
         if (data["PointId"].is_null())
@@ -121,9 +126,12 @@ namespace resource
         }
         else if (data["method"].get<string>() == "accumulated")
         {
+            if (data["DeviceIds"].empty())
+                throw 400;
+
             json response = dispatch<json>
             (AccumulatedReadRequest{
-                .DeviceId = data["DeviceId"],
+                .DeviceIds = data["DeviceIds"],
                 .ModelId  = data["ModelId"],
                 .PointId  = data["PointId"],
                 .start = data["start"],
