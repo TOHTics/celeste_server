@@ -30,7 +30,7 @@ namespace resource
         DeviceModelAssoc() = default;
 
         int                             idx;
-        int                             DeviceId;
+        std::string                     DeviceId;
         std::string                     ModelId;
         boost::optional<std::string>    note;
     };
@@ -71,17 +71,17 @@ namespace resource
          *
          * @return     An `std::vector<Model>`.
          */
-        std::vector<DeviceModelAssoc> get(int deviceId);
-        std::vector<DeviceModelAssoc> get(int deviceId, const std::string& modelId);
+        std::vector<DeviceModelAssoc> get(const std::string& deviceId);
+        std::vector<DeviceModelAssoc> get(const std::string& deviceId, const std::string& modelId);
 
         // TODO
-        DeviceModelAssoc get(int deviceId, const std::string& modelId, int idx);
+        DeviceModelAssoc get(const std::string& deviceId, const std::string& modelId, int idx);
 
         // TODO
-        int associate(int deviceId, const std::string& modelId, const boost::optional<std::string>& note = boost::none);
+        int associate(const std::string& deviceId, const std::string& modelId, const boost::optional<std::string>& note = boost::none);
 
         // TODO
-        void dissasociate(int deviceId, const std::string& modelId, int idx);
+        void dissasociate(const std::string& deviceId, const std::string& modelId, int idx);
 
     private:
         // --- Private methods -------

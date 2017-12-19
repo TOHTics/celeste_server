@@ -29,13 +29,13 @@ namespace resource
         set_method_handler("DELETE", [this] (const std::shared_ptr<restbed::Session> session) {DELETE(session);});
     }
 
-    std::vector<DeviceModelAssoc> DeviceModelAssocs<nlohmann::json>::get(int deviceId)
+    std::vector<DeviceModelAssoc> DeviceModelAssocs<nlohmann::json>::get(const std::string& deviceId)
     {
         auto res = 
             associationTable.
             select("*").
             where("Device_id = :DeviceId").
-            bind(ValueMap{{"DeviceId", deviceId}}).
+            bind(ValueMap{{"DeviceId", deviceId.c_str()}}).
             execute();
 
         std::vector<DeviceModelAssoc> assocs(res.count());
@@ -45,13 +45,13 @@ namespace resource
         return assocs;
     }
 
-    std::vector<DeviceModelAssoc> DeviceModelAssocs<nlohmann::json>::get(int deviceId, const std::string& modelId)
+    std::vector<DeviceModelAssoc> DeviceModelAssocs<nlohmann::json>::get(const std::string& deviceId, const std::string& modelId)
     {
         auto res = 
             associationTable.
             select("*").
             where("Device_id = :DeviceId AND Model_id = :ModelId").
-            bind(ValueMap{{"DeviceId", deviceId}, {"ModelId", modelId.c_str()}}).
+            bind(ValueMap{{"DeviceId", deviceId.c_str()}, {"ModelId", modelId.c_str()}}).
             execute();
 
         std::vector<DeviceModelAssoc> assocs(res.count());
@@ -62,19 +62,19 @@ namespace resource
     }
 
 
-    DeviceModelAssoc DeviceModelAssocs<nlohmann::json>::get(int deviceId, const std::string& modelId, int idx)
+    DeviceModelAssoc DeviceModelAssocs<nlohmann::json>::get(const std::string& deviceId, const std::string& modelId, int idx)
     {
         auto res = 
             associationTable.
             select("*").
             where("id = :DeviceId AND idx = :idx AND Model_id = :ModelId").
-            bind(ValueMap{{"DeviceId", deviceId}, {"idx", idx}, {"ModelId", modelId.c_str()}}).
+            bind(ValueMap{{"DeviceId", deviceId.c_str()}, {"idx", idx}, {"ModelId", modelId.c_str()}}).
             execute();
         mysqlx::SerializableRow row = res.fetchOne();
         return row.as<DeviceModelAssoc>();
     }
 
-    int DeviceModelAssocs<nlohmann::json>::associate(int deviceId, const std::string& modelId, const boost::optional<std::string>& note)
+    int DeviceModelAssocs<nlohmann::json>::associate(const std::string& deviceId, const std::string& modelId, const boost::optional<std::string>& note)
     {
         dbSession.startTransaction();
         try
@@ -90,14 +90,14 @@ namespace resource
                               ) as tmp 
                               )"
                 ).
-                bind(ValueList{deviceId, modelId.c_str()}).
+                bind(ValueList{deviceId.c_str(), modelId.c_str()}).
                 execute().
                 fetchOne().
                 get(0);
 
             associationTable.
             insert("idx", "Device_id", "Model_id", "note").
-            values(idx, deviceId, modelId.c_str(), mysqlx::EnhancedValue{note}).
+            values(idx, deviceId.c_str(), modelId.c_str(), mysqlx::EnhancedValue{note}).
             execute();
 
             dbSession.commit();
@@ -110,12 +110,12 @@ namespace resource
         return 0;
     }
 
-    void DeviceModelAssocs<nlohmann::json>::dissasociate(int deviceId, const std::string& modelId, int idx)
+    void DeviceModelAssocs<nlohmann::json>::dissasociate(const std::string& deviceId, const std::string& modelId, int idx)
     {
         associationTable.
         remove().
         where("Device_id = :DeviceId AND Model_id = :ModelId AND idx = :idx").
-        bind(ValueMap{{"DeviceId", deviceId}, {"ModelId", modelId.c_str()}, {"idx", idx}}).
+        bind(ValueMap{{"DeviceId", deviceId.c_str()}, {"ModelId", modelId.c_str()}, {"idx", idx}}).
         execute();
     }
 
@@ -152,8 +152,6 @@ namespace resource
         {
             response = this->get(data["DeviceId"], data["ModelId"], data["idx"]);
         }
-        
-        
 
         // close
         session->close(restbed::OK,

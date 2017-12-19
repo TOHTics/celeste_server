@@ -8,6 +8,8 @@
 
 #ifndef SERVER_RESOURCE_READING_REQUEST_DATA_HPP
 #define SERVER_RESOURCE_READING_REQUEST_DATA_HPP
+
+#include <vector>
 #include <string>
 
 namespace celeste
@@ -16,14 +18,14 @@ namespace resource
 {
     struct LastReadRequest
     {
-        int             DeviceId;
+        std::string     DeviceId;
         std::string     ModelId;
         std::string     PointId;
     };
 
     struct RangeReadRequest
     {
-        int             DeviceId;
+        std::string     DeviceId;
         std::string     ModelId;
         std::string     PointId;
 
@@ -33,21 +35,21 @@ namespace resource
 
     struct TodayReadRequest
     {
-        int             DeviceId;
+        std::string     DeviceId;
         std::string     ModelId;
         std::string     PointId;
     };
 
     struct YesterdayReadRequest
     {
-        int             DeviceId;
+        std::string     DeviceId;
         std::string     ModelId;
         std::string     PointId;
     };
 
     struct MonthReadRequest
     {
-        int             DeviceId;
+        std::string     DeviceId;
         std::string     ModelId;
         std::string     PointId;
 
@@ -56,11 +58,21 @@ namespace resource
 
     struct YearReadRequest
     {
-        int             DeviceId;
+        std::string     DeviceId;
         std::string     ModelId;
         std::string     PointId;
 
         int             year;
+    };
+
+    struct AccumulatedReadRequest
+    {
+        std::vector<std::string>    DeviceId;
+        std::string                 ModelId;
+        std::string                 PointId;
+
+        std::string                 start;
+        std::string                 end;
     };
 
 }

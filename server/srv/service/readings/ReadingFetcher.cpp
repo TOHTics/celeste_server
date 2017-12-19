@@ -58,7 +58,7 @@ namespace resource
                     ).bind(ValueList{
                         req.PointId.c_str(),
                         req.ModelId.c_str(),
-                        req.DeviceId
+                        req.DeviceId.c_str()
                     }).execute();
 
         if (res.count() > 0)
@@ -88,7 +88,7 @@ namespace resource
                     ;
                     )" // end literal
                     ).bind(ValueList{
-                        req.DeviceId,
+                        req.DeviceId.c_str(),
                         req.ModelId.c_str(),
                         req.PointId.c_str(),
                         req.start.c_str(),
@@ -111,5 +111,15 @@ namespace resource
     // --- YesterdayReadRequest fetch implementations ----
 
     // --- TodayReadRequest fetch implementations --------
+
+    // --- AccumulatedReadRequest fetch implementations --
+
+    template <>
+    double
+    ReadingFetcher::fetch_impl(mysqlx::Session&& dbSession,
+                               const AccumulatedReadRequest& req) const
+    {
+        return 90.;
+    }
 }
 }

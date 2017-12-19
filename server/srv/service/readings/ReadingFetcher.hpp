@@ -36,6 +36,17 @@ namespace resource
         // --- PUBLIC METHODS --------
         template <class Response, class Request>
         typename std::enable_if<
+            std::is_arithmetic<Response>::value,
+            Response
+        >::type
+        fetch(mysqlx::Session&& dbSession, const Request& req) const
+        {   
+            return fetch_impl<Response>(std::forward<mysqlx::Session>(dbSession), req);
+        }
+
+
+        template <class Response, class Request>
+        typename std::enable_if<
             std::is_convertible<value_type, Response>::value,
             Response
         >::type
@@ -84,6 +95,12 @@ namespace resource
     ReadingFetcher::value_type
     ReadingFetcher::fetch_impl(mysqlx::Session&& dbSession,
                                const LastReadRequest& req)
+    const;
+
+    template <>
+    double
+    ReadingFetcher::fetch_impl(mysqlx::Session&& dbSession,
+                               const AccumulatedReadRequest& req)
     const;
 }
 }

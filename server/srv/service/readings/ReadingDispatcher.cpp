@@ -37,7 +37,7 @@ namespace resource
     {
         auto reading = 
             reading_fetcher.fetch<
-                reading_type
+                reading_type // fetch a reading
             >(move(mysqlx::Session(dbSettings)), request);
 
         return json(reading);
@@ -48,7 +48,18 @@ namespace resource
     {
         auto reading = 
             reading_fetcher.fetch<
-                vector<reading_type>
+                vector<reading_type> // fetch an array of readings
+            >(move(mysqlx::Session(dbSettings)), request);
+
+        return json(reading);
+    }
+
+    template <>
+    json ReadingDispatcher::dispatch(const AccumulatedReadRequest& request) const
+    {
+        auto reading = 
+            reading_fetcher.fetch<
+                double // fetch a double
             >(move(mysqlx::Session(dbSettings)), request);
 
         return json(reading);
@@ -84,7 +95,7 @@ namespace resource
         // map<string, function<response(request)>>
         string response_body;
         int code;
-        if (data["method"].get<std::string>() == "last")
+        if (data["method"].get<string>() == "last")
         {
             json response = dispatch<json>
             (LastReadRequest{
@@ -95,10 +106,23 @@ namespace resource
             response_body = response.dump();
             code = restbed::OK;
         }
-        else if (data["method"].get<std::string>() == "range") 
+        else if (data["method"].get<string>() == "range") 
         {
             json response = dispatch<json>
             (RangeReadRequest{
+                .DeviceId = data["DeviceId"],
+                .ModelId  = data["ModelId"],
+                .PointId  = data["PointId"],
+                .start = data["start"],
+                .end = data["end"]
+            });
+            response_body = response.dump();
+            code = restbed::OK;
+        }
+        else if (data["method"].get<string>() == "accumulated")
+        {
+            json response = dispatch<json>
+            (AccumulatedReadRequest{
                 .DeviceId = data["DeviceId"],
                 .ModelId  = data["ModelId"],
                 .PointId  = data["PointId"],
