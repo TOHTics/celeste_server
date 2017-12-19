@@ -7,5 +7,6 @@
 #include "logger_upload/LoggerUpload.hpp"
 #include "readings/ReadingDispatcher.hpp"
 #include "DeviceModel/DeviceModel.hpp"
+#include "DeviceStatus/DeviceStatus.hpp"
 
 #endif

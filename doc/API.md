@@ -11,8 +11,9 @@ The Celeste system to query and process readings from Loggers connected to Solar
 5. [Point](#point)
 6. [Reading](#reading)
 7. [Logger](#logger)
-8. [Error Codes](#error-codes)
-9. [Notes](#notes)
+8. [Device Status](#device-status) 
+9. [Error Codes](#error-codes)
+10. [Notes](#notes)
 
 # Device
 ---
@@ -939,8 +940,45 @@ Translating over to XML we get:
 
 One need not worry about the units of measurement since it is required to specify them when one first inserts a Point into the database.
 
-# Full Example
-To write.
+# Device Status
+
+It will be necessary to be able to query the Device Status from a client that might manage them, or the Device itself. Right now, the only attribute which makes up a "Device Status" is whether we want to cut off the power remotely or not. The following table outlines the attributes:
+
+| Attributes     | Description           |
+|:--------------:|-----------------------|
+| `isPowerCut`   | Indicates whether the Device should cut the power and prevent further energy consumption. If `true`, the Device will attempt to cut the power. If `false`, Device will continue to allow the consumption of energy.|
+
+
+The following operations are valid:
+
+| Operation   | Method  | Url                           |
+|:-----------:|:-------:|-------------------------------|
+|   `get`     | GET     | `/celeste/logger/upload/`     |
+
+
+
+## `get` - Querying the Status
+
+### Request
+
+```
+{
+	"DeviceId" : string
+}
+```
+
+### Response
+````http
+Status Code:    200
+Status Message: OK
+````
+
+```
+{
+	"isPowerCut" : bool
+}
+```
+
 
 # Error Codes
 To write.

@@ -27,7 +27,7 @@ namespace resource
         :   dbSettings(dbSettings),
             dbSession(dbSettings)
     {
-        set_path("/readings");
+        set_path("/reading");
         set_method_handler("GET", [this] (const std::shared_ptr<restbed::Session> session) {GET(session);});
     }
 

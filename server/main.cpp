@@ -32,6 +32,7 @@ int main( const int argc, const char** argv)
     using DeviceModelAssocResource = resource::DeviceModelAssocs<nlohmann::json>;
     using LoggerResource = resource::LoggerUpload;
     using ReadingResource = resource::ReadingDispatcher;
+    using DeviceStatusResource = resource::DeviceStatusService<nlohmann::json>;
 
     print_welcome_message();
 
@@ -44,6 +45,7 @@ int main( const int argc, const char** argv)
     auto upload = make_shared<LoggerResource>(dbSettings);
     auto reading = make_shared<ReadingResource>(dbSettings);
     auto device_model = make_shared<DeviceModelAssocResource>(dbSettings);
+    auto device_status = make_shared<DeviceStatusResource>();
 
     cout << "@ Configuring server...\n";
 
@@ -61,6 +63,7 @@ int main( const int argc, const char** argv)
     api.publish(upload);
     api.publish(reading);
     api.publish(device_model);
+    api.publish(device_status);
 
     cout << "@ Starting server...\n";
     cout << "\e[m";
