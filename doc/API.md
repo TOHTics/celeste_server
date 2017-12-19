@@ -36,9 +36,9 @@ A Device is that which contains the sensors (a.k.a Models) like a Voltmeter or a
 
 | Operation   | Method  | Url                   | Description                           |
 |:-----------:|:-------:|-----------------------|---------------------------------------|
-|   `get`     | GET     | `/celeste/devices/`   | Gets a device and its information.    |
-|   `insert`  | POST    | `/celeste/devices/`   | Inserts a new device into the DB.     |
-|   `remove`  | DELETE  | `/celeste/devices/`   | Deletes a device on the DB along with its associated records. |
+|   `get`     | GET     | `/celeste/device/`   | Gets a device and its information.    |
+|   `insert`  | POST    | `/celeste/device/`   | Inserts a new device into the DB.     |
+|   `remove`  | DELETE  | `/celeste/device/`   | Deletes a device on the DB along with its associated records. |
 
 ## `get`
 ### Request
@@ -157,9 +157,9 @@ Each Model measures a set of Points. For example, a GPS measures latitude, altit
 
 | Operation   | Method  | Url                   | Description                        |
 |:-----------:|:-------:|-----------------------|------------------------------------|
-|   `get`     | GET     | `/celeste/models/`    | Gets a model and its information. |
-|   `insert`  | POST    | `/celeste/models/`    | Inserts a new model into the DB.  |
-|   `remove`  | DELETE  | `/celeste/models/`    | Deletes a model on the DB along with its associated records.                                                              |
+|   `get`     | GET     | `/celeste/model/`    | Gets a model and its information. |
+|   `insert`  | POST    | `/celeste/model/`    | Inserts a new model into the DB.  |
+|   `remove`  | DELETE  | `/celeste/model/`    | Deletes a model on the DB along with its associated records.                                                              |
 
 ## `get`
 ### Request
@@ -445,9 +445,9 @@ The API offers the following operations:
 
 | Operation   | Method  | Url                   | Description                           |
 |:-----------:|:-------:|-----------------------|---------------------------------------|
-|   `get`     | GET     | `/celeste/points/`   | Gets a point and its information.    |
-|   `insert`  | POST    | `/celeste/points/`   | Inserts a new point into the DB.     |
-|   `remove`  | DELETE  | `/celeste/points/`   | Deletes a point on the DB along with its associated records. |
+|   `get`     | GET     | `/celeste/point/`   | Gets a point and its information.    |
+|   `insert`  | POST    | `/celeste/point/`   | Inserts a new point into the DB.     |
+|   `remove`  | DELETE  | `/celeste/point/`   | Deletes a point on the DB along with its associated records. |
 
 
 ## `get`
@@ -564,7 +564,7 @@ The API offers the following operations:
 
 | Operation   | Method  | Url                   | Description                           |
 |:-----------:|:-------:|-----------------------|---------------------------------------|
-|   `get`     | GET     | `/celeste/readings/`   | Gets a "reading" of information. This reading might be an actual reading, a statistic, a document, etc.   |
+|   `get`     | GET     | `/celeste/reading/`   | Gets a "reading" of information. This reading might be an actual reading, a statistic, a document, etc.   |
 
 
 
@@ -767,7 +767,8 @@ And get the following, example, response:
 ```
 {
 	"A001-3312-312B": 3016.0,
-	"A002-3312-312B": 1661.0}
+	"A002-3312-312B": 1661.0
+}
 ```
 
 
@@ -903,12 +904,12 @@ To make the usage of the grammar simpler, we will give an example. Suppose we wo
                       [Thermometer] = 30 C
                              |
                              |
- -----------                 |             @ o o o o o o @
-|  Device   |- - - - - - - - +             8             o
-| Id: 4001  |- - - - @ @ @ @ @ @ - - - - > 8   Celeste   o
- -----------           Internet            8    Server   o
-                    [ Data Packet ]        8             o
-                                           @ o o o o o o @
+ --------------              |                @ o o o o o o @
+|  Device      |- - - - - -  +                o             o
+| Id: "A4001"  |- - - - @ @ @ @ @ @ - - - - > o   Celeste   o
+ --------------           Internet            o    Server   o
+                       [ Data Packet ]        o             o
+                                              @ o o o o o o @
 ````
 
 We would like to know what `[Data Packet]` looks like. As we have said previously, this data will take the form of an HTTP Response with the body containing the information of the actual measurements. We notice that we would like to tell the server we have recorded a reading of `30` degrees celsius and we assembled the packet at the date and time shown. It is of use to give the values which each field takes at this instance.
@@ -916,7 +917,7 @@ We would like to know what `[Data Packet]` looks like. As we have said previousl
 | Tag     | Value                 |
 |:-------:|:---------------------:|
 | `v`     | 1.0                   |
-| `d.id`  | 4001                  |
+| `d.id`  | A4001                 |
 | `d.t`   | 2017-11-21 15:30:01   |
 | `m.id`  | Thermometer           |
 | `m.x`   | 1                     |

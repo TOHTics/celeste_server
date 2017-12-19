@@ -21,7 +21,7 @@ namespace resource
             celesteDB(dbSession.getSchema("Celeste")),
             modelTable(celesteDB.getTable("Model"))
     {
-        set_path("/Models");
+        set_path("/model");
         set_method_handler("GET", [this] (const std::shared_ptr<restbed::Session> session) {GET(session);});
         set_method_handler("POST",   [this] (const std::shared_ptr<restbed::Session> session) {POST(session);});
         set_method_handler("DELETE", [this] (const std::shared_ptr<restbed::Session> session) {DELETE(session);});

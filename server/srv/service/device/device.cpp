@@ -23,7 +23,7 @@ namespace resource
             deviceTable(celesteDB.getTable("Device")),
             modelAssociator(dbSettings)
     {
-        set_path("/devices");
+        set_path("/device");
         set_method_handler("GET", [this] (const std::shared_ptr<restbed::Session> session) {GET(session);});
         set_method_handler("POST",   [this] (const std::shared_ptr<restbed::Session> session) {POST(session);});
         set_method_handler("DELETE", [this] (const std::shared_ptr<restbed::Session> session) {DELETE(session);});
