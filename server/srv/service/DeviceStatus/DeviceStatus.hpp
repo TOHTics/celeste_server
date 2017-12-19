@@ -15,7 +15,7 @@ namespace resource
 {
     struct DeviceStatus
     {
-        bool            powerIsCut;
+        bool            isPowerCut;
         bool            isOn;
         bool            isConnectedToServer;
         bool            hasMalfunction;

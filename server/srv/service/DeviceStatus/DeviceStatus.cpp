@@ -39,7 +39,7 @@ namespace resource
 
         auto status = DeviceStatus{
             .DeviceId               = deviceId,
-            .powerIsCut             = this->isPowerCut(deviceId),
+            .isPowerCut             = this->isPowerCut(deviceId),
             .isOn                   = true,
             .isConnectedToServer    = true,
             .hasMalfunction         = false,
@@ -89,7 +89,7 @@ namespace nlohmann
     {
         j = json {
             // {"DeviceId",            obj.DeviceId},
-            {"powerIsCut",          obj.powerIsCut},
+            {"isPowerCut",          obj.isPowerCut},
             // {"isOn",                obj.isOn},
             // {"isConnectedToServer", obj.isConnectedToServer},
             // {"hasMalfunction",      obj.hasMalfunction},
@@ -101,7 +101,7 @@ namespace nlohmann
     {
         obj = DeviceStatus {
             // .DeviceId               = j.at("DeviceId"),
-            .powerIsCut             = j.at("powerIsCut"),
+            .isPowerCut             = j.at("isPowerCut"),
             // .isOn                   = j.at("isOn"),
             // .isConnectedToServer    = j.at("hasMalfunction"),
             // .pingTimeToServer       = j.at("pingTimeToServer")
