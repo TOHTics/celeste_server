@@ -9,14 +9,15 @@
 #include <utility>
 #include <boost/optional.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
+#include "srv/db/db.hpp"
 
 namespace celeste
 {
 namespace resource
 {
     // --- USEFUL TYPES --------------
-    using ValueList = std::vector<mysqlx::Value>;
-    using ValueMap = std::map<std::string, mysqlx::Value>;
+    using ValueList = std::vector<mysqlx::EnhancedValue>;
+    using ValueMap = std::map<std::string, mysqlx::EnhancedValue>;
 
     enum PointType
     {
