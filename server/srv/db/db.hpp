@@ -30,9 +30,25 @@ namespace mysqlx
         typedef Value       internal_type;
         typedef External    external_type;
 
+        /**
+         * @brief      Translates the input value `in` to the External
+         * data type.
+         *
+         * @param[in]  in    Input value.
+         *
+         * @return      Translated value.
+         */
         static
         External get(const Value& in);
 
+        /**
+         * @brief      Translates the input value `in` to the data type
+         * `mysqlx::Value`.
+         *
+         * @param[in]  in    Input value.
+         *
+         * @return     Translated value.
+         */
         static
         Value put(const External& in);
     };
@@ -203,7 +219,21 @@ namespace mysqlx
          * @param[in]  value  Base class instance.
          */
         EnhancedValue (const Value& value);
+
+        /**
+         * @brief      Copy constructor.
+         *
+         * @param[in]  value  The value
+         */
         EnhancedValue (const EnhancedValue& value);
+
+        /**
+         * @brief      Copy assignment.
+         *
+         * @param[in]  value  The value
+         *
+         * @return     A reference to the value.
+         */
         EnhancedValue& operator=(const EnhancedValue& value) = default;
 
         /**
@@ -242,16 +272,6 @@ namespace mysqlx
         {   
             return value_translator<T>::get(*this);
         }
-
-    private:
-        // explicit
-        // operator char() = delete;
-
-        // explicit
-        // operator mysqlx::string() = delete;
-
-        // explicit
-        // EnhancedValue(const mysqlx::string& value) = delete;
     };
 
     /**
@@ -318,7 +338,22 @@ namespace mysqlx
          */
         EnhancedValue get(col_count_t pos);
 
+        /**
+         * @brief      Sets the value of the row at `pos` using
+         * an EnhancedValue.
+         *
+         * @param[in]  pos        The position
+         * @param[in]  value  The value
+         */
         void set(col_count_t pos, EnhancedValue&& value);
+
+        /**
+         * @brief      Sets the value of the row at `pos` using
+         * an EnhancedValue.
+         *
+         * @param[in]  pos    The position
+         * @param[in]  value  The value
+         */
         void set(col_count_t pos, const EnhancedValue& value);
     };
 }
