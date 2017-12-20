@@ -1,7 +1,0 @@
-var searchData=
-[
-  ['devicedata',['DeviceData',['../structsunspec_1_1data_1_1_device_data.html#a967eadc9b8a8be0b768d6a68ff7f38ea',1,'sunspec::data::DeviceData::DeviceData()=default'],['../structsunspec_1_1data_1_1_device_data.html#a652eacfb6981db9e705131bfcbdfdc4b',1,'sunspec::data::DeviceData::DeviceData(const DeviceData &amp;other)=default'],['../structsunspec_1_1data_1_1_device_data.html#af72764ba35a90dce5fe696a6823dc082',1,'sunspec::data::DeviceData::DeviceData(const model_list_type &amp;models)'],['../structsunspec_1_1data_1_1_device_data.html#aaed4ef14a9192c83b694549c5a6a192e',1,'sunspec::data::DeviceData::DeviceData(size_t n)']]],
-  ['devicemodelassocs',['DeviceModelAssocs',['../classceleste_1_1resource_1_1_device_model_assocs_3_01nlohmann_1_1json_01_4.html#acb6cd42d56e23b6d23a32da685dc80e9',1,'celeste::resource::DeviceModelAssocs&lt; nlohmann::json &gt;']]],
-  ['deviceresult',['DeviceResult',['../structsunspec_1_1data_1_1_device_result.html#abcd99ea88eceebf55358527ab1820456',1,'sunspec::data::DeviceResult::DeviceResult()=default'],['../structsunspec_1_1data_1_1_device_result.html#a316a2bb82318dd2badcd382f84bb0e40',1,'sunspec::data::DeviceResult::DeviceResult(const DeviceResult &amp;other)=default']]],
-  ['devices',['Devices',['../classceleste_1_1resource_1_1_devices_3_01nlohmann_1_1json_01_4.html#add9627daa77b42517d9736866a4e5003',1,'celeste::resource::Devices&lt; nlohmann::json &gt;']]]
-];
