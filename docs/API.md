@@ -981,7 +981,7 @@ Status Message: OK
 
 # HTTP Status Codes
 
-| Error                            | Code    | Description                            |
+| Status                            | Code    | Description                            |
 |----------------------------------|:-------:|----------------------------------------|
 |  `DEVICE_NOT_FOUND `             | 4000    | The requested Device was not found.    |
 | `MODEL_NOT_FOUND`                | 4001    | The requested Model was not found. |
