@@ -15,6 +15,7 @@ doc/server/latex/
 html/
 latex/
 reports/
+./doc/server/
 
 # Prerequisites
 *.d
