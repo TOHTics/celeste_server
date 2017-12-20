@@ -10,12 +10,10 @@ cmake-build-debug/
 build/
 compile_commands.json
 # docs
-doc/server/html/
 doc/server/latex/
-html/
+
 latex/
 reports/
-./doc/server/
 
 # Prerequisites
 *.d
