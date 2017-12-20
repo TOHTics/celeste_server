@@ -6,7 +6,6 @@
  * @file
  */
 #include "point.hpp"
-#include "srv/service/error.hpp"
 #include "srv/service/common.hpp"
 
 using namespace std;
@@ -91,10 +90,10 @@ namespace resource
 
         // validate data
         if (data["PointId"].is_null())
-            throw 400;
+            throw status::MISSING_FIELD_POINTID;
 
         if (data["ModelId"].is_null())
-            throw 400;
+            throw status::MISSING_FIELD_MODELID;
 
         // get Point from db
         json_type response = this->get(data["PointId"], data["ModelId"]);
@@ -124,13 +123,13 @@ namespace resource
 
         // validate data
         if (data["PointId"].is_null())
-            throw 400;
+            throw status::MISSING_FIELD_POINTID;
 
         if (data["ModelId"].is_null())
-            throw 400;
+            throw status::MISSING_FIELD_MODELID;
 
         if (data["type"].is_null())
-            throw 400;
+            throw status::MISSING_FIELD_TYPE;
 
         if (data["u"].is_null())
             data["u"] = nullptr;
@@ -160,10 +159,10 @@ namespace resource
 
         // validate data
         if (data["PointId"].is_null())
-            throw 400;
+            throw status::MISSING_FIELD_POINTID;
 
         if (data["ModelId"].is_null())
-            throw 400;
+            throw status::MISSING_FIELD_MODELID;
 
         // remove Point from DB.
         this->remove(data["PointId"], data["ModelId"]);

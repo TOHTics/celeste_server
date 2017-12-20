@@ -6,7 +6,6 @@
  * @file
  */
 #include "model.hpp"
-#include "srv/service/error.hpp"
 #include "srv/service/common.hpp"
 
 using namespace std;
@@ -82,7 +81,7 @@ namespace resource
 
         // validate data
         if (data["ModelId"].is_null())
-            throw 400;
+            throw status::MISSING_FIELD_MODELID;
 
         // get model from db
         json_type response = this->get(data["ModelId"]);
@@ -112,7 +111,7 @@ namespace resource
 
         // validate data
         if (data["ModelId"].is_null())
-                throw 400;
+                throw status::MISSING_FIELD_MODELID;
 
         if (data["ns"].is_null())
             data["ns"] = nullptr;
@@ -139,7 +138,7 @@ namespace resource
 
         // validate data
         if (data["ModelId"].is_null())
-            throw 400;
+            throw status::MISSING_FIELD_MODELID;
 
         // remove model from DB.
         this->remove(data["ModelId"]);

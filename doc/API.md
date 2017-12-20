@@ -65,7 +65,6 @@ Status Message: OK
 ````
 {
 	"DeviceId" : string,
-	"id"  : integer,
 	"man" : string,
 	"mod" : string,
 	"sn"  : string

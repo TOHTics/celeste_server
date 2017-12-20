@@ -16,22 +16,23 @@ namespace resource
 
     bool DeviceStatusService<nlohmann::json>::isPowerCut(const std::string& deviceId)
     {
-        // auto request = make_shared<restbed::Request>(restbed::Uri("http://work.tohtics.com:3330/api/auth/" + deviceId));
-        // request->set_method("POST");
+        auto request = make_shared<restbed::Request>(restbed::Uri("http://work.tohtics.com:3330/api/auth/" + deviceId));
+        request->set_method("POST");
 
-        // auto response = restbed::Http::sync(request);
-        // auto length = response->get_header("Content-Length", 0);
-        // restbed::Http::fetch(length, response);
+        auto response = restbed::Http::sync(request);
+        auto length = response->get_header("Content-Length", 0);
+        restbed::Http::fetch(length, response);
 
-        // std::string body;
-        // bytes2string(response->get_body(), body);
+        std::string body;
+        bytes2string(response->get_body(), body);
 
-        // cout << body << "\n";
-        // json_type j = json_type::parse(body);
+
+        if (response->get_status_code() == restbed::NOT_FOUND)
+            throw status::DEVICE_NOT_FOUND;
+
+        json_type j = json_type::parse(body);
         
-        // return (j["device_status"].get<string>() == "OFF");
-
-        return false;
+        return (j["device_status"].get<string>() == "OFF");
     }
 
     DeviceStatus DeviceStatusService<nlohmann::json>::get(const string& deviceId)
@@ -65,7 +66,7 @@ namespace resource
 
         // validate data
         if (data["DeviceId"].is_null())
-            throw 400;
+            throw status::MISSING_FIELD_DEVICEID;
 
         // get device from db
         json_type response = this->get(data["DeviceId"]);

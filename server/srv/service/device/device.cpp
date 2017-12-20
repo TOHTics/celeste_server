@@ -7,7 +7,6 @@
  */
 #include <mutex>
 #include "device.hpp"
-#include "srv/service/error.hpp"
 #include "srv/service/common.hpp"
 
 using namespace std;
@@ -105,7 +104,7 @@ namespace resource
 
         // validate data
         if (data["DeviceId"].is_null())
-            throw 400;
+            throw status::MISSING_FIELD_DEVICEID;
 
         // get device from db
         json_type response = this->get(data["DeviceId"]);
@@ -135,16 +134,16 @@ namespace resource
 
         // validate data
         if (data["DeviceId"].is_null())
-            throw 400;
+            throw status::MISSING_FIELD_DEVICEID;
 
         if (data["man"].is_null())
-            throw 400;
+            throw status::MISSING_FIELD_MAN;
 
         if (data["mod"].is_null())
-            throw 400;
+            throw status::MISSING_FIELD_MOD;
 
         if (data["sn"].is_null())
-            throw 400;
+            throw status::MISSING_FIELD_SN;
 
         // insert device and get id
         // in case autogen was not set, will return null
@@ -173,7 +172,7 @@ namespace resource
 
         // validate data
         if (data["DeviceId"].is_null())
-            throw 400;
+            throw status::MISSING_FIELD_DEVICEID;
 
         // remove device from DB.
         this->remove(data["DeviceId"]);

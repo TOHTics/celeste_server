@@ -7,13 +7,12 @@
  */
 
 #include <json.hpp>
+#include <utility>
 
 #include "ReadingDispatcher.hpp"
 #include "ReadRequest.hpp"
 
 #include "srv/service/common.hpp"
-#include <utility>
-#include <iostream>
 
 using namespace std;
 
@@ -87,11 +86,11 @@ namespace resource
         // if (data["DeviceId"].is_null())
         //     throw 400;
         if (data["ModelId"].is_null())
-            throw 400;
+            throw status::MISSING_FIELD_MODELID;
         if (data["PointId"].is_null())
-            throw 400;
+            throw status::MISSING_FIELD_POINTID;
         if (data["method"].is_null())
-            throw 400;
+            throw status::MISSING_FIELD_METHOD;
 
         // Action map
         // TODO:
@@ -126,8 +125,11 @@ namespace resource
         }
         else if (data["method"].get<string>() == "accumulated")
         {
+            if (data["DeviceIds"].is_null())
+                throw status::MISSING_FIELD_DEVICEIDS;
+
             if (data["DeviceIds"].empty())
-                throw 400;
+                throw status::EMPTY_ARRAY;
 
             json response = dispatch<json>
             (AccumulatedReadRequest{

@@ -10,6 +10,7 @@
 #include <boost/optional.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include "srv/db/db.hpp"
+#include "srv/service/status.hpp"
 
 namespace celeste
 {

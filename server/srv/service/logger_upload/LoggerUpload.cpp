@@ -6,7 +6,7 @@
  * @file
  */
 #include "LoggerUpload.hpp"
-#include "srv/service/error.hpp"
+#include "srv/service/status.hpp"
 #include "srv/service/common.hpp"
 
 using namespace std;
@@ -183,22 +183,20 @@ namespace resource
         } catch (const data::XMLException& e)
         {
             if (verbose)
-                session->close(400, e.what());
+                session->close(status::XML_SYNTAX_ERROR, e.what());
             else
-                throw 400;
+                throw status::XML_SYNTAX_ERROR;
         }
         catch (const mysqlx::Error& e)
         {
-            cout << e.what() << endl;
             if (verbose)
-                session->close(400, e.what());
+                session->close(restbed::INTERNAL_SERVER_ERROR, e.what());
             else
-                throw 500;
+                throw restbed::INTERNAL_SERVER_ERROR;
         }
         catch (const exception& e)
         {
-            cout << e.what() << "\n";
-
+            throw status::UNHANDLED_EXCEPTION;
         }
     }
 }

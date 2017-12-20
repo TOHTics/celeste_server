@@ -6,7 +6,6 @@
  * @file
  */
 #include "DeviceModel.hpp"
-#include "srv/service/error.hpp"
 #include "srv/service/common.hpp"
 #include "srv/service/device/device.hpp"
 #include "srv/service/model/model.hpp"
@@ -135,7 +134,7 @@ namespace resource
 
         // validate data
         if (data["DeviceId"].is_null())
-            throw 400; // DeviceId is required for any request
+            throw status::MISSING_FIELD_DEVICEID; // DeviceId is required for any request
 
         // get device from db
         json_type response;
@@ -178,10 +177,10 @@ namespace resource
 
         // validate data
         if (data["DeviceId"].is_null())
-            throw 400;
+            throw status::MISSING_FIELD_DEVICEID;
 
         if (data["ModelId"].is_null())
-            throw 400;
+            throw status::MISSING_FIELD_MODELID;
 
         if (data["note"].is_null())
             data["note"] = nullptr;
@@ -215,13 +214,13 @@ namespace resource
 
         // validate data
         if (data["DeviceId"].is_null())
-            throw 400;
+            throw status::MISSING_FIELD_DEVICEID;
 
         if (data["ModelId"].is_null())
-            throw 400;
+            throw status::MISSING_FIELD_MODELID;
 
         if (data["idx"].is_null())
-            throw 400;
+            throw status::MISSING_FIELD_IDX;
 
         // dissasociate the device and the model
         this->dissasociate(data["DeviceId"], data["ModelId"], data["idx"]);
