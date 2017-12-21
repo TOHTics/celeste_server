@@ -48,7 +48,6 @@ namespace mysqlx
 }
 
 // --- EnhancedValue DEFINITIONS ----------------
-
 namespace mysqlx
 {
     EnhancedValue::EnhancedValue()
