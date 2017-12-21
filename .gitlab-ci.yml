@@ -9,7 +9,7 @@ before_script:
   - apt-get update -qq
   - apt-get install -y -qq build-essential clang-3.8 cmake libboost-all-dev
   - export CC=clang-3.8
-  - epxort CXX=clang++-3.8
+  - export CXX=clang++-3.8
 
 build:
   stage: build
