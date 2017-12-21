@@ -1,4 +1,6 @@
 before_script:
+  - git submodule sync --recursive
+  - git submodule update --init --recursive
   - apt-get update -qq
   - apt-get install -qq software-properties-common
   - add-apt-repository ppa:ubuntu-toolchain-r/test
