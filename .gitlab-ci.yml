@@ -13,4 +13,4 @@ before_script:
 
 build:
   stage: build
-  script: cd celeste-server && mkdir build && cd build && cmake .. -DBUILD_SSL=YES && make -j4
+  script: ls && mkdir build && cd build && cmake .. -DBUILD_SSL=YES && make -j4
