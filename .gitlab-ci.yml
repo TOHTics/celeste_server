@@ -1,4 +1,5 @@
 before_script:
+  - apt-get install -qq software-properties-common
   - add-apt-repository "deb http://apt.llvm.org/trusty/llvm-toolchain-trusty-4.0 main"
   - add-apt-repository ppa:ubuntu-toolchain-r/test
   - add-apt-repository ppa:george-edison55/precise-backports
