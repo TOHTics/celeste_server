@@ -1,11 +1,13 @@
+image: ubuntu:14.04
+
 before_script:
   - git submodule sync --recursive
   - git submodule update --init --recursive
-  # - apt-get update -qq
-  # - apt-get install -qq software-properties-common
-  # - add-apt-repository ppa:ubuntu-toolchain-r/test
-  # - add-apt-repository ppa:george-edison55/precise-backports
-  # - add-apt-repository ppa:boost-latest/ppa
+  - apt-get update -qq
+  - apt-get install -qq software-properties-common
+  - add-apt-repository ppa:ubuntu-toolchain-r/test
+  - add-apt-repository ppa:george-edison55/precise-backports
+  - add-apt-repository ppa:boost-latest/ppa
   - apt-get update -qq
   - apt-get install -y -qq build-essential clang-4.0 cmake cmake-data libboost-dev
   - export CC=clang-4.0
