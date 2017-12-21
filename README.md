@@ -1,4 +1,4 @@
-# Celeste ![Build Status](https://travis-ci.org/carlosb/celeste.svg?branch=master) [![GitHub license](https://img.shields.io/badge/license-AGPLv3-blue.svg)](https://raw.githubusercontent.com/carlosb/celeste/master/LICENSE)
+# Celeste ![Build Status](https://travis-ci.org/TOHTics/celeste_server.svg?branch=master) [![GitHub license](https://img.shields.io/badge/license-AGPLv3-blue.svg)](https://raw.githubusercontent.com/carlosb/celeste/master/LICENSE)
 
 ---
 
