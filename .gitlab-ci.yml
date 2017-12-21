@@ -9,10 +9,10 @@ before_script:
   - sudo add-apt-repository ppa:george-edison55/cmake-3.x
   - apt-get update -qq
   - apt-get upgrade
-  - apt-get install -y -qq build-essential clang-3.8 cmake libboost1.55-all-dev libstdc++6 libssl-dev
+  - apt-get install -y -qq build-essential clang-3.8 cmake libboost1.55-all-dev libstdc++6 libssl-dev gcc5 g++5
   - export CC=clang-3.8
   - export CXX=clang++-3.8
 
 build:
   stage: build
-  script: ls && mkdir build && cd build && cmake .. -DBUILD_SSL=YES && make -j4
+  script: ls && mkdir build && cd build && cmake .. -DBUILD_SSL=YES && make
