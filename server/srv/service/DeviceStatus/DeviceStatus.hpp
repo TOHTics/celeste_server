@@ -42,6 +42,7 @@ namespace resource
 
         DeviceStatus get(const std::string& deviceId);
         bool isPowerCut(const std::string& deviceId);
+        [[deprecated]] int get_arduino(const std::string& deviceId);
 
     private:
         // --- Private methods -------

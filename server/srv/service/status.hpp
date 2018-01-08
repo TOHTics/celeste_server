@@ -21,6 +21,8 @@ namespace status
         // 4050 - 4099
         UPLOAD_FAILED               = 4050,
         EMPTY_ARRAY                 = 4051,
+        TYPE_MUST_BE_NUMERIC        = 4052,
+        VALUE_IS_OUT_OF_RANGE       = 4053,
 
         // --- SYNTAX ERRORS ----------------------
         // 4100 - 4199
@@ -108,7 +110,9 @@ namespace status
 
         {UNHANDLED_EXCEPTION,       "Unhandled Exception. Please open a ticket/issue at https://github.com/carlosb/celeste/issues describing the request you made and I will personally answer back with a solution."},
     
-        {EMPTY_ARRAY,               "Empty array value detected! For this particular case it is forbidden and, thus, you must specify +1 array elements."}
+        {EMPTY_ARRAY,               "Empty array value detected! For this particular case it is forbidden and, thus, you must specify +1 array elements."},
+        {TYPE_MUST_BE_NUMERIC,      "The type of the readings must be numeric for this method to work."},
+        {VALUE_IS_OUT_OF_RANGE,     "One of the passed values falls out of range."}
     };
 }
 }

@@ -9,13 +9,14 @@ namespace resource
 {
     DeviceStatusService<nlohmann::json>::DeviceStatusService()
     {
-        set_path("/device/status");
-        set_method_handler("GET", [this] (const shared_ptr<restbed::Session> session) {GET(session);});
+        set_paths({"/device/status", "/device/status/arduino"});
+        set_method_handler("POST", [this] (const shared_ptr<restbed::Session> session) {GET(session);});
         // set_method_handler("POST",   [this] (const shared_ptr<restbed::Session> session) {POST(session);});
     }
 
     bool DeviceStatusService<nlohmann::json>::isPowerCut(const std::string& deviceId)
     {
+        // make a request to CRM server
         auto request = make_shared<restbed::Request>(restbed::Uri("http://work.tohtics.com:3330/api/auth/" + deviceId));
         request->set_method("POST");
 
@@ -25,7 +26,6 @@ namespace resource
 
         std::string body;
         bytes2string(response->get_body(), body);
-
 
         if (response->get_status_code() == restbed::NOT_FOUND)
             throw status::DEVICE_NOT_FOUND;
@@ -50,6 +50,11 @@ namespace resource
         return status;
     }
 
+    [[deprecated]] int DeviceStatusService<nlohmann::json>::get_arduino(const string& deviceId)
+    {
+        return 0;
+        // return static_cast<int>(this->isPowerCut(deviceId));
+    }
     void DeviceStatusService<nlohmann::json>::GET(const shared_ptr<restbed::Session> session)
     {
         // get request
@@ -69,7 +74,11 @@ namespace resource
             throw status::MISSING_FIELD_DEVICEID;
 
         // get device from db
-        json_type response = this->get(data["DeviceId"]);
+        json_type response;
+        if (request->get_path() == "/celeste/device/status/arduino")
+            response = this->get_arduino(data["DeviceId"]);
+        else
+            response = this->get(data["DeviceId"]);
 
         // close
         session->close(restbed::OK,

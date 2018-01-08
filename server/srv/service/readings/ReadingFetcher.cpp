@@ -16,6 +16,7 @@
 #include "ReadRequest.hpp"
 
 #include "srv/service/common.hpp"
+#include "srv/service/status.hpp"
 
 using namespace std;
 
@@ -151,9 +152,20 @@ namespace resource
                 totals[i] = 0;
                 for (auto&& r : res.fetchAll())
                 {
-                    // VALUES MOST BE DOUBLE TO NOT TRIGGER AN INT OVERFLOW
                     double sf = r.get(0);
-                    double value = stod(r.get(1));
+                    double value;
+                    try
+                    {
+                        value = stod(r.get(1));
+                    }
+                    catch (const std::invalid_argument& e)
+                    {
+                        throw status::TYPE_MUST_BE_NUMERIC;
+                    }
+                    catch (const std::out_of_range& e)
+                    {
+                        throw status::VALUE_IS_OUT_OF_RANGE;
+                    }
 
                     totals[i] += value * pow(10.0, sf);
                 }
