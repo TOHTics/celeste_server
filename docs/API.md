@@ -1012,7 +1012,7 @@ Status Message: OK
 | `READING_METHOD_NOT_FOUND`       | 4301    | The method passed could not be found. |
 | `READING_METHOD_NOT_SUPPORTED`   | 4302    | The method passed is not supported as of yet. |
 | `READING_METHOD_INVALID_ARGS`    | 4303    | The arguments passed to the method are invalid. |
-| `UNHANDLED_EXCEPTION`            | 8000    | An unhandled exception. Must be reported to [issues](https://github.com/carlosb/celeste/issues). |
+| `UNHANDLED_EXCEPTION`            | 8000    | An unhandled exception. Must be reported to [issues](https://github.com/TOHTics/celeste_server/issues). |
 
 
 
