@@ -9,11 +9,12 @@ matrix:
       addons:
         apt:
           packages:
+            - libc++-dev
+            - libc++-helpers
+            - libc++1
             - clang-3.5
             - cmake
             - libboost1.55-all-dev
-            - libstdc++6
-            - libc6
       env:
         - MATRIX_EVAL="CC=clang-3.5 && CXX=clang++-3.5"
 
