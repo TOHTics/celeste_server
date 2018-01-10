@@ -8,20 +8,12 @@ matrix:
     - os: linux
       addons:
         apt:
-          sources:
-            - llvm-toolchain-trusty-4.0
-            - ubuntu-toolchain-r-test
-            - george-edison55-precise-backports
-            - boost-latest
           packages:
-            - clang-4.0
-            - gcc-5
-            - g++-5
+            - clang-3.5
             - cmake
-            - cmake-data
             - libboost1.55-all-dev
       env:
-        - MATRIX_EVAL="CC=clang-4.0 && CXX=clang++-4.0"
+        - MATRIX_EVAL="CC=clang-3.5 && CXX=clang++-3.5"
 
 script:
   - mkdir build
