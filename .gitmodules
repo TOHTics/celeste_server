@@ -19,3 +19,6 @@
 [submodule "server/dependency/json"]
 	path = server/dependency/json
 	url = https://github.com/nlohmann/json
+[submodule "server/dependency/object_pool"]
+	path = server/dependency/object_pool
+	url = https://github.com/carlosb/object_pool

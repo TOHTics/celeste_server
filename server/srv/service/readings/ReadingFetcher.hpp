@@ -32,6 +32,13 @@ namespace resource
 
         // --- CONSTRUCTORS ----------
         ReadingFetcher() = default;
+        ReadingFetcher(const celeste::SessionSettings& dbSettings);
+        ReadingFetcher(const ReadingFetcher& other);
+        ReadingFetcher(ReadingFetcher&& other) = delete;
+        
+        // --- OPERATORS -------------
+        ReadingFetcher& operator=(const ReadingFetcher&) = delete;
+        ReadingFetcher& operator=(ReadingFetcher&&) = delete;
 
         // --- PUBLIC METHODS --------
         template <class Response, class Request>
@@ -39,9 +46,9 @@ namespace resource
             std::is_arithmetic<Response>::value,
             Response
         >::type
-        fetch(mysqlx::Session&& dbSession, const Request& req) const
+        fetch(Request&& req) const
         {   
-            return fetch_impl<Response>(std::forward<mysqlx::Session>(dbSession), req);
+            return fetch_impl<Response>(std::forward<Request>(req));
         }
 
         template <class Response, class Request>
@@ -49,9 +56,9 @@ namespace resource
             std::is_arithmetic<typename Response::value_type>::value,
             Response
         >::type
-        fetch(mysqlx::Session&& dbSession, const Request& req) const
+        fetch(Request&& req) const
         {
-            return fetch_impl<Response>(std::forward<mysqlx::Session>(dbSession), req);
+            return fetch_impl<Response>(std::forward<Request>(req));
         }
 
 
@@ -60,9 +67,9 @@ namespace resource
             std::is_convertible<value_type, Response>::value,
             Response
         >::type
-        fetch(mysqlx::Session&& dbSession, const Request& req) const
+        fetch(Request&& req) const
         {   
-            return fetch_impl<value_type>(std::forward<mysqlx::Session>(dbSession), req);
+            return fetch_impl<value_type>(std::forward<Request>(req));
         }
 
         template <class Response, class Request>
@@ -71,9 +78,9 @@ namespace resource
             std::is_convertible<value_type, typename Response::value_type>::value,
             Response
         >::type
-        fetch(mysqlx::Session&& dbSession, const Request& req) const
+        fetch(Request&& req) const
         {
-            return fetch_impl<Response>(std::forward<mysqlx::Session>(dbSession), req);
+            return fetch_impl<Response>(std::forward<Request>(req));
         }
 
         template <class Response, class Request>
@@ -82,35 +89,35 @@ namespace resource
             std::is_convertible<value_type, typename Response::mapped_type>::value,
             Response
         >::type
-        fetch(mysqlx::Session&& dbSession, const Request& req) const
+        fetch(Request&& req) const
         {
-            return fetch_impl<value_type>(std::forward<mysqlx::Session>(dbSession), req);
+            return fetch_impl<value_type>(std::forward<Request>(req));
         }
     private:
         // --- PRIVATE METHODS -------
         template <class Response, class Request>
-        Response fetch_impl(mysqlx::Session&& dbSession,
-                            const Request& req) const;
+        Response fetch_impl(Request&& req) const;
+
+        // --- PRIVATE MEMBERS -------
+        celeste::SessionSettings    dbSettings;
+        mutable mysqlx::Session     dbSession;
     };
 
 
     // --- DEFAULT SPECIALIZATIONS ---
     template <>
     std::vector<ReadingFetcher::value_type>
-    ReadingFetcher::fetch_impl(mysqlx::Session&& dbSession,
-                               const RangeReadRequest& req)
+    ReadingFetcher::fetch_impl(const RangeReadRequest& req)
     const;
 
     template <>
     ReadingFetcher::value_type
-    ReadingFetcher::fetch_impl(mysqlx::Session&& dbSession,
-                               const LastReadRequest& req)
+    ReadingFetcher::fetch_impl(const LastReadRequest& req)
     const;
 
     template <>
     std::vector<double>
-    ReadingFetcher::fetch_impl(mysqlx::Session&& dbSession,
-                               const AccumulatedReadRequest& req)
+    ReadingFetcher::fetch_impl(const AccumulatedReadRequest& req)
     const;
 }
 }

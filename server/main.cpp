@@ -24,7 +24,12 @@ void print_welcome_message()
 
 int main( const int argc, const char** argv)
 {  
-    mysqlx::SessionSettings dbSettings("localhost", 33060, "root", "root", "Celeste");
+    celeste::SessionSettings dbSettings{
+        .host = "localhost",
+        .port = 33060,
+        .user = "root",
+        .pwd = "root",
+        .db = "Celeste"};
 
     using DeviceResource = resource::Devices<nlohmann::json>;
     using ModelResource = resource::Models<nlohmann::json>;

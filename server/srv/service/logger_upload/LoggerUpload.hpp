@@ -24,7 +24,7 @@ namespace resource
     {
     public:
         // --- Constructors ----------
-        LoggerUpload(const mysqlx::SessionSettings& dbSettings);
+        LoggerUpload(const celeste::SessionSettings& dbSettings);
 
         // --- Public methods --------
         void persist_data(const sunspec::data::SunSpecData& data);
@@ -40,7 +40,7 @@ namespace resource
         void get_db_error(Error &&e, const std::shared_ptr<restbed::Session> session);
 
         // --- Member attributes -----
-        mysqlx::SessionSettings     dbSettings;
+        celeste::SessionSettings    dbSettings;
         mysqlx::Session             dbSession;
         mysqlx::Schema              celesteDB;
         mysqlx::Table               deviceRecordTable;

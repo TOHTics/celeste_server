@@ -67,7 +67,7 @@ namespace resource
          *
          * @param[in]  dbSettings  DB settings for connection.
          */
-        Models(const mysqlx::SessionSettings& dbSettings);
+        Models(const celeste::SessionSettings& dbSettings);
 
         // --- Public methods --------
 
@@ -101,11 +101,13 @@ namespace resource
         void DELETE(const std::shared_ptr<restbed::Session> session);
 
         // --- Member attributes -----
-        mysqlx::Session     dbSession;
-        mysqlx::Schema      celesteDB;
-        mysqlx::Table       modelTable;
+        celeste::SessionSettings    dbSettings;
 
-        std::mutex          model_mutex;
+        mysqlx::Session             dbSession;
+        mysqlx::Schema              celesteDB;
+        mysqlx::Table               modelTable;
+
+        std::mutex                  model_mutex;
     };
 }
 }

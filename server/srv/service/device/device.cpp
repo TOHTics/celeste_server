@@ -16,9 +16,10 @@ namespace celeste
 namespace resource
 {   
     // --- CLASS DEFINITIONS ---------
-    Devices<nlohmann::json>::Devices(const mysqlx::SessionSettings& dbSettings)
-        :   dbSession(dbSettings),
-            celesteDB(dbSession.getSchema("Celeste")),
+    Devices<nlohmann::json>::Devices(const celeste::SessionSettings& dbSettings)
+        :   dbSettings(dbSettings),
+            dbSession(dbSettings),
+            celesteDB(dbSession.getSchema(dbSettings.db)),
             deviceTable(celesteDB.getTable("Device")),
             modelAssociator(dbSettings)
     {

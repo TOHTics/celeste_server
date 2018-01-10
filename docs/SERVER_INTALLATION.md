@@ -10,8 +10,8 @@ This document mainly concerns itself with the installation of the Celeste server
 It is expected that these steps become easier as the project advances. It is also expected, however, that we have installed some requirements:
 
 - `git` - To download the code
-- `>= clang-3.8` - To build the server
-- `>= gcc-4.9` - To build the dependencies
+- `>= clang-3.5` - To build the server
+- `>= gcc-5.0` - To build the dependencies
 - `>= cmake-3.0` - To configure the Makefile
 - `>= boost1.55` - Dependency
 

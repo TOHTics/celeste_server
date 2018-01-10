@@ -13,6 +13,20 @@
 #include <codecvt>
 
 
+namespace celeste
+{
+    struct SessionSettings
+    {
+        std::string     host;
+        std::size_t     port;
+        std::string     user;
+        std::string     pwd;
+        std::string     db;
+
+        operator mysqlx::SessionSettings() const;
+    };
+}
+
 namespace mysqlx
 {
 

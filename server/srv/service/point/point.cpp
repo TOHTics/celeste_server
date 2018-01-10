@@ -15,9 +15,10 @@ namespace celeste
 namespace resource
 {   
     // --- CLASS DEFINITIONS ---------
-    Points<nlohmann::json>::Points(const mysqlx::SessionSettings& dbSettings)
-        :   dbSession(dbSettings),
-            celesteDB(dbSession.getSchema("Celeste")),
+    Points<nlohmann::json>::Points(const celeste::SessionSettings& dbSettings)
+        :   dbSettings(dbSettings),
+            dbSession(dbSettings),
+            celesteDB(dbSession.getSchema(dbSettings.db)),
             pointTable(celesteDB.getTable("Point"))
     {
         set_path("/point");

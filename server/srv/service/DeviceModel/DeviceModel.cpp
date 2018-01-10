@@ -17,9 +17,10 @@ namespace celeste
 namespace resource
 {   
     // --- CLASS DEFINITIONS ---------
-    DeviceModelAssocs<nlohmann::json>::DeviceModelAssocs(const mysqlx::SessionSettings& dbSettings)
-        :   dbSession(dbSettings),
-            celesteDB(dbSession.getSchema("Celeste")),
+    DeviceModelAssocs<nlohmann::json>::DeviceModelAssocs(const celeste::SessionSettings& dbSettings)
+        :   dbSettings(dbSettings),
+            dbSession(dbSettings),
+            celesteDB(dbSession.getSchema(dbSettings.db)),
             associationTable(celesteDB.getTable("Device_Model"))
     {
         set_path("/device_model");
@@ -82,7 +83,7 @@ namespace resource
                 dbSession.sql(R"(
                               SELECT IFNULL(MAX(idx) + 1, 0) FROM
                               (
-                                SELECT idx FROM Celeste.Device_Model
+                                SELECT idx FROM Device_Model
                                 WHERE
                                 Device_id = ?
                                 AND Model_id = ?

@@ -10,11 +10,12 @@
 #define SERVER_RESOURCE_READING_DISPATCHER_HPP
 
 #include <memory>
+#include <mutex>
+
 #include <mysql_devapi.h>
 #include <restbed>
-
 #include <json.hpp>
-#include <unordered_map>
+#include "object_pool.hpp"
 
 #include "ReadingFetcher.hpp"
 
@@ -28,20 +29,22 @@ namespace resource
         typedef Reading<mysqlx::EnhancedValue> reading_type;
 
         // --- CONSTRUCTORS ----------
-        ReadingDispatcher(const mysqlx::SessionSettings& dbSettings);
+        ReadingDispatcher(const celeste::SessionSettings& dbSettings, size_t fetcherCount = 4);
 
         // --- PUBLIC METHODS --------
         template <class ReadResponse, class ReadRequest>
         ReadResponse dispatch(const ReadRequest& request) const;
 
     private:
+        using fetcher_pool = carlosb::object_pool<ReadingFetcher>;
+
         // --- PRIVATE METHODS -------
         void GET(const std::shared_ptr<restbed::Session> session);
 
         // --- MEMBER ATTRIBUTES -----
-        ReadingFetcher              reading_fetcher;
-        mysqlx::SessionSettings     dbSettings;
-        mysqlx::Session             dbSession;
+        celeste::SessionSettings    dbSettings;
+        mutable fetcher_pool        fetcherPool;
+        std::mutex                  fetchMutex;
     };
     
 }

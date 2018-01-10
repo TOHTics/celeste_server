@@ -22,9 +22,9 @@ namespace resource
 {   
     using json = nlohmann::json;
 
-    ReadingDispatcher::ReadingDispatcher(const mysqlx::SessionSettings& dbSettings)
+    ReadingDispatcher::ReadingDispatcher(const celeste::SessionSettings& dbSettings, size_t fetcherCount)
         :   dbSettings(dbSettings),
-            dbSession(dbSettings)
+            fetcherPool(fetcherCount, ReadingFetcher(dbSettings))
     {
         set_path("/reading");
         set_method_handler("GET", [this] (const std::shared_ptr<restbed::Session> session) {GET(session);});
@@ -34,10 +34,10 @@ namespace resource
     template <>
     json ReadingDispatcher::dispatch(const LastReadRequest& request) const
     {
+        lock_guard<std::mutex> lock(mutex);
+        auto readingFetcher = *fetcherPool.acquire_wait();
         auto reading = 
-            reading_fetcher.fetch<
-                reading_type // fetch a reading
-            >(move(mysqlx::Session(dbSettings)), request);
+            readingFetcher.fetch<reading_type>(request);
 
         return json(reading);
     }
@@ -45,10 +45,9 @@ namespace resource
     template <>
     json ReadingDispatcher::dispatch(const RangeReadRequest& request) const
     {
+        auto readingFetcher = *fetcherPool.acquire_wait();
         auto reading = 
-            reading_fetcher.fetch<
-                vector<reading_type> // fetch an array of readings
-            >(move(mysqlx::Session(dbSettings)), request);
+            readingFetcher.fetch<vector<reading_type>>(request);
 
         return json(reading);
     }
@@ -56,17 +55,16 @@ namespace resource
     template <>
     json ReadingDispatcher::dispatch(const AccumulatedReadRequest& request) const
     {
+        auto readingFetcher = *fetcherPool.acquire_wait();
         auto reading = 
-            reading_fetcher.fetch<
-                vector<double> // fetch a double
-            >(move(mysqlx::Session(dbSettings)), request);
+            readingFetcher.fetch<vector<double>>(request);
 
-        map<string, double> total_map;
+        map<string, double> deviceTotalMap;
         int i = 0;
         for (const auto& DeviceId : request.DeviceIds)
-            total_map[DeviceId] = reading[i++];
+            deviceTotalMap[DeviceId] = reading[i++];
 
-        return json(total_map);
+        return json(deviceTotalMap);
     }
 
     void ReadingDispatcher::GET(const std::shared_ptr<restbed::Session> session)

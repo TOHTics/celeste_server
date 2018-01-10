@@ -17,10 +17,10 @@ namespace celeste
 namespace resource
 {
     // --- CLASS DEFINITIONS ---------
-    LoggerUpload::LoggerUpload(const mysqlx::SessionSettings& dbSettings)
+    LoggerUpload::LoggerUpload(const celeste::SessionSettings& dbSettings)
         :   dbSession(dbSettings),
             dbSettings(dbSettings),
-            celesteDB(dbSession.getSchema("Celeste")),
+            celesteDB(dbSession.getSchema(dbSettings.db)),
             deviceRecordTable(celesteDB.getTable("DeviceRecord")),
             modelRecordTable(celesteDB.getTable("ModelRecord")),
             pointRecordTable(celesteDB.getTable("PointRecord"))

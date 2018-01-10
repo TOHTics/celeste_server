@@ -27,10 +27,19 @@ namespace resource
     // --- TYPE ABBREVIATIONS --------
     using value_type = ReadingFetcher::value_type;
 
+
+    ReadingFetcher::ReadingFetcher(const celeste::SessionSettings& dbSettings)
+        :   dbSettings(dbSettings),
+            dbSession(dbSettings)
+    {}
+
+    ReadingFetcher::ReadingFetcher(const ReadingFetcher& other)
+        :   ReadingFetcher(other.dbSettings)
+    {}
+
     // --- LastReadRequest fetch implementations ---------
     template <>
-    value_type ReadingFetcher::fetch_impl(mysqlx::Session&& dbSession,
-                                           const LastReadRequest& req) const
+    value_type ReadingFetcher::fetch_impl(const LastReadRequest& req) const
     {
         auto res = dbSession.sql(
                     R"(
@@ -74,8 +83,7 @@ namespace resource
 
     // --- RangeReadRequest fetch implementations --------
     template <>
-    std::vector<value_type> ReadingFetcher::fetch_impl(mysqlx::Session&& dbSession,
-                                                       const RangeReadRequest& req) const
+    std::vector<value_type> ReadingFetcher::fetch_impl(const RangeReadRequest& req) const
     {
         auto res = dbSession.sql(
                     R"(
@@ -117,8 +125,7 @@ namespace resource
 
     template <>
     std::vector<double>
-    ReadingFetcher::fetch_impl(mysqlx::Session&& dbSession,
-                               const AccumulatedReadRequest& req) const
+    ReadingFetcher::fetch_impl(const AccumulatedReadRequest& req) const
     {
         std::vector<double> totals(req.DeviceIds.size());
 

@@ -2,6 +2,15 @@
 
 using namespace std;
 
+namespace celeste
+{
+    SessionSettings::operator mysqlx::SessionSettings() const
+    {
+        return mysqlx::SessionSettings(host.c_str(), port, user.c_str(), pwd.c_str(), db.c_str());
+    }
+}
+
+
 // --- SerializableRow DEFINITIONS --------------
 namespace mysqlx
 {

@@ -10,6 +10,7 @@ message("@ restbed")
 message("@ MySQL C++ connector v8")
 message("@ Boost property_tree")
 message("@ nhlomann JSON")
+message("@ object_pool")
 message("${reset}")
 
 # ---- Set the module path ---------------------
@@ -18,7 +19,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/../cmake/modul
 include_directories(".")
 
 # ---- Configure compiler ----------------------
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -O3")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++ -std=c++11 -O3")
 set(CMAKE_CXX_STANDARD 11)
 set(CXX_STANDARD TRUE)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -36,13 +37,6 @@ file(GLOB_RECURSE SRV_SRC
     "srv/*.cpp"
     )
 set(srv ${SRV_SRC})
-
-# ---- Tests -----------------------------------
-file(GLOB_RECURSE TEST_SRC
-    "test/*.hpp"
-    "test/*.cpp"
-    )
-set(tests ${TEST_SRC})
 
 # ---- Sunspec ---------------------------------
 file(GLOB_RECURSE SUNSPEC_SRC
@@ -63,6 +57,7 @@ set(SERVER_SOURCE_FILES
 find_package(restbed        REQUIRED)
 find_package(mysqlcppconn   REQUIRED)
 find_package(json           REQUIRED)
+find_package(object_pool    REQUIRED)
 find_package(Boost          REQUIRED
              COMPONENTS
              date_time)
@@ -71,6 +66,7 @@ include_directories(${mysqlcppconn_INCLUDE})
 include_directories(${restbed_INCLUDE})
 include_directories(${json_INCLUDE})
 include_directories(${Boost_INCLUDE_DIRS})
+include_directories(${object_pool_INCLUDE})
 
 # ---- Add an executable -----------------------
 add_executable(celeste_server ${SERVER_SOURCE_FILES})

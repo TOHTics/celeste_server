@@ -64,7 +64,7 @@ namespace resource
          *
          * @param[in]  dbSettings  DB settings for connection.
          */
-        Devices(const mysqlx::SessionSettings& dbSettings);
+        Devices(const celeste::SessionSettings& dbSettings);
 
         // --- Public methods --------
 
@@ -104,6 +104,8 @@ namespace resource
 
         // --- Member attributes -----
         DeviceModelAssocs<json_type>    modelAssociator;
+
+        celeste::SessionSettings        dbSettings;
 
         mysqlx::Session                 dbSession;
         mysqlx::Schema                  celesteDB;

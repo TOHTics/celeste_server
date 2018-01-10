@@ -15,9 +15,9 @@ namespace celeste
 namespace resource
 {   
     // --- CLASS DEFINITIONS ---------
-    Models<nlohmann::json>::Models(const mysqlx::SessionSettings& dbSettings)
+    Models<nlohmann::json>::Models(const celeste::SessionSettings& dbSettings)
         :   dbSession(dbSettings),
-            celesteDB(dbSession.getSchema("Celeste")),
+            celesteDB(dbSession.getSchema(dbSettings.db)),
             modelTable(celesteDB.getTable("Model"))
     {
         set_path("/model");
