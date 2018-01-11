@@ -4,8 +4,10 @@
 #include <json.hpp>
 #include "srv/db/db.hpp"
 #include "srv/service/services.hpp"
+#include "srv/service/status.hpp"
 
-#include "srv/service/readings/ReadRequest.hpp"
+#define WORKER_COUNT 8
+
 using namespace std;
 using namespace celeste;
 void print_welcome_message()
@@ -48,7 +50,7 @@ int main( const int argc, const char** argv)
     auto models = make_shared<ModelResource>(dbSettings);
     auto points = make_shared<PointResource>(dbSettings);
     auto upload = make_shared<LoggerResource>(dbSettings);
-    auto reading = make_shared<ReadingResource>(dbSettings);
+    auto reading = make_shared<ReadingResource>(dbSettings, WORKER_COUNT);
     auto device_model = make_shared<DeviceModelAssocResource>(dbSettings);
     auto device_status = make_shared<DeviceStatusResource>();
 
@@ -58,11 +60,12 @@ int main( const int argc, const char** argv)
     settings->set_status_messages(status::STATUS_MAP);
     settings->set_port(10000);
     settings->set_root("celeste");
-    settings->set_worker_limit(4);
+    settings->set_worker_limit(WORKER_COUNT);
 
     cout << "@ Publishing resources...\n";
-    
+
     restbed::Service api;
+
     api.publish(devices);
     api.publish(models);
     api.publish(points);
