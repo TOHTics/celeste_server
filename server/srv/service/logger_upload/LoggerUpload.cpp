@@ -18,8 +18,8 @@ namespace resource
 {
     // --- CLASS DEFINITIONS ---------
     LoggerUpload::LoggerUpload(const celeste::SessionSettings& dbSettings)
-        :   dbSession(dbSettings),
-            dbSettings(dbSettings),
+        :   dbSettings(dbSettings),
+            dbSession(dbSettings),
             celesteDB(dbSession.getSchema(dbSettings.db)),
             deviceRecordTable(celesteDB.getTable("DeviceRecord")),
             modelRecordTable(celesteDB.getTable("ModelRecord")),

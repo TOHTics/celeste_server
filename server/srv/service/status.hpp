@@ -3,76 +3,76 @@
 
 #include <map>
 #include <string>
+#include <memory>
+#include <restbed>
 
 namespace celeste
 {
 namespace status
 {
-    enum : int
-    {
-        // --- NOT FOUND ERRORS -------------------
-        // 4000 - 4049
-        DEVICE_NOT_FOUND            = 4000,
-        MODEL_NOT_FOUND             = 4001,
-        POINT_NOT_FOUND             = 4002,
-        READING_NOT_FOUND           = 4003,
+    // --- NOT FOUND ERRORS -------------------
+    // 4000 - 4049
+    static constexpr int DEVICE_NOT_FOUND            = 4000;
+    static constexpr int MODEL_NOT_FOUND             = 4001;
+    static constexpr int POINT_NOT_FOUND             = 4002;
+    static constexpr int READING_NOT_FOUND           = 4003;
 
-        // --- MISC ERRORS ------------------------
-        // 4050 - 4099
-        UPLOAD_FAILED               = 4050,
-        EMPTY_ARRAY                 = 4051,
-        TYPE_MUST_BE_NUMERIC        = 4052,
-        VALUE_IS_OUT_OF_RANGE       = 4053,
+    // --- MISC ERRORS ------------------------
+    // 4050 - 4099
+    static constexpr int UPLOAD_FAILED               = 4050;
+    static constexpr int EMPTY_ARRAY                 = 4051;
+    static constexpr int TYPE_MUST_BE_NUMERIC        = 4052;
+    static constexpr int VALUE_IS_OUT_OF_RANGE       = 4053;
+    static constexpr int TYPE_MUST_BE_ARRAY          = 4054;
 
-        // --- SYNTAX ERRORS ----------------------
-        // 4100 - 4199
-        JSON_SYNTAX_ERROR           = 4100,
-        XML_SYNTAX_ERROR            = 4101,
-        CELESTERN_SYNTAX_ERROR      = 4102,
+    // --- SYNTAX ERRORS ----------------------
+    // 4100 - 4199
+    static constexpr int JSON_SYNTAX_ERROR           = 4100;
+    static constexpr int XML_SYNTAX_ERROR            = 4101;
+    static constexpr int CELESTERN_SYNTAX_ERROR      = 4102;
 
-        // --- MISSING FIELD ERRORS ---------------
-        
-        // Device Related: 4200 - 4219
-        MISSING_FIELD_DEVICEID      = 4200,
-        MISSING_FIELD_MAN           = 4201,
-        MISSING_FIELD_MOD           = 4202,
-        MISSING_FIELD_SN            = 4203,
-        MISSING_FIELD_IDX           = 4204,
-        
-        // Model Related: 4220 - 4239
-        MISSING_FIELD_MODELID       = 4220,
-        MISSING_FIELD_NS            = 4221,
+    // --- MISSING FIELD ERRORS ---------------
+    
+    // Device Related: 4200 - 4219
+    static constexpr int MISSING_FIELD_DEVICEID      = 4200;
+    static constexpr int MISSING_FIELD_MAN           = 4201;
+    static constexpr int MISSING_FIELD_MOD           = 4202;
+    static constexpr int MISSING_FIELD_SN            = 4203;
+    static constexpr int MISSING_FIELD_IDX           = 4204;
+    
+    // Model Related: 4220 - 4239
+    static constexpr int MISSING_FIELD_MODELID       = 4220;
+    static constexpr int MISSING_FIELD_NS            = 4221;
 
-        // Point Related: 4240 - 4259
-        MISSING_FIELD_POINTID       = 4240,
-        MISSING_FIELD_TYPE          = 4241,
-        MISSING_FIELD_U             = 4242,
-        MISSING_FIELD_D             = 4243,
+    // Point Related: 4240 - 4259
+    static constexpr int MISSING_FIELD_POINTID       = 4240;
+    static constexpr int MISSING_FIELD_TYPE          = 4241;
+    static constexpr int MISSING_FIELD_U             = 4242;
+    static constexpr int MISSING_FIELD_D             = 4243;
 
-        // Device has Model Related: 4260 - 4279
-        MISSING_FIELD_NOTE          = 4260,
+    // Device has Model Related: 4260 - 4279
+    static constexpr int MISSING_FIELD_NOTE          = 4260;
 
 
-        // --- READING ERRORS ---------------------
-        // 4300 - 5300
-        
-        // Missing fields: 4300 - 4499
-        READING_MISSING_FIELD                   = 4300,
-        MISSING_FIELD_METHOD                    = 4301,
-        MISSING_FIELD_START                     = 4302,
-        MISSING_FIELD_END                       = 4303,
-        MISSING_FIELD_DEVICEIDS                 = 4304,
+    // --- READING ERRORS ---------------------
+    // 4300 - 5300
+    
+    // Missing fields: 4300 - 4499
+    static constexpr int READING_MISSING_FIELD           = 4300;
+    static constexpr int MISSING_FIELD_METHOD            = 4301;
+    static constexpr int MISSING_FIELD_START             = 4302;
+    static constexpr int MISSING_FIELD_END               = 4303;
+    static constexpr int MISSING_FIELD_DEVICEIDS         = 4304;
 
-        // Methods: 4500 - 4699
-        READING_METHOD_NOT_FOUND        = 4301,
-        READING_METHOD_NOT_SUPPORTED    = 4302,
-        READING_METHOD_INVALID_ARGS     = 4303,
+    // Methods: 4500 - 4699
+    static constexpr int READING_METHOD_NOT_FOUND        = 4301;
+    static constexpr int READING_METHOD_NOT_SUPPORTED    = 4302;
+    static constexpr int READING_METHOD_INVALID_ARGS     = 4303;
 
-        // --- SPECIAL ERRORS ---------------------
-        UNHANDLED_EXCEPTION         = 8000
-    };
+    // --- SPECIAL ERRORS ---------------------
+    static constexpr int UNHANDLED_EXCEPTION         = 8000;
 
-    static std::map<int, std::string> STATUS_MAP
+    static const std::map<int, std::string> STATUS_MAP
     {
         {DEVICE_NOT_FOUND,          "Device not found."},
         {MODEL_NOT_FOUND,           "Model not found."},
@@ -98,21 +98,22 @@ namespace status
         {MISSING_FIELD_NOTE,        "Missing field: note"},
         {MISSING_FIELD_IDX,         "Missing field: idx"},
 
-        {READING_MISSING_FIELD,     "There's a missing field that the server requires see: https://github.com/carlosb/celeste/blob/master/doc/API.md#reading"},
+        {READING_MISSING_FIELD,     "There's a missing field that the server requires."},
         {MISSING_FIELD_METHOD,      "Missing field: method"},
         {MISSING_FIELD_START,       "Missing field: start"},
         {MISSING_FIELD_END,         "Missing field: end"},
         {MISSING_FIELD_DEVICEIDS,   "Missing field: DeviceIds"},
 
-        {READING_METHOD_NOT_FOUND,      "No such method exists for requesting a Reading. See https://github.com/carlosb/celeste/blob/master/doc/API.md#reading for a list of supported methods."},
-        {READING_METHOD_NOT_SUPPORTED,  "This method is not yet supported. See https://github.com/carlosb/celeste/issues in order to open ticket regarding the availability of this method."},
-        {READING_METHOD_INVALID_ARGS,   "Invalid arguments passed to the method. See https://github.com/carlosb/celeste/blob/master/doc/API.md#reading for how to use this method."},
+        {READING_METHOD_NOT_FOUND,      "No such method exists for requesting a Reading."},
+        {READING_METHOD_NOT_SUPPORTED,  "This method is not yet supported."},
+        {READING_METHOD_INVALID_ARGS,   "Invalid arguments passed to the method."},
 
-        {UNHANDLED_EXCEPTION,       "Unhandled Exception. Please open a ticket/issue at https://github.com/carlosb/celeste/issues describing the request you made and I will personally answer back with a solution."},
+        {UNHANDLED_EXCEPTION,       "Unhandled Exception. Please open a ticket/issue at https://github.com/TOHTics/celeste_server/issues"},
     
         {EMPTY_ARRAY,               "Empty array value detected! For this particular case it is forbidden and, thus, you must specify +1 array elements."},
         {TYPE_MUST_BE_NUMERIC,      "The type of the readings must be numeric for this method to work."},
-        {VALUE_IS_OUT_OF_RANGE,     "One of the passed values falls out of range."}
+        {VALUE_IS_OUT_OF_RANGE,     "One of the passed values falls out of range."},
+        {TYPE_MUST_BE_ARRAY,        "Field must be array of elements."},
     };
 }
 }

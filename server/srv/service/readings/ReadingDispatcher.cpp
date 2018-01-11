@@ -22,9 +22,9 @@ namespace resource
 {   
     using json = nlohmann::json;
 
-    ReadingDispatcher::ReadingDispatcher(const celeste::SessionSettings& dbSettings, size_t fetcherCount)
+    ReadingDispatcher::ReadingDispatcher(const celeste::SessionSettings& dbSettings, size_t workerLimit)
         :   dbSettings(dbSettings),
-            fetcherPool(fetcherCount, ReadingFetcher(dbSettings))
+            fetcherPool(workerLimit, ReadingFetcher(dbSettings))
     {
         set_path("/reading");
         set_method_handler("GET", [this] (const std::shared_ptr<restbed::Session> session) {GET(session);});
@@ -34,10 +34,9 @@ namespace resource
     template <>
     json ReadingDispatcher::dispatch(const LastReadRequest& request) const
     {
-        lock_guard<std::mutex> lock(mutex);
-        auto readingFetcher = *fetcherPool.acquire_wait();
+        auto readingFetcher = fetcherPool.acquire_wait();
         auto reading = 
-            readingFetcher.fetch<reading_type>(request);
+            readingFetcher->fetch<reading_type>(request);
 
         return json(reading);
     }
@@ -45,9 +44,9 @@ namespace resource
     template <>
     json ReadingDispatcher::dispatch(const RangeReadRequest& request) const
     {
-        auto readingFetcher = *fetcherPool.acquire_wait();
+        auto readingFetcher = fetcherPool.acquire_wait();
         auto reading = 
-            readingFetcher.fetch<vector<reading_type>>(request);
+            readingFetcher->fetch<vector<reading_type>>(request);
 
         return json(reading);
     }
@@ -55,9 +54,9 @@ namespace resource
     template <>
     json ReadingDispatcher::dispatch(const AccumulatedReadRequest& request) const
     {
-        auto readingFetcher = *fetcherPool.acquire_wait();
+        auto readingFetcher = fetcherPool.acquire_wait();
         auto reading = 
-            readingFetcher.fetch<vector<double>>(request);
+            readingFetcher->fetch<vector<double>>(request);
 
         map<string, double> deviceTotalMap;
         int i = 0;
@@ -81,8 +80,6 @@ namespace resource
         // get json_type from request
         json data = get_json<json>(*request);
 
-        // if (data["DeviceId"].is_null())
-        //     throw 400;
         if (data["ModelId"].is_null())
             throw status::MISSING_FIELD_MODELID;
         if (data["PointId"].is_null())
@@ -126,6 +123,9 @@ namespace resource
             if (data["DeviceIds"].is_null())
                 throw status::MISSING_FIELD_DEVICEIDS;
 
+            if (!data["DeviceIds"].is_array())
+                throw status::TYPE_MUST_BE_ARRAY;
+
             if (data["DeviceIds"].empty())
                 throw status::EMPTY_ARRAY;
 
@@ -139,6 +139,8 @@ namespace resource
             });
             response_body = response.dump();
             code = restbed::OK;
+
+            cout << response << endl;
         }
         else
         {

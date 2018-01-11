@@ -29,7 +29,7 @@ namespace resource
         typedef Reading<mysqlx::EnhancedValue> reading_type;
 
         // --- CONSTRUCTORS ----------
-        ReadingDispatcher(const celeste::SessionSettings& dbSettings, size_t fetcherCount = 4);
+        ReadingDispatcher(const celeste::SessionSettings& dbSettings, size_t workerLimit = 4);
 
         // --- PUBLIC METHODS --------
         template <class ReadResponse, class ReadRequest>
@@ -44,7 +44,6 @@ namespace resource
         // --- MEMBER ATTRIBUTES -----
         celeste::SessionSettings    dbSettings;
         mutable fetcher_pool        fetcherPool;
-        std::mutex                  fetchMutex;
     };
     
 }
