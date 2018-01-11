@@ -2,6 +2,7 @@
 message("${yellow}Looking for object_pool...${reset}")
 find_path(object_pool_INCLUDE object_pool.hpp 
           PATHS 
+          "${PROJECT_SOURCE_DIR}/dependency/object_pool/src/"
           "${PROJECT_SOURCE_DIR}/dependency/object_pool/"
           "/usr/include"
           "/usr/local/include"
