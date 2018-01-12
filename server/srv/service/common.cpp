@@ -73,7 +73,7 @@ namespace nlohmann
     using namespace boost::posix_time;
     void adl_serializer<boost::posix_time::ptime>::to_json(json& j, const boost::posix_time::ptime& obj)
     {
-        j = to_simple_string(obj);
+        j = to_iso_extended_string(obj);
     }
 
     void adl_serializer<boost::posix_time::ptime>::from_json(const json& j, boost::posix_time::ptime& obj)

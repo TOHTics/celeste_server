@@ -1,5 +1,9 @@
+#include <boost/date_time/posix_time/posix_time.hpp>
+
 #include "DeviceStatus.hpp"
 #include "srv/service/common.hpp"
+
+#include <cstdlib>
 
 using namespace std;
 
@@ -10,7 +14,7 @@ namespace resource
     DeviceStatusService<nlohmann::json>::DeviceStatusService()
     {
         set_paths({"/device/status", "/device/status/arduino"});
-        set_method_handler("POST", [this] (const shared_ptr<restbed::Session> session) {GET(session);});
+        set_method_handler("GET", [this] (const shared_ptr<restbed::Session> session) {GET(session);});
         // set_method_handler("POST",   [this] (const shared_ptr<restbed::Session> session) {POST(session);});
     }
 
@@ -18,7 +22,7 @@ namespace resource
     {
         // make a request to CRM server
         auto request = make_shared<restbed::Request>(restbed::Uri("http://work.tohtics.com:3330/api/auth/" + deviceId));
-        request->set_method("POST");
+        request->set_method("GET");
 
         auto response = restbed::Http::sync(request);
         auto length = response->get_header("Content-Length", 0);
@@ -52,8 +56,36 @@ namespace resource
 
     [[deprecated]] int DeviceStatusService<nlohmann::json>::get_arduino(const string& deviceId)
     {
-        return 0;
-        // return static_cast<int>(this->isPowerCut(deviceId));
+        json_type reading {
+            {"DeviceIds", {deviceId}},
+            {"ModelId", "potenciometro"},
+            {"PointId", "consumo"},
+            {"method", "accumulated"},
+            {"start", boost::posix_time::second_clock::universal_time() - boost::posix_time::hours(1)},
+            {"end",  boost::posix_time::second_clock::universal_time()}
+        };
+
+        std::string requestBody = reading.dump();
+
+        auto request = make_shared<restbed::Request>(restbed::Uri("http://localhost:10000/celeste/reading/"));
+        request->set_method("GET");
+        request->set_body(requestBody);
+        request->set_header("Content-Length", to_string(requestBody.size()));
+
+        auto response = restbed::Http::sync(request);
+        size_t length = stoi(response->get_header("Content-Length"));
+        restbed::Http::fetch(length, response);
+
+
+        std::string responseBody;
+        bytes2string(response->get_body(), responseBody);
+        json_type j = json_type::parse(responseBody);
+        
+        return static_cast<int>(rand() % 2);
+        // if (j[deviceId].get<double>() > 300)
+        //     return 0;
+        // else
+        //     return 1;
     }
     void DeviceStatusService<nlohmann::json>::GET(const shared_ptr<restbed::Session> session)
     {

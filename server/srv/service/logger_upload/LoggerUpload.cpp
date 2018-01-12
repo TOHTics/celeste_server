@@ -152,8 +152,7 @@ namespace resource
             bytes2string(bytes, body);
         });
 
-        bool verbose = false;
-        verbose = ("/logger/upload/verbose/" == request->get_path());
+        bool verbose = ("/logger/upload/verbose/" == request->get_path());
         try
         {
             // Attempt to parse data

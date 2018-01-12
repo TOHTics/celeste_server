@@ -128,7 +128,6 @@ namespace resource
     ReadingFetcher::fetch_impl(const AccumulatedReadRequest& req) const
     {
         std::vector<double> totals(req.DeviceIds.size());
-
         // calculate total for each DeviceId
         int i = 0;
         for (const auto& DeviceId : req.DeviceIds)
@@ -152,7 +151,6 @@ namespace resource
                     req.start,
                     req.end
                 }).execute();
-
             // calculate the totals
             if (res.count() > 0)
             {
@@ -182,7 +180,6 @@ namespace resource
             }
             i++;
         }
-
         return totals;
     }
 }

@@ -55,13 +55,11 @@ namespace resource
     json ReadingDispatcher::dispatch(const AccumulatedReadRequest& request) const
     {
         auto readingFetcher = fetcherPool.acquire_wait();
-        auto reading = 
-            readingFetcher->fetch<vector<double>>(request);
-
+        auto reading = readingFetcher->fetch<vector<double>>(request);
         map<string, double> deviceTotalMap;
         int i = 0;
         for (const auto& DeviceId : request.DeviceIds)
-            deviceTotalMap[DeviceId] = reading[i++];
+            deviceTotalMap.insert({DeviceId, reading[i++]});
 
         return json(deviceTotalMap);
     }
@@ -139,8 +137,6 @@ namespace resource
             });
             response_body = response.dump();
             code = restbed::OK;
-
-            cout << response << endl;
         }
         else
         {
