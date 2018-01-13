@@ -1,10 +1,11 @@
-# Celeste ![Build Status](https://travis-ci.org/TOHTics/celeste_server.svg?branch=master) [![GitHub license](https://img.shields.io/badge/license-AGPLv3-blue.svg)](https://raw.githubusercontent.com/carlosb/celeste/master/LICENSE)
+# Celeste Server 
 
+![Build Status](https://travis-ci.org/TOHTics/celeste_server.svg?branch=master)
+[![GitHub license](https://img.shields.io/badge/license-AGPLv3-blue.svg)](https://raw.githubusercontent.com/carlosb/celeste/master/LICENSE)
+[![API doc](https://img.shields.io/badge/api%20doc-master-ff69b4.svg)](https://github.com/TOHTics/celeste_server/blob/master/docs/API.md)
 ---
 
-The system consists in obtaining data from "Solar Plants" which produce electricity
-and send relevant data, like power consumption, to the cloud. From there, we can
-choose to cut the power or detect faulty devices.
+The server receives sensor data sent by CelesteAlpha. It saves this data in the cloud where it can later be accessed. It also provides a stable way of  passing actions/messages to CelesteAlpha.
 
 ![diagram](SolarPanels.png)
 
