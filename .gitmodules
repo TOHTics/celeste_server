@@ -10,6 +10,7 @@
 [submodule "dependency/json"]
 	path = dependency/json
 	url = https://github.com/nlohmann/json
+	branch = master
 [submodule "dependency/object_pool"]
 	path = dependency/object_pool
 	url = https://github.com/carlosb/object_pool
