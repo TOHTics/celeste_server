@@ -93,7 +93,7 @@ endif()
 
 if (NOT celeste_rn_LIBRARY)
     add_subdirectory("dependency/celeste_rn/")
-    target_link_libraries(celeste_server restbed)
+    target_link_libraries(celeste_server celeste_rn)
 else()
     target_link_libraries(celeste_server ${celeste_rn_LIBRARY})
 endif()
