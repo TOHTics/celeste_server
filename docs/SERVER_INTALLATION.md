@@ -11,7 +11,7 @@ It is expected that these steps become easier as the project advances. It is als
 
 - `git` - To download the code
 - `>= clang-3.5` - To build the server
-- `>= gcc-5.0` - To build the dependencies
+- `>= gcc-4.9` - To build the dependencies. You can use clang too.
 - `>= cmake-3.0` - To configure the Makefile
 - `>= boost1.55` - Dependency
 
@@ -42,17 +42,12 @@ This will create a directory `celeste_server` and `cd` into it. It will then ini
 
 # Compiling
 
-Compiling the server requires `cmake >= 3.0`, `>=clang-3.8`, and `gcc5` if you are missing some basic dependencies. If you don't care about which dependencies you already have installed, or which are needed please execute the following commands:
+Compiling the server requires `cmake >= 3.0`, `>=clang-3.5`, and `gcc5` if you are missing some basic dependencies. If you don't care about which dependencies you already have installed, or which are needed please execute the following commands:
 
 ```
 sudo apt-get update -qq
 sudo apt-get install -y -qq git
-sudo apt-get install -qq software-properties-common
-sudo add-apt-repository ppa:george-edison55/cmake-3.x
-sudo add-apt-repository ppa:ubuntu-toolchain-r/test
-sudo apt-get update -qq
-sudo apt-get upgrade
-sudo apt-get install -y -qq  build-essential clang-3.8 cmake gcc5 g++5 libboost1.55-all-dev libssl-dev
+sudo apt-get install -y -qq  build-essential clang-3.5 cmake libboost1.55-all-dev libssl-dev libc++-dev libc++-helpers libc++1 
 ```
 
 To compile the code, simply go into the download directory and use `cmake` to configure the build. Then `make` the project, replacing `[NUMBER OF CORES]` with the number of cores your system has:
@@ -88,8 +83,8 @@ If everything built succesfully, you should see these last lines:
 If you are getting an error during build, you might consider explictly setting  the compiler just before the build:
 
 ```
-export CC=clang-3.8
-export CXX=clang++-3.8
+export CC=clang-3.5
+export CXX=clang++-3.5
 
 cmake ..
 make -j4
@@ -106,7 +101,7 @@ Build fails on [OPERATING SYSTEM NAME AND VERSION] using [COMPILER AND VERSION]
 For example:
 
 ```
-Build fails on macOS Sierra using clang-3.4 
+Build fails on macOS Sierra using clang-3.5
 ```
 
 The body of the ticket **should contain the error log and a description of the error**.
@@ -117,24 +112,3 @@ The body of the ticket **should contain the error log and a description of the e
 
 # Dependency Installation
 
-
-
-```
-apt-get update -qq
-apt-get install -y -qq git
-```
-
-```
-apt-get install -qq software-properties-common
-add-apt-repository ppa:george-edison55/cmake-3.x
-
-apt-get update -qq
-apt-get upgrade 
-```
-
-```
-apt-get install -y -qq  build-essential clang-3.8 cmake gcc5 g++5 libboost1.55-all-dev libssl-dev
-
-export CC=clang-3.8
-export CXX=clang++-3.8
-```
