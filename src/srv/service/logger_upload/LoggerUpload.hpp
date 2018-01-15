@@ -14,7 +14,7 @@
 #include <mutex>
 
 #include "srv/db/db.hpp"
-#include "sunspec/sunspec.hpp"
+#include "sunspec.hpp"
 
 namespace celeste
 {   

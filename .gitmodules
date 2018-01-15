@@ -7,18 +7,12 @@
 [submodule "dependency/mysql-connector-cpp"]
 	path = dependency/mysql-connector-cpp
 	url = https://github.com/mysql/mysql-connector-cpp.git
-[submodule "server/dependency/restbed"]
-	path = server/dependency/restbed
-	url = https://github.com/Corvusoft/restbed
-[submodule "server/dependency/mysql-connector-cpp"]
-	path = server/dependency/mysql-connector-cpp
-	url = https://github.com/mysql/mysql-connector-cpp
-[submodule "server/dependency/property_tree"]
-	path = server/dependency/property_tree
-	url = https://github.com/boostorg/property_tree
-[submodule "server/dependency/json"]
-	path = server/dependency/json
+[submodule "dependency/json"]
+	path = dependency/json
 	url = https://github.com/nlohmann/json
-[submodule "server/dependency/object_pool"]
-	path = server/dependency/object_pool
+[submodule "dependency/object_pool"]
+	path = dependency/object_pool
 	url = https://github.com/carlosb/object_pool
+[submodule "dependency/celeste_rn"]
+	path = dependency/celeste_rn
+	url = https://github.com/TOHTics/celeste_rn
