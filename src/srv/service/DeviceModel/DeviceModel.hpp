@@ -10,13 +10,11 @@
 
 #include <string>
 #include <memory>
-#include <mysql_devapi.h>
 #include <json.hpp>
 #include <restbed>
-#include <functional>
+#include <soci.h>
 #include <boost/optional.hpp>
-
-#include "srv/db/db.hpp"
+#include <object_pool.hpp>
 
 namespace celeste
 {   
@@ -60,7 +58,7 @@ namespace resource
          *
          * @param[in]  dbSettings  DB settings for connection.
          */
-        DeviceModelAssocs(const celeste::SessionSettings& dbSettings);
+        DeviceModelAssocs(const std::string& dbSettings);
 
         // --- Public methods --------
 
@@ -90,13 +88,27 @@ namespace resource
         void DELETE(const std::shared_ptr<restbed::Session> session);
 
         // --- Member attributes -----
-        celeste::SessionSettings    dbSettings;
-
-        mysqlx::Session             dbSession;
-        mysqlx::Schema              celesteDB;
-        mysqlx::Table               associationTable;
+        carlosb::object_pool<soci::session>   sqlPool;
     };
 }
+}
+
+// ---- SQL MAPPING ------------------
+namespace soci
+{
+    template <>
+    struct type_conversion<celeste::resource::DeviceModelAssoc>
+    {
+        typedef values base_type;
+
+        static void from_base(values const& v,
+                              indicator,
+                              celeste::resource::DeviceModelAssoc& p);
+
+        static void to_base(const celeste::resource::DeviceModelAssoc& p,
+                            values& v,
+                            indicator& ind);
+    };
 }
 
 // --- JSON SERIALIZATION ------------
@@ -108,18 +120,6 @@ namespace nlohmann
         static void to_json(json& j, const celeste::resource::DeviceModelAssoc& obj);
         static void from_json(const json& j, celeste::resource::DeviceModelAssoc& dm);
     }; 
-}
-
-// --- SQL SERIALIZATION -------------
-namespace mysqlx
-{
-    template <>
-    struct row_serializer<celeste::resource::DeviceModelAssoc>
-    {
-        static void to_row (SerializableRow& row, const celeste::resource::DeviceModelAssoc& obj);
-        static void from_row (const SerializableRow& row, celeste::resource::DeviceModelAssoc& obj);
-
-    };
 }
 
 #endif

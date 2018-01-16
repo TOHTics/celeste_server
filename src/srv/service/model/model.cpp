@@ -9,16 +9,15 @@
 #include "srv/service/common.hpp"
 
 using namespace std;
+using namespace soci;
 
 namespace celeste
 {
 namespace resource
 {   
     // --- CLASS DEFINITIONS ---------
-    Models<nlohmann::json>::Models(const celeste::SessionSettings& dbSettings)
-        :   dbSession(dbSettings),
-            celesteDB(dbSession.getSchema(dbSettings.db)),
-            modelTable(celesteDB.getTable("Model"))
+    Models<nlohmann::json>::Models(const std::string& dbSettings)
+        :   sqlPool(10, session(dbSettings))
     {
         set_path("/model");
         set_method_handler("GET", [this] (const std::shared_ptr<restbed::Session> session) {GET(session);});
@@ -28,41 +27,25 @@ namespace resource
 
     Model Models<nlohmann::json>::get(const std::string& modelId)
     {
-        lock_guard<mutex> guard(model_mutex);
-        auto res = 
-            modelTable.
-            select("*").
-            where("id = :ModelId").
-            bind(ValueMap{{"ModelId", modelId.c_str()}}).
-            execute();
-
-        mysqlx::SerializableRow row = res.fetchOne();
-        json_type j = row.as<Model>();
-        return row.as<Model>();
+        auto sql = sqlPool.acquire_wait();
+        Model model;
+        *sql    << "select * from where id = :ModelId",
+                use(modelId), into(model);
+        return model;
     }
 
     void Models<nlohmann::json>::insert(const value_type& model)
     {
-        lock_guard<mutex> guard(model_mutex);
-        mysqlx::SerializableRow row;
-        row.from(model);
-
-        mysqlx::Row tmp = row;
-
-        modelTable.
-        insert("id", "ns").
-        values(tmp).
-        execute();
+        auto sql = sqlPool.acquire_wait();
+        *sql    << "insert into Model(id, ns) values(:ModelId, :ns)",
+                use(model);
     }
 
     void Models<nlohmann::json>::remove(const std::string& modelId)
     {
-        lock_guard<mutex> guard(model_mutex);
-        modelTable.
-        remove().
-        where("id = :ModelId").
-        bind(ValueMap{{"ModelId", modelId.c_str()}}).
-        execute();
+        auto sql = sqlPool.acquire_wait();
+        *sql    << "delete from Model where id = :ModelId",
+                use(modelId);
     }
 
     void Models<nlohmann::json>::GET(const std::shared_ptr<restbed::Session> session)
@@ -150,23 +133,23 @@ namespace resource
 }
 
 // --- SERIALIZERS -------------------
-namespace mysqlx
+namespace soci
 {
-    using Model = celeste::resource::Model;
+    using namespace celeste::resource;
 
-    void row_serializer<Model>::to_row (SerializableRow& row, const celeste::resource::Model& obj)
+    void type_conversion<Model>::from_base(values const& v, indicator , Model& p)
     {
-        row.set(0, EnhancedValue{obj.ModelId});
-        row.set(1, EnhancedValue{obj.ns});
+        p = Model {
+            .ModelId    = v.get<string>("ModelId"),
+            .ns         = v.get<boost::optional<string>>("ns")
+        };
     }
 
-    void row_serializer<Model>::from_row (const SerializableRow& row, Model& obj)
+    void type_conversion<Model>::to_base(const Model& p, values& v, indicator& ind)
     {
-        SerializableRow tmp = row; // row.get() is not marked const, hence we need this tmp
-        obj = Model {
-            .ModelId = tmp.get(0).get<std::string>(),
-            .ns = tmp.get(1)
-        };
+        v.set("ModelId",     p.ModelId);
+        v.set("ns",     p.ns);
+        ind = i_ok;
     }
 }
 

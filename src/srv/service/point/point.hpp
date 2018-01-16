@@ -10,13 +10,12 @@
 
 #include <string>
 #include <memory>
-#include <mysql_devapi.h>
 #include <json.hpp>
 #include <restbed>
-#include <functional>
+#include <soci.h>
+#include <object_pool.hpp>
 #include <boost/optional.hpp>
 
-#include "srv/db/db.hpp"
 
 namespace celeste
 {   
@@ -67,7 +66,7 @@ namespace resource
          *
          * @param[in]  dbSettings  DB settings for connection.
          */
-        Points(const celeste::SessionSettings& dbSettings);
+        Points(const std::string& dbSettings);
 
         // --- Public methods --------
 
@@ -101,13 +100,7 @@ namespace resource
         void DELETE(const std::shared_ptr<restbed::Session> session);
 
         // --- Member attributes -----
-        celeste::SessionSettings    dbSettings;
-
-        mysqlx::Session             dbSession;
-        mysqlx::Schema              celesteDB;
-        mysqlx::Table               pointTable;
-
-        std::mutex                  point_mutex;
+        carlosb::object_pool<soci::session> sqlPool;
     };
 }
 }
@@ -123,15 +116,21 @@ namespace nlohmann
     }; 
 }
 
-// --- SQL SERIALIZATION -------------
-namespace mysqlx
+// ---- SQL MAPPING ------------------
+namespace soci
 {
     template <>
-    struct row_serializer<celeste::resource::Point>
+    struct type_conversion<celeste::resource::Point>
     {
-        static void to_row (SerializableRow& row, const celeste::resource::Point& obj);
-        static void from_row (const SerializableRow& row, celeste::resource::Point& obj);
+        typedef values base_type;
 
+        static void from_base(values const& v,
+                              indicator,
+                              celeste::resource::Point& p);
+
+        static void to_base(const celeste::resource::Point& p,
+                            values& v,
+                            indicator& ind);
     };
 }
 

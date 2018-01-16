@@ -11,17 +11,15 @@
 #include "srv/service/model/model.hpp"
 
 using namespace std;
+using namespace soci;
 
 namespace celeste
 {
 namespace resource
 {   
     // --- CLASS DEFINITIONS ---------
-    DeviceModelAssocs<nlohmann::json>::DeviceModelAssocs(const celeste::SessionSettings& dbSettings)
-        :   dbSettings(dbSettings),
-            dbSession(dbSettings),
-            celesteDB(dbSession.getSchema(dbSettings.db)),
-            associationTable(celesteDB.getTable("Device_Model"))
+    DeviceModelAssocs<nlohmann::json>::DeviceModelAssocs(const std::string& dbSettings)
+        :   sqlPool(10, session(dbSettings))
     {
         set_path("/device_model");
         set_method_handler("GET", [this] (const std::shared_ptr<restbed::Session> session) {GET(session);});
@@ -31,92 +29,69 @@ namespace resource
 
     std::vector<DeviceModelAssoc> DeviceModelAssocs<nlohmann::json>::get(const std::string& deviceId)
     {
-        auto res = 
-            associationTable.
-            select("*").
-            where("Device_id = :DeviceId").
-            bind(ValueMap{{"DeviceId", deviceId.c_str()}}).
-            execute();
+        auto sql = sqlPool.acquire_wait();
 
-        std::vector<DeviceModelAssoc> assocs(res.count());
-        int i = 0;
-        for (auto&& r : res.fetchAll())
-            assocs[i++] = static_cast<mysqlx::SerializableRow>(move(r)).as<DeviceModelAssoc>();
+        rowset<DeviceModelAssoc> res = (sql->prepare << "select * from Device_Model where Device_id = :DeviceId", use(deviceId));
+        std::vector<DeviceModelAssoc> assocs;
+        std::copy(res.begin(), res.end(), assocs);
         return assocs;
     }
 
     std::vector<DeviceModelAssoc> DeviceModelAssocs<nlohmann::json>::get(const std::string& deviceId, const std::string& modelId)
     {
-        auto res = 
-            associationTable.
-            select("*").
-            where("Device_id = :DeviceId AND Model_id = :ModelId").
-            bind(ValueMap{{"DeviceId", deviceId.c_str()}, {"ModelId", modelId.c_str()}}).
-            execute();
+        auto sql = sqlPool.acquire_wait();
 
-        std::vector<DeviceModelAssoc> assocs(res.count());
-        int i = 0;
-        for (auto&& r : res.fetchAll())
-            assocs[i++] = static_cast<mysqlx::SerializableRow>(move(r)).as<DeviceModelAssoc>();
+        rowset<DeviceModelAssoc> res = (sql->prepare 
+                                        << "select * from Device_Model where Device_id = :DeviceId and Model_id = :ModelId",
+                                        use(deviceId), use(modelId));
+        std::vector<DeviceModelAssoc> assocs;
+        std::copy(res.begin(), res.end(), assocs);
         return assocs;
     }
 
 
     DeviceModelAssoc DeviceModelAssocs<nlohmann::json>::get(const std::string& deviceId, const std::string& modelId, int idx)
-    {
-        auto res = 
-            associationTable.
-            select("*").
-            where("id = :DeviceId AND idx = :idx AND Model_id = :ModelId").
-            bind(ValueMap{{"DeviceId", deviceId.c_str()}, {"idx", idx}, {"ModelId", modelId.c_str()}}).
-            execute();
-        mysqlx::SerializableRow row = res.fetchOne();
-        return row.as<DeviceModelAssoc>();
+    {   
+        auto sql = sqlPool.acquire_wait();
+        
+        DeviceModelAssoc assoc;
+        *sql    << "select * from Device_Model"
+                << "where Device_id = :DeviceId and Model_id = :ModelId and idx = :idx",
+                use(deviceId), use(modelId), use(idx), into(assoc);
+
+        if (sql->got_data())
+            return assoc;
+        else
+            throw status::DEVICE_MODEL_NOT_FOUND;
     }
 
     int DeviceModelAssocs<nlohmann::json>::associate(const std::string& deviceId, const std::string& modelId, const boost::optional<std::string>& note)
     {
-        dbSession.startTransaction();
-        try
+        auto sql = sqlPool.acquire_wait();
+        
+        int idx;
         {
-            const int idx = 
-                dbSession.sql(R"(
-                              SELECT IFNULL(MAX(idx) + 1, 0) FROM
-                              (
-                                SELECT idx FROM Device_Model
-                                WHERE
-                                Device_id = ?
-                                AND Model_id = ?
-                              ) as tmp 
-                              )"
-                ).
-                bind(ValueList{deviceId.c_str(), modelId.c_str()}).
-                execute().
-                fetchOne().
-                get(0);
+            transaction tr(*sql);
 
-            associationTable.
-            insert("idx", "Device_id", "Model_id", "note").
-            values(idx, deviceId.c_str(), modelId.c_str(), mysqlx::EnhancedValue{note}).
-            execute();
+            *sql    << "(select ifnull(max(idx) + 1, 0) from" 
+                    << "(select idx from Device_Model where"
+                    << "Device_id = :DeviceId and Model_id = :ModelId) as tmp)",
+                    use(deviceId), use(modelId), use(note), into(idx);
 
-            dbSession.commit();
-            return idx;
+            *sql    << "insert into Device_Model(idx, Device_id, Model_id, note) values(:idx, :DeviceId, :ModelId, :note)",
+                    use(idx), use(deviceId), use(modelId), use(note);
+            tr.commit();
         }
-        catch (const mysqlx::Error& e)
-        {
-            dbSession.rollback();
-        }
-        return 0;
+        return idx;
     }
 
     void DeviceModelAssocs<nlohmann::json>::dissasociate(const std::string& deviceId, const std::string& modelId, int idx)
     {
-        associationTable.
-        remove().
-        where("Device_id = :DeviceId AND Model_id = :ModelId AND idx = :idx").
-        bind(ValueMap{{"DeviceId", deviceId.c_str()}, {"ModelId", modelId.c_str()}, {"idx", idx}}).
-        execute();
+        auto sql = sqlPool.acquire_wait();
+        
+        *sql    << "delete from Device_Model where"
+                << "Device_id = :DeviceId and Model_id = :ModelId and idx = :idx",
+                use(deviceId), use(modelId), use(idx);
     }
 
     void DeviceModelAssocs<nlohmann::json>::GET(const std::shared_ptr<restbed::Session> session)
@@ -233,27 +208,27 @@ namespace resource
 }
 
 // --- SERIALIZERS -------------------
-namespace mysqlx
+namespace soci
 {
     using namespace celeste::resource;
 
-    void row_serializer<DeviceModelAssoc>::to_row (SerializableRow& row, const DeviceModelAssoc& dm)
+    void type_conversion<DeviceModelAssoc>::from_base(values const& v, indicator , DeviceModelAssoc& p)
     {
-        row.set(0, dm.idx);
-        row.set(1, dm.DeviceId);
-        row.set(2, dm.ModelId);
-        row.set(3, dm.note);
+        p = DeviceModelAssoc {
+            .idx        = v.get<int>("idx"),
+            .DeviceId   = v.get<string>("Device_id"),
+            .ModelId    = v.get<string>("Model_id"),
+            .note       = v.get<boost::optional<string>>("note", boost::none)
+        };
     }
 
-    void row_serializer<DeviceModelAssoc>::from_row (const SerializableRow& row, DeviceModelAssoc& dm)
+    void type_conversion<DeviceModelAssoc>::to_base(const DeviceModelAssoc& p, values& v, indicator& ind)
     {
-        SerializableRow tmp = row; // row.get() is not marked const, hence we need this tmp
-        dm = DeviceModelAssoc {
-            .idx        = tmp.get(0),
-            .DeviceId   = tmp.get(1),
-            .ModelId    = tmp.get(2),
-            .note       = tmp.get(3)
-        };
+        v.set("idx",        p.idx);
+        v.set("Device_id",  p.DeviceId);
+        v.set("Model_id",   p.ModelId);
+        v.set("note",       p.note);
+        ind = i_ok;
     }
 }
 

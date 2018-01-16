@@ -3,11 +3,9 @@
 
 #include <string>
 #include <memory>
-#include <mysql_devapi.h>
+#include <soci.h>
 #include <json.hpp>
 #include <restbed>
-
-#include "srv/db/db.hpp"
 
 namespace celeste
 {
@@ -51,7 +49,6 @@ namespace resource
     };
 }
 }
-
 
 // --- JSON SERIALIZATION --------------------------------
 namespace nlohmann

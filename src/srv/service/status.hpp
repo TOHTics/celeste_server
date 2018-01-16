@@ -16,6 +16,7 @@ namespace status
     static constexpr int MODEL_NOT_FOUND             = 4001;
     static constexpr int POINT_NOT_FOUND             = 4002;
     static constexpr int READING_NOT_FOUND           = 4003;
+    static constexpr int DEVICE_MODEL_NOT_FOUND      = 4004;
 
     // --- MISC ERRORS ------------------------
     // 4050 - 4099

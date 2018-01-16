@@ -35,7 +35,7 @@ if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
 endif()
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++ -std=c++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -Wall -Wextra")
 
@@ -61,7 +61,7 @@ set(SERVER_SOURCE_FILES
 # ---- Find packages ---------------------------
 find_package(celeste_rn     REQUIRED)
 find_package(restbed        REQUIRED)
-find_package(mysqlcppconn   REQUIRED)
+find_package(soci           REQUIRED)
 find_package(json           REQUIRED)
 find_package(object_pool    REQUIRED)
 find_package(Boost          REQUIRED
@@ -70,12 +70,15 @@ find_package(Boost          REQUIRED
 
 include_directories("src/")
 include_directories(".")
+
 include_directories(${celeste_rn_INCLUDE})
-include_directories(${mysqlcppconn_INCLUDE})
+include_directories(${soci_INCLUDE})
+include_directories(${soci_CONFIG_INCLUDE})
 include_directories(${restbed_INCLUDE})
 include_directories(${json_INCLUDE})
 include_directories(${Boost_INCLUDE_DIRS})
 include_directories(${object_pool_INCLUDE})
+include_directories(${soci_INCLUDE})
 
 # ---- Build -----------------------------------
 message("${blue}Generating makefiles...${reset}")
@@ -98,10 +101,12 @@ else()
     target_link_libraries(celeste_server ${celeste_rn_LIBRARY})
 endif()
 
-if (NOT mysqlcppconn_LIBRARY)
-    add_subdirectory("dependency/mysql-connector-cpp/")
-    target_link_libraries(celeste_server libconcpp )
+if (NOT soci_LIBRARY)
+    add_subdirectory("dependency/soci/")
+    target_link_libraries(celeste_server soci_core )
 else()
-    target_link_libraries(celeste_server ${mysqlcppconn_LIBRARY})
+    target_link_libraries(celeste_server ${soci_LIBRARY})
+    target_link_libraries(celeste_server ${soci_mysql_LIBRARY})
 endif()
+
 target_link_libraries(celeste_server ${Boost_LIBRARIES})

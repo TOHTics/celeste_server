@@ -2,7 +2,6 @@
 #include <iostream>
 #include <thread>
 #include <json.hpp>
-#include "srv/db/db.hpp"
 #include "srv/service/services.hpp"
 #include "srv/service/status.hpp"
 

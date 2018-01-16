@@ -9,17 +9,15 @@
 #include "srv/service/common.hpp"
 
 using namespace std;
+using namespace soci;
 
 namespace celeste
 {
 namespace resource
 {   
     // --- CLASS DEFINITIONS ---------
-    Points<nlohmann::json>::Points(const celeste::SessionSettings& dbSettings)
-        :   dbSettings(dbSettings),
-            dbSession(dbSettings),
-            celesteDB(dbSession.getSchema(dbSettings.db)),
-            pointTable(celesteDB.getTable("Point"))
+    Points<nlohmann::json>::Points(const std::string& dbSettings)
+        :   sqlPool(10, session(mysql, dbSettings))
     {
         set_path("/point");
         set_method_handler("GET", [this] (const std::shared_ptr<restbed::Session> session) {GET(session);});
@@ -30,34 +28,18 @@ namespace resource
     Point Points<nlohmann::json>::get(const std::string& pointId,
                                       const std::string& modelId)
     {
-        lock_guard<mutex> guard(point_mutex);
-        auto res = 
-            pointTable.
-            select("*").
-            where("id = :PointId AND Model_id = :ModelId").
-            bind(ValueMap{
-                {"PointId", pointId.c_str()},
-                {"ModelId", modelId.c_str()}
-            }).
-            execute();
-
-        mysqlx::SerializableRow row = res.fetchOne();
-        return row.as<Point>();
+        auto sql = sqlPool.acquire_wait();
+        Point point;
+        *sql    << "select * from Point where id = :PointId and Model_id = :ModelId",
+                use(pointId), use(modelId), into(point);
+        return point;
     }
 
-    void Points<nlohmann::json>::insert(const value_type& Point)
+    void Points<nlohmann::json>::insert(const value_type& point)
     {
-        lock_guard<mutex> guard(point_mutex);
-
-        mysqlx::SerializableRow row;
-        row.from(Point);
-
-        mysqlx::Row tmp = row;
-
-        pointTable.
-        insert("id", "Model_id", "type", "u", "d").
-        values(tmp).
-        execute();
+        auto sql = sqlPool.acquire_wait();
+        *sql    << "insert into Point(id, Model_id, type, u, d) values(:PointId, :ModelId, :type, :u, :d)",
+                use(point);
     }
 
     void Points<nlohmann::json>::remove(const std::string& pointId,

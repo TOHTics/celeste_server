@@ -3,13 +3,11 @@
 
 #include <memory>
 #include <string>
-#include <mysql_devapi.h>
 #include <json.hpp>
 #include <restbed>
 #include <utility>
 #include <boost/optional.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
-#include "srv/db/db.hpp"
 #include "srv/service/status.hpp"
 
 namespace celeste
@@ -168,5 +166,4 @@ namespace nlohmann
         static void from_json(const json& j, boost::posix_time::ptime& time);
     };
 }
-
 #endif

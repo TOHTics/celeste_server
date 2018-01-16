@@ -6,21 +6,20 @@
  * @file
  */
 #include <mutex>
+#include <soci/mysql/soci-mysql.h>
 #include "device.hpp"
 #include "srv/service/common.hpp"
 
 using namespace std;
+using namespace soci;
 
 namespace celeste
 {
 namespace resource
 {   
     // --- CLASS DEFINITIONS ---------
-    Devices<nlohmann::json>::Devices(const celeste::SessionSettings& dbSettings)
-        :   dbSettings(dbSettings),
-            dbSession(dbSettings),
-            celesteDB(dbSession.getSchema(dbSettings.db)),
-            deviceTable(celesteDB.getTable("Device")),
+    Devices<nlohmann::json>::Devices(const std::string& dbSettings)
+        :   sql(soci::mysql, dbSettings),
             modelAssociator(dbSettings)
     {
         set_path("/device");
@@ -32,40 +31,22 @@ namespace resource
     Device Devices<nlohmann::json>::get(const std::string& deviceId)
     {
         lock_guard<mutex> guard(sqlMutex);
-        auto res = 
-            deviceTable.
-            select("*").
-            where("id = :DeviceId").
-            bind(ValueMap{{"DeviceId", deviceId}}).
-            execute();
 
-        mysqlx::SerializableRow row = res.fetchOne();
-        return row.as<Device>();
+        Device dev;
+        sql << "select * from Device where id = :DeviceId", into(dev), use(deviceId);
+
+        if (sql.got_data())
+            return dev;
+        else
+            throw status::DEVICE_NOT_FOUND;
     }
 
     void Devices<nlohmann::json>::insert(const value_type& device)
     {
         lock_guard<mutex> guard(sqlMutex);
-        try
-        {
-            dbSession.startTransaction();
 
-            mysqlx::SerializableRow row;
-            row.from(device);
-
-            mysqlx::Row rtmp = row;
-
-            deviceTable.
-            insert("id", "man", "mod", "sn").
-            values(rtmp).
-            execute();
-
-            dbSession.commit();
-        } catch (const mysqlx::Error& e)
-        {
-            dbSession.rollback();
-            throw e;
-        }
+        sql << "insert into Device(id, man, mod, sn) values(:id, :man, :mod, :sn)",
+            use(device.DeviceId), use(device.man), use(device.mod), use(device.sn);
     }
 
     // Note: The actions are already atomic so no need for the mutex lock
@@ -82,11 +63,8 @@ namespace resource
     void Devices<nlohmann::json>::remove(const std::string& deviceId)
     {
         lock_guard<mutex> guard(sqlMutex);
-        deviceTable.
-        remove().
-        where("id = :DeviceId").
-        bind(ValueMap{{"DeviceId", deviceId}}).
-        execute();
+        sql << "delete from Device where id = :DeviceId",
+            use(deviceId);
     }
 
     void Devices<nlohmann::json>::GET(const std::shared_ptr<restbed::Session> session)
@@ -185,30 +163,31 @@ namespace resource
 }
 
 // --- SERIALIZERS -------------------
-namespace mysqlx
+namespace soci
 {
     using namespace celeste::resource;
 
-    void row_serializer<Device>::to_row (SerializableRow& row, const celeste::resource::Device& device)
+    void type_conversion<Device>::from_base(values const& v, indicator , Device& p)
     {
-        row.set(0, device.DeviceId);
-        row.set(1, device.man);
-        row.set(2, device.mod);
-        row.set(3, device.sn);
+        p = Device {
+            .DeviceId   = v.get<string>("id"),
+            .man        = v.get<string>("man"),
+            .mod        = v.get<string>("mod"),
+            .sn         = v.get<string>("sn")
+        };
     }
 
-    void row_serializer<Device>::from_row (const SerializableRow& row, Device& device)
+    void type_conversion<Device>::to_base(const Device& p, values& v, indicator& ind)
     {
-        SerializableRow tmp = row; // row.get() is not marked const, hence we need this tmp
-        device = Device {
-            .DeviceId   = tmp.get(0),
-            .man        = tmp.get(1),
-            .mod        = tmp.get(2),
-            .sn         = tmp.get(3)
-        };
+        v.set("id",     p.DeviceId);
+        v.set("man",    p.man);
+        v.set("mod",    p.mod);
+        v.set("sn",     p.sn);
+        ind = i_ok;
     }
 }
 
+// --- SERIALIZERS -------------------
 namespace nlohmann
 {
     using namespace celeste::resource;
