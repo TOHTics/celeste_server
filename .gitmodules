@@ -17,3 +17,6 @@
 [submodule "dependency/celeste_rn"]
 	path = dependency/celeste_rn
 	url = https://github.com/TOHTics/celeste_rn
+[submodule "dependency/soci"]
+	path = dependency/soci
+	url = git://github.com/SOCI/soci.git
