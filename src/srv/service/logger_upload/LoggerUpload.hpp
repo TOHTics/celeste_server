@@ -9,12 +9,10 @@
 #define SERVER_RESOURCE_LOGGER_UPLOAD1_HPP
 
 #include <memory>
-#include <mysql_devapi.h>
 #include <restbed>
-#include <mutex>
-
-#include "srv/db/db.hpp"
-#include "sunspec.hpp"
+#include <soci.h>
+#include <object_pool.hpp>
+#include <sunspec.hpp>
 
 namespace celeste
 {   
@@ -24,7 +22,7 @@ namespace resource
     {
     public:
         // --- Constructors ----------
-        LoggerUpload(const celeste::SessionSettings& dbSettings);
+        LoggerUpload(const std::string& dbSettings);
 
         // --- Public methods --------
         void persist_data(const sunspec::data::SunSpecData& data);
@@ -40,14 +38,7 @@ namespace resource
         void get_db_error(Error &&e, const std::shared_ptr<restbed::Session> session);
 
         // --- Member attributes -----
-        celeste::SessionSettings    dbSettings;
-        mysqlx::Session             dbSession;
-        mysqlx::Schema              celesteDB;
-        mysqlx::Table               deviceRecordTable;
-        mysqlx::Table               modelRecordTable;
-        mysqlx::Table               pointRecordTable;
-
-        std::mutex                  upload_mutex;
+        carlosb::object_pool<soci::session> sqlPool;
     };
 }
 }

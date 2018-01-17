@@ -5,6 +5,7 @@
  * 
  * @file
  */
+#include <soci/mysql/soci-mysql.h>
 #include "model.hpp"
 #include "srv/service/common.hpp"
 
@@ -17,12 +18,14 @@ namespace resource
 {   
     // --- CLASS DEFINITIONS ---------
     Models<nlohmann::json>::Models(const std::string& dbSettings)
-        :   sqlPool(10, session(dbSettings))
     {
         set_path("/model");
         set_method_handler("GET", [this] (const std::shared_ptr<restbed::Session> session) {GET(session);});
         set_method_handler("POST",   [this] (const std::shared_ptr<restbed::Session> session) {POST(session);});
         set_method_handler("DELETE", [this] (const std::shared_ptr<restbed::Session> session) {DELETE(session);});
+    
+        for (int i = 0; i < 10; ++i)
+            sqlPool.emplace(mysql, dbSettings);
     }
 
     Model Models<nlohmann::json>::get(const std::string& modelId)
@@ -31,7 +34,10 @@ namespace resource
         Model model;
         *sql    << "select * from where id = :ModelId",
                 use(modelId), into(model);
-        return model;
+        if (sql->got_data())
+            return model;
+        else
+            throw status::MODEL_NOT_FOUND;
     }
 
     void Models<nlohmann::json>::insert(const value_type& model)
@@ -147,8 +153,8 @@ namespace soci
 
     void type_conversion<Model>::to_base(const Model& p, values& v, indicator& ind)
     {
-        v.set("ModelId",     p.ModelId);
-        v.set("ns",     p.ns);
+        v.set("ModelId", p.ModelId);
+        v.set("ns", p.ns);
         ind = i_ok;
     }
 }

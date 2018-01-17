@@ -10,14 +10,14 @@
 
 #include <memory>
 #include <restbed>
-#include <type_traits>
-
-#include "srv/db/db.hpp"
+#include <soci.h>
+#include <boost/variant.hpp>
+#include <vector>
 
 #include "Reading.hpp"
 #include "ReadRequest.hpp"
 
-#include <iostream>
+#include "srv/service/common.hpp"
 
 namespace celeste
 {
@@ -26,13 +26,9 @@ namespace resource
     class ReadingFetcher
     {
     public:
-        // --- TYPEDEFS --------------
-        typedef mysqlx::EnhancedValue   atomic_type;
-        typedef Reading<atomic_type>    value_type;
-
         // --- CONSTRUCTORS ----------
         ReadingFetcher() = default;
-        ReadingFetcher(const celeste::SessionSettings& dbSettings);
+        ReadingFetcher(const std::string& dbSettings);
         ReadingFetcher(const ReadingFetcher& other);
         ReadingFetcher(ReadingFetcher&& other) = delete;
         
@@ -42,82 +38,25 @@ namespace resource
 
         // --- PUBLIC METHODS --------
         template <class Response, class Request>
-        typename std::enable_if<
-            std::is_arithmetic<Response>::value,
-            Response
-        >::type
-        fetch(Request&& req) const
-        {   
-            return fetch_impl<Response>(std::forward<Request>(req));
-        }
+        Response fetch(Request&&) const;
 
-        template <class Response, class Request>
-        typename std::enable_if<
-            std::is_arithmetic<typename Response::value_type>::value,
-            Response
-        >::type
-        fetch(Request&& req) const
-        {
-            return fetch_impl<Response>(std::forward<Request>(req));
-        }
-
-
-        template <class Response, class Request>
-        typename std::enable_if<
-            std::is_convertible<value_type, Response>::value,
-            Response
-        >::type
-        fetch(Request&& req) const
-        {   
-            return fetch_impl<value_type>(std::forward<Request>(req));
-        }
-
-        template <class Response, class Request>
-        typename std::enable_if<
-            !std::is_convertible<value_type, Response>::value &&
-            std::is_convertible<value_type, typename Response::value_type>::value,
-            Response
-        >::type
-        fetch(Request&& req) const
-        {
-            return fetch_impl<Response>(std::forward<Request>(req));
-        }
-
-        template <class Response, class Request>
-        typename std::enable_if<
-            !std::is_convertible<value_type, Response>::value &&
-            std::is_convertible<value_type, typename Response::mapped_type>::value,
-            Response
-        >::type
-        fetch(Request&& req) const
-        {
-            return fetch_impl<value_type>(std::forward<Request>(req));
-        }
     private:
-        // --- PRIVATE METHODS -------
-        template <class Response, class Request>
-        Response fetch_impl(Request&& req) const;
-
         // --- PRIVATE MEMBERS -------
-        celeste::SessionSettings    dbSettings;
-        mutable mysqlx::Session     dbSession;
+        mutable soci::session   sql;
+        std::string             dbSettings;
     };
-
 
     // --- DEFAULT SPECIALIZATIONS ---
     template <>
-    std::vector<ReadingFetcher::value_type>
-    ReadingFetcher::fetch_impl(const RangeReadRequest& req)
+    Reading ReadingFetcher::fetch(const LastReadRequest&)
     const;
 
     template <>
-    ReadingFetcher::value_type
-    ReadingFetcher::fetch_impl(const LastReadRequest& req)
+    std::vector<Reading> ReadingFetcher::fetch(const RangeReadRequest&)
     const;
 
     template <>
-    std::vector<double>
-    ReadingFetcher::fetch_impl(const AccumulatedReadRequest& req)
+    std::map<std::string, double> ReadingFetcher::fetch(const AccumulatedReadRequest&)
     const;
 }
 }

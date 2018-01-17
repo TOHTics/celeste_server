@@ -5,114 +5,91 @@
  * 
  * @file
  */
+#include <soci/mysql/soci-mysql.h>
+#include <soci/error.h>
+
 #include "LoggerUpload.hpp"
 #include "srv/service/status.hpp"
 #include "srv/service/common.hpp"
 
 using namespace std;
 using namespace sunspec;
+using namespace soci;
 
 namespace celeste
 {   
 namespace resource
 {
     // --- CLASS DEFINITIONS ---------
-    LoggerUpload::LoggerUpload(const celeste::SessionSettings& dbSettings)
-        :   dbSettings(dbSettings),
-            dbSession(dbSettings),
-            celesteDB(dbSession.getSchema(dbSettings.db)),
-            deviceRecordTable(celesteDB.getTable("DeviceRecord")),
-            modelRecordTable(celesteDB.getTable("ModelRecord")),
-            pointRecordTable(celesteDB.getTable("PointRecord"))
+    LoggerUpload::LoggerUpload(const std::string& dbSettings)
     {
         set_paths({"/logger/upload/verbose/", "/logger/upload"});
         set_method_handler("POST", [this] (const std::shared_ptr<restbed::Session> session) {POST(session);});
+        
+        for (int i = 0; i < 10; ++i)
+            sqlPool.emplace(mysql, dbSettings);
     }
-
 
     void LoggerUpload::persist_data(const sunspec::data::SunSpecData& data)
     {
-        lock_guard<mutex> guard(upload_mutex);
-        try
-        {   
-            // --- START TRANSACTION -
-            dbSession.startTransaction();
-            // -----------------------
+        auto sql = sqlPool.acquire_wait();
+        transaction tr(*sql);
 
-            // persist all DeviceRecords
-            for (auto devit = data.cbegin(); devit != data.cend(); devit++)
-            {
-                // get aggregated index of the devicerecord to be saved
-                const int devrecord_idx = 
-                    dbSession.sql(R"(
-                                  SELECT IFNULL(MAX(idx) + 1, 0) FROM
-                                  (
-                                    SELECT idx FROM DeviceRecord
-                                    WHERE (Device_id = ?)
-                                  ) as tmp 
-                                  )"
-                    ).bind(ValueList{devit->id.c_str()}).execute().fetchOne().get(0);
+        data::DeviceData dev_record;
+        statement insert_device_rec
+            = (sql->prepare
+                << "insert into "
+                << "DeviceRecord(Device_id, t, cid, if, lid) "
+                << "values(:DeviceId, :t, :cid, :if, :lid) ",
+                use(dev_record.id), use(dev_record.t), use(dev_record.cid),
+                use(dev_record.ifc), use(dev_record.lid)
+            );
 
-                // insert device packet into DB
-                deviceRecordTable.
-                insert("idx", "Device_id", "t", "cid", "if", "lid").
-                values(devrecord_idx,
-                       devit->id.c_str(),
-                       devit->t.c_str(),
-                       devit->cid.c_str(),
-                       devit->ifc.c_str(),
-                       devit->lid.c_str()
-                       ).
-                execute();
+        data::ModelData mod_record;
+        statement insert_model_rec
+            = (
+                sql->prepare
+                << "insert into "
+                << "ModelRecord(Device_id, Model_id, Model_idx) "
+                << "values(:DeviceId, :ModelId, :ModelIdx)",
+                use(dev_record.id), use(mod_record.id),
+                use(mod_record.x.empty() ? mod_record.x : "0")
+            );
 
-                // persist model records
-                for (auto modit = devit->cbegin(); modit != devit->cend(); modit++)
-                {   
-                    // insert model packet
-                    modelRecordTable.
-                    insert("Model_idx", "Model_id", "DeviceRecord_idx", "Device_id").
-                    values(modit->x.empty() ? "0" : modit->x.c_str(),
-                           modit->id.c_str(),
-                           devrecord_idx,
-                           devit->id.c_str()
-                           ).
-                    execute();
+        data::PointData point_record;
+        statement insert_point_rec
+            = (
+                sql->prepare
+                << "insert into "
+                << "PointRecord(Device_id, Model_id, Point_id, Model_idx sf, t, data) "
+                << "values(:DeviceId, :ModelId, :PointId, :ModelIdx, :sf, :t, :data)",
+                use(dev_record.id), use(mod_record.id), use(point_record.id),
+                use(!mod_record.x.empty() ? mod_record.x : "0"),
+                use(point_record.sf), use(!point_record.sf.empty() ? point_record.sf : "0"),
+                use(point_record.value)
+            );
 
-                    // persists point records
-                    for (auto pointit = modit->cbegin(); pointit != modit->cend(); pointit++)
-                    {
-                        // insert point packet
-                        pointRecordTable.
-                        insert("idx",
-                               "Point_id",
-                               "Model_idx",
-                               "Model_id",
-                               "DeviceRecord_idx",
-                               "Device_id",
-                               "sf",
-                               "t",
-                               "data").
-                        values(pointit->x.empty() ? "0" : pointit->x.c_str(),
-                               pointit->id.c_str(),
-                               modit->x.empty() ? "0" : modit->x.c_str(),
-                               modit->id.c_str(),
-                               devrecord_idx,
-                               devit->id.c_str(),
-                               pointit->sf.c_str(),
-                               pointit->t.empty() ? mysqlx::nullvalue : pointit->t.c_str(),
-                               pointit->value.c_str()).
-                        execute();
-                    }
-                }
-            }  
-            // --- TRANSACTION ENDS --
-            dbSession.commit();
-            // -----------------------
-        } catch (const mysqlx::Error& e)
+        // persist all DeviceRecords
+        for (auto devit = data.cbegin(); devit != data.cend(); devit++)
         {
-            dbSession.rollback();
-            throw e;
-        }
+            dev_record = *devit;
+            insert_device_rec.execute(true);
+
+            // persist model records
+            for (auto modit = devit->cbegin(); modit != devit->cend(); modit++)
+            {   
+                // insert model packet
+                dev_record = *devit;
+                insert_model_rec.execute(true);
+
+                // persists point records
+                for (auto pointit = modit->cbegin(); pointit != modit->cend(); pointit++)
+                {
+                    point_record = *pointit;
+                    insert_point_rec.execute(true);
+                }
+            }
+        }  
     }
 
     template <typename Error>
@@ -185,13 +162,6 @@ namespace resource
                 session->close(status::XML_SYNTAX_ERROR, e.what());
             else
                 throw status::XML_SYNTAX_ERROR;
-        }
-        catch (const mysqlx::Error& e)
-        {
-            if (verbose)
-                session->close(restbed::INTERNAL_SERVER_ERROR, e.what());
-            else
-                throw restbed::INTERNAL_SERVER_ERROR;
         }
         catch (const exception& e)
         {

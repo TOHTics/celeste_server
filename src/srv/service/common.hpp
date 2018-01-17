@@ -8,6 +8,8 @@
 #include <utility>
 #include <boost/optional.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/variant.hpp>
+#include <soci.h>
 #include "srv/service/status.hpp"
 
 namespace celeste
@@ -15,16 +17,6 @@ namespace celeste
 namespace resource
 {
     // --- USEFUL TYPES --------------
-    using ValueList = std::vector<mysqlx::EnhancedValue>;
-    using ValueMap = std::map<std::string, mysqlx::EnhancedValue>;
-
-    enum PointType
-    {
-        STRING = 0,
-        INT,
-        DOUBLE,
-        FLOAT
-    };
 
     // --- METHODS -------------------
     
@@ -158,7 +150,6 @@ namespace nlohmann
         }
     };
 
-
     template <>
     struct adl_serializer<boost::posix_time::ptime>
     {
@@ -166,4 +157,18 @@ namespace nlohmann
         static void from_json(const json& j, boost::posix_time::ptime& time);
     };
 }
+
+namespace soci
+{
+    template <>
+    struct type_conversion<boost::posix_time::ptime>
+    {
+        using base_type = std::tm;
+
+        static void from_base(const base_type&, indicator, boost::posix_time::ptime&);
+
+        static void to_base(const boost::posix_time::ptime&, base_type&, indicator&);
+    };
+}
+
 #endif

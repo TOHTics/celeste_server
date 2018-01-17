@@ -13,6 +13,7 @@
 #include <json.hpp>
 #include <restbed>
 #include <soci.h>
+#include <object_pool.hpp>
 
 #include "../DeviceModel/DeviceModel.hpp"
 
@@ -101,8 +102,7 @@ namespace resource
 
         // --- Member attributes -----
         DeviceModelAssocs<json_type>    modelAssociator;
-        soci::session                   sql;
-        std::mutex                      sqlMutex;
+        carlosb::object_pool<soci::session> sqlPool;
     };
 }
 }

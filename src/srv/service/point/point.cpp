@@ -5,6 +5,7 @@
  * 
  * @file
  */
+#include <soci/mysql/soci-mysql.h>
 #include "point.hpp"
 #include "srv/service/common.hpp"
 
@@ -17,12 +18,14 @@ namespace resource
 {   
     // --- CLASS DEFINITIONS ---------
     Points<nlohmann::json>::Points(const std::string& dbSettings)
-        :   sqlPool(10, session(mysql, dbSettings))
     {
         set_path("/point");
         set_method_handler("GET", [this] (const std::shared_ptr<restbed::Session> session) {GET(session);});
         set_method_handler("POST",   [this] (const std::shared_ptr<restbed::Session> session) {POST(session);});
         set_method_handler("DELETE", [this] (const std::shared_ptr<restbed::Session> session) {DELETE(session);});
+    
+        for (int i = 0; i < 10; ++i)
+            sqlPool.emplace(mysql, dbSettings);
     }
 
     Point Points<nlohmann::json>::get(const std::string& pointId,
@@ -32,7 +35,10 @@ namespace resource
         Point point;
         *sql    << "select * from Point where id = :PointId and Model_id = :ModelId",
                 use(pointId), use(modelId), into(point);
-        return point;
+        if (sql->got_data())
+            return point;
+        else
+            throw status::POINT_NOT_FOUND;
     }
 
     void Points<nlohmann::json>::insert(const value_type& point)
@@ -45,16 +51,9 @@ namespace resource
     void Points<nlohmann::json>::remove(const std::string& pointId,
                                         const std::string& modelId)
     {
-        lock_guard<mutex> guard(point_mutex);
-
-        pointTable.
-        remove().
-        where("id = :PointId AND Model_id = :ModelId").
-        bind(ValueMap{
-            {"PointId", pointId.c_str()},
-            {"ModelId", modelId.c_str()}
-        }).
-        execute();
+        auto sql = sqlPool.acquire_wait();
+        *sql    << "delete from Point where id = :PointId and Model_id = :ModelId",
+                use(pointId), use(modelId);
     }
 
     void Points<nlohmann::json>::GET(const std::shared_ptr<restbed::Session> session)
@@ -157,29 +156,29 @@ namespace resource
 }
 
 // --- SERIALIZERS -------------------
-namespace mysqlx
+namespace soci
 {
-    using Point = celeste::resource::Point;
+    using namespace celeste::resource;
 
-    void row_serializer<Point>::to_row (SerializableRow& row, const Point& obj)
+    void type_conversion<Point>::from_base(values const& v, indicator , Point& p)
     {
-        row.set(0, EnhancedValue{obj.PointId});
-        row.set(1, EnhancedValue{obj.ModelId});
-        row.set(2, obj.type);
-        row.set(3, EnhancedValue{obj.u});
-        row.set(4, EnhancedValue{obj.d});
+        p = Point {
+            .PointId    = v.get<string>("PointId"),
+            .ModelId    = v.get<string>("ModelId"),
+            .type       = v.get<int>("type"),
+            .u          = v.get<string>("u"),
+            .d          = v.get<string>("d")
+        };
     }
 
-    void row_serializer<Point>::from_row (const SerializableRow& row, Point& obj)
+    void type_conversion<Point>::to_base(const Point& p, values& v, indicator& ind)
     {
-        SerializableRow tmp = row; // row.get() is not marked const, hence we need this tmp
-        obj = Point {
-            .PointId = tmp.get(0).get<std::string>(),
-            .ModelId = tmp.get(1).get<std::string>(),
-            .type = tmp.get(2),
-            .u = tmp.get(3),
-            .d = tmp.get(4)
-        };
+        v.set("PointId",    p.PointId);
+        v.set("ModelId",    p.ModelId);
+        v.set("type",       p.type);
+        v.set("u",          p.u);
+        v.set("d",          p.d);
+        ind = i_ok;
     }
 }
 

@@ -19,23 +19,25 @@ namespace resource
 {   
     // --- CLASS DEFINITIONS ---------
     Devices<nlohmann::json>::Devices(const std::string& dbSettings)
-        :   sql(soci::mysql, dbSettings),
-            modelAssociator(dbSettings)
+        : modelAssociator(dbSettings)
     {
         set_path("/device");
         set_method_handler("GET", [this] (const std::shared_ptr<restbed::Session> session) {GET(session);});
         set_method_handler("POST",   [this] (const std::shared_ptr<restbed::Session> session) {POST(session);});
         set_method_handler("DELETE", [this] (const std::shared_ptr<restbed::Session> session) {DELETE(session);});
+    
+        for (int i = 0; i < 10; ++i)
+            sqlPool.emplace(mysql, dbSettings);
     }
 
     Device Devices<nlohmann::json>::get(const std::string& deviceId)
     {
-        lock_guard<mutex> guard(sqlMutex);
 
+        auto sql = sqlPool.acquire_wait();
         Device dev;
-        sql << "select * from Device where id = :DeviceId", into(dev), use(deviceId);
+        *sql << "select * from Device where id = :DeviceId", into(dev), use(deviceId);
 
-        if (sql.got_data())
+        if (sql->got_data())
             return dev;
         else
             throw status::DEVICE_NOT_FOUND;
@@ -43,10 +45,9 @@ namespace resource
 
     void Devices<nlohmann::json>::insert(const value_type& device)
     {
-        lock_guard<mutex> guard(sqlMutex);
-
-        sql << "insert into Device(id, man, mod, sn) values(:id, :man, :mod, :sn)",
-            use(device.DeviceId), use(device.man), use(device.mod), use(device.sn);
+        auto sql = sqlPool.acquire_wait();
+        *sql << "insert into Device(id, man, mod, sn) values(:DeviceId, :man, :mod, :sn)",
+            use(device);
     }
 
     // Note: The actions are already atomic so no need for the mutex lock
@@ -62,8 +63,8 @@ namespace resource
 
     void Devices<nlohmann::json>::remove(const std::string& deviceId)
     {
-        lock_guard<mutex> guard(sqlMutex);
-        sql << "delete from Device where id = :DeviceId",
+        auto sql = sqlPool.acquire_wait();
+        *sql << "delete from Device where id = :DeviceId",
             use(deviceId);
     }
 
@@ -170,7 +171,7 @@ namespace soci
     void type_conversion<Device>::from_base(values const& v, indicator , Device& p)
     {
         p = Device {
-            .DeviceId   = v.get<string>("id"),
+            .DeviceId   = v.get<string>("DeviceId"),
             .man        = v.get<string>("man"),
             .mod        = v.get<string>("mod"),
             .sn         = v.get<string>("sn")
@@ -179,7 +180,7 @@ namespace soci
 
     void type_conversion<Device>::to_base(const Device& p, values& v, indicator& ind)
     {
-        v.set("id",     p.DeviceId);
+        v.set("DeviceId",     p.DeviceId);
         v.set("man",    p.man);
         v.set("mod",    p.mod);
         v.set("sn",     p.sn);

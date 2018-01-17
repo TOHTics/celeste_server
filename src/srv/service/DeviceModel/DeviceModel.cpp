@@ -5,6 +5,8 @@
  * 
  * @file
  */
+#include <soci/mysql/soci-mysql.h>
+
 #include "DeviceModel.hpp"
 #include "srv/service/common.hpp"
 #include "srv/service/device/device.hpp"
@@ -17,14 +19,17 @@ namespace celeste
 {
 namespace resource
 {   
+
     // --- CLASS DEFINITIONS ---------
     DeviceModelAssocs<nlohmann::json>::DeviceModelAssocs(const std::string& dbSettings)
-        :   sqlPool(10, session(dbSettings))
     {
         set_path("/device_model");
         set_method_handler("GET", [this] (const std::shared_ptr<restbed::Session> session) {GET(session);});
         set_method_handler("POST",   [this] (const std::shared_ptr<restbed::Session> session) {POST(session);});
         set_method_handler("DELETE", [this] (const std::shared_ptr<restbed::Session> session) {DELETE(session);});
+        
+        for (int i = 0; i < 10; ++i)
+            sqlPool.emplace(mysql, dbSettings);
     }
 
     std::vector<DeviceModelAssoc> DeviceModelAssocs<nlohmann::json>::get(const std::string& deviceId)
@@ -33,7 +38,7 @@ namespace resource
 
         rowset<DeviceModelAssoc> res = (sql->prepare << "select * from Device_Model where Device_id = :DeviceId", use(deviceId));
         std::vector<DeviceModelAssoc> assocs;
-        std::copy(res.begin(), res.end(), assocs);
+        std::copy(res.begin(), res.end(), assocs.begin());
         return assocs;
     }
 
@@ -45,7 +50,7 @@ namespace resource
                                         << "select * from Device_Model where Device_id = :DeviceId and Model_id = :ModelId",
                                         use(deviceId), use(modelId));
         std::vector<DeviceModelAssoc> assocs;
-        std::copy(res.begin(), res.end(), assocs);
+        std::copy(res.begin(), res.end(), assocs.begin());
         return assocs;
     }
 

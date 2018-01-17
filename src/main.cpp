@@ -25,19 +25,14 @@ void print_welcome_message()
 
 int main( const int argc, const char** argv)
 {  
-    celeste::SessionSettings dbSettings{
-        .host = "localhost",
-        .port = 33060,
-        .user = "root",
-        .pwd = "root",
-        .db = "Celeste"};
+    std::string dbSettings("db=Celeste user=root password=root port=3306");
 
     using DeviceResource = resource::Devices<nlohmann::json>;
     using ModelResource = resource::Models<nlohmann::json>;
     using PointResource = resource::Points<nlohmann::json>;
     using DeviceModelAssocResource = resource::DeviceModelAssocs<nlohmann::json>;
     using LoggerResource = resource::LoggerUpload;
-    using ReadingResource = resource::ReadingDispatcher;
+    using ReadingResource = resource::ReadingDispatcher<nlohmann::json>;
     using DeviceStatusResource = resource::DeviceStatusService<nlohmann::json>;
 
     print_welcome_message();
@@ -49,7 +44,7 @@ int main( const int argc, const char** argv)
     auto models = make_shared<ModelResource>(dbSettings);
     auto points = make_shared<PointResource>(dbSettings);
     auto upload = make_shared<LoggerResource>(dbSettings);
-    auto reading = make_shared<ReadingResource>(dbSettings, WORKER_COUNT);
+    auto reading = make_shared<ReadingResource>(dbSettings);
     auto device_model = make_shared<DeviceModelAssocResource>(dbSettings);
     auto device_status = make_shared<DeviceStatusResource>();
 

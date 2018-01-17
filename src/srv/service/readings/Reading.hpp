@@ -1,37 +1,29 @@
 #ifndef CELESTE_RESOURCE_READING_HPP
 #define CELESTE_RESOURCE_READING_HPP
 
-#include <type_traits>
-
-#include "srv/service/common.hpp"
-#include "srv/db/db.hpp"
+#include <soci.h>
+#include <json.hpp>
+#include <boost/variant.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
 
 namespace celeste
 {
 namespace resource
-{
-    template <class T>
+{   
+    enum point_type_index : int
+    {
+        INTEGER = 0,
+        FLOAT,
+        STRING
+    };
+
     struct Reading
     {
-        typedef T value_type;
+        using point_type = boost::variant<int, float, std::string>;
 
         boost::optional<double>                     sf;
         boost::optional<boost::posix_time::ptime>   t;
-        T                                           value;
-
-        Reading()
-        {
-            static_assert(std::is_default_constructible<T>::value,
-                      "Type T for Reading<T> must be default constructible.");
-        }
-
-        Reading(T&& _value)
-            : value(std::move(_value))
-        {}
-
-        Reading(const T& _value)
-            : value(_value)
-        {}
+        point_type                                  value;
     };
 }
 }
@@ -39,52 +31,56 @@ namespace resource
 // --- JSON SERIALIZATION ------------
 namespace nlohmann
 {
-    template <class T>
-    struct adl_serializer<celeste::resource::Reading<T>>
+    template <>
+    struct adl_serializer<celeste::resource::Reading>
     {
         static
-        void to_json(json& j, const celeste::resource::Reading<T>& obj)
-        {
-            j = json {
-                {"sf",      obj.sf},
-                {"t",       obj.t},
-                {"value",   obj.value}
-            };
-        }
-
+        void to_json(json& j, const celeste::resource::Reading& obj);
         
         static
-        void from_json(const json& j, celeste::resource::Reading<T>& obj)
-        {
-            obj.sf     = j.at("sf");
-            obj.t      = j.at("t");
-            obj.value  = mysqlx::EnhancedValue{j.at("value")};
-        }
+        void from_json(const json& j, celeste::resource::Reading& obj);
+    };
+
+    template <>
+    struct adl_serializer<celeste::resource::Reading::point_type>
+    {
+        static
+        void to_json(json& j, const celeste::resource::Reading::point_type& obj);
+        
+        static
+        void from_json(const json& j, celeste::resource::Reading::point_type& obj);
     };
 }
 
-namespace mysqlx
+// ---- SQL MAPPING ------------------
+namespace soci
 {
-    template <class T>
-    struct row_serializer<celeste::resource::Reading<T>>
+    template <>
+    struct type_conversion<celeste::resource::Reading>
     {
-        static
-        void to_row (SerializableRow& row, const celeste::resource::Reading<T>& obj)
-        {
-            row.set(0, EnhancedValue{obj.sf});
-            row.set(1, EnhancedValue{obj.t});
-            row.set(2, EnhancedValue{obj.value});
-        }
-        
-        static
-        void from_row (const SerializableRow& row, celeste::resource::Reading<T>& obj)
-        {
-            SerializableRow tmp = row; // row.get() is not marked const, hence we need this tmp
-            
-            obj.sf         = tmp.get(0).get<boost::optional<double>>();
-            obj.t          = tmp.get(1).get<boost::optional<boost::posix_time::ptime>>();
-            obj.value      = tmp.get(2);
-        }
+        typedef values base_type;
+
+        static void from_base(values const& v,
+                              indicator,
+                              celeste::resource::Reading& p);
+
+        static void to_base(const celeste::resource::Reading& p,
+                            values& v,
+                            indicator& ind);
+    };
+
+    template <>
+    struct type_conversion<celeste::resource::Reading::point_type>
+    {
+        typedef std::string base_type;
+
+        static void from_base(std::string const& v,
+                              indicator,
+                              celeste::resource::Reading::point_type& p);
+
+        static void to_base(const celeste::resource::Reading::point_type& p,
+                            std::string& v,
+                            indicator& ind);
     };
 }
 #endif

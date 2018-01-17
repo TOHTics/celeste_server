@@ -11,8 +11,6 @@
 
 #include <memory>
 #include <mutex>
-
-#include <mysql_devapi.h>
 #include <restbed>
 #include <json.hpp>
 #include "object_pool.hpp"
@@ -23,29 +21,43 @@ namespace celeste
 {
 namespace resource
 {   
+    template <class Response>
     class ReadingDispatcher : public restbed::Resource
+    { };
+
+    template <>
+    class ReadingDispatcher<nlohmann::json> : public restbed::Resource
     {
     public:
-        typedef Reading<mysqlx::EnhancedValue> reading_type;
+        using response_type = nlohmann::json;
 
         // --- CONSTRUCTORS ----------
-        ReadingDispatcher(const celeste::SessionSettings& dbSettings, size_t workerLimit = 4);
+        ReadingDispatcher(const std::string& dbSettings);
 
         // --- PUBLIC METHODS --------
-        template <class ReadResponse, class ReadRequest>
-        ReadResponse dispatch(const ReadRequest& request) const;
-
+        template <class Request>
+        response_type dispatch(Request&& request) const;
     private:
-        using fetcher_pool = carlosb::object_pool<ReadingFetcher>;
+        using fetcher_pool_type = carlosb::object_pool<ReadingFetcher>;
 
         // --- PRIVATE METHODS -------
         void GET(const std::shared_ptr<restbed::Session> session);
 
         // --- MEMBER ATTRIBUTES -----
-        celeste::SessionSettings    dbSettings;
-        mutable fetcher_pool        fetcherPool;
+        mutable fetcher_pool_type        fetcherPool;
     };
-    
+
+    template <>
+    nlohmann::json
+    ReadingDispatcher<nlohmann::json>::dispatch(const LastReadRequest&) const;
+
+    template <>
+    nlohmann::json
+    ReadingDispatcher<nlohmann::json>::dispatch(const RangeReadRequest&) const;
+
+    template <>
+    nlohmann::json
+    ReadingDispatcher<nlohmann::json>::dispatch(const AccumulatedReadRequest&) const;
 }
 }
 

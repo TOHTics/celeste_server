@@ -68,6 +68,19 @@ namespace resource
 }
 }
 
+namespace soci
+{
+    void type_conversion<boost::posix_time::ptime>::from_base(const base_type& p, indicator, boost::posix_time::ptime& v)
+    {
+        v = boost::posix_time::ptime_from_tm(p);
+    }
+
+    void type_conversion<boost::posix_time::ptime>::to_base(const boost::posix_time::ptime& v, base_type& p, indicator&)
+    {
+        p = boost::posix_time::to_tm(v);
+    }
+}
+
 namespace nlohmann
 {
     using namespace boost::posix_time;

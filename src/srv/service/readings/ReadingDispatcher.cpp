@@ -5,7 +5,7 @@
  * 
  * @file
  */
-
+#include <soci/mysql/soci-mysql.h>
 #include <json.hpp>
 #include <utility>
 
@@ -22,49 +22,43 @@ namespace resource
 {   
     using json = nlohmann::json;
 
-    ReadingDispatcher::ReadingDispatcher(const celeste::SessionSettings& dbSettings, size_t workerLimit)
-        :   dbSettings(dbSettings),
-            fetcherPool(workerLimit, ReadingFetcher(dbSettings))
+    ReadingDispatcher<json>::ReadingDispatcher(const std::string& dbSettings)
     {
         set_path("/reading");
         set_method_handler("GET", [this] (const std::shared_ptr<restbed::Session> session) {GET(session);});
+    
+        for (int i = 0; i < 10; ++i)
+            fetcherPool.emplace(dbSettings);
     }
 
-    // --- DISPATCH FUNCTIONS --------
     template <>
-    json ReadingDispatcher::dispatch(const LastReadRequest& request) const
+    nlohmann::json
+    ReadingDispatcher<nlohmann::json>::dispatch(const LastReadRequest& req) const
     {
         auto readingFetcher = fetcherPool.acquire_wait();
-        auto reading = 
-            readingFetcher->fetch<reading_type>(request);
-
+        auto reading = readingFetcher->fetch<Reading>(req);
         return json(reading);
     }
 
     template <>
-    json ReadingDispatcher::dispatch(const RangeReadRequest& request) const
+    nlohmann::json
+    ReadingDispatcher<nlohmann::json>::dispatch(const RangeReadRequest& req) const
     {
         auto readingFetcher = fetcherPool.acquire_wait();
-        auto reading = 
-            readingFetcher->fetch<vector<reading_type>>(request);
-
+        auto reading = readingFetcher->fetch<vector<Reading>>(req);
         return json(reading);
     }
 
     template <>
-    json ReadingDispatcher::dispatch(const AccumulatedReadRequest& request) const
+    nlohmann::json
+    ReadingDispatcher<nlohmann::json>::dispatch(const AccumulatedReadRequest& req) const
     {
         auto readingFetcher = fetcherPool.acquire_wait();
-        auto reading = readingFetcher->fetch<vector<double>>(request);
-        map<string, double> deviceTotalMap;
-        int i = 0;
-        for (const auto& DeviceId : request.DeviceIds)
-            deviceTotalMap.insert({DeviceId, reading[i++]});
-
-        return json(deviceTotalMap);
+        auto reading = readingFetcher->fetch<map<string, double>>(req);
+        return json(reading);
     }
 
-    void ReadingDispatcher::GET(const std::shared_ptr<restbed::Session> session)
+    void ReadingDispatcher<json>::GET(const std::shared_ptr<restbed::Session> session)
     {
         // get request
         const auto request = session->get_request();
@@ -94,8 +88,8 @@ namespace resource
         int code;
         if (data["method"].get<string>() == "last")
         {
-            json response = dispatch<json>
-            (LastReadRequest{
+            json response = dispatch(
+            LastReadRequest{
                 .DeviceId = data["DeviceId"],
                 .ModelId  = data["ModelId"],
                 .PointId  = data["PointId"]
@@ -105,8 +99,8 @@ namespace resource
         }
         else if (data["method"].get<string>() == "range") 
         {
-            json response = dispatch<json>
-            (RangeReadRequest{
+            json response = dispatch(
+            RangeReadRequest{
                 .DeviceId = data["DeviceId"],
                 .ModelId  = data["ModelId"],
                 .PointId  = data["PointId"],
@@ -127,8 +121,8 @@ namespace resource
             if (data["DeviceIds"].empty())
                 throw status::EMPTY_ARRAY;
 
-            json response = dispatch<json>
-            (AccumulatedReadRequest{
+            json response = dispatch(
+            AccumulatedReadRequest{
                 .DeviceIds = data["DeviceIds"],
                 .ModelId  = data["ModelId"],
                 .PointId  = data["PointId"],
