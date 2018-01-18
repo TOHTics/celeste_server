@@ -10,6 +10,7 @@ find_path(mysql_INCLUDE mysql.h
           "/opt/local/include/mysql/"
           "/usr/local/include/mysql57/mysql/"
           "/usr/local/include/mysql/"
+          "/usr/include/mysql"
           )
 
 # ---- Verify we found the dependency ----------
