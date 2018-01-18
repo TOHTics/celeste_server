@@ -25,7 +25,7 @@ void print_welcome_message()
 
 int main( const int argc, const char** argv)
 {  
-    std::string dbSettings("db=Celeste user=root password=root port=3306");
+    std::string dbSettings("db=celeste user=root password=root port=3306");
 
     using DeviceResource = resource::Devices<nlohmann::json>;
     using ModelResource = resource::Models<nlohmann::json>;

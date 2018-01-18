@@ -46,18 +46,31 @@ namespace resource
     void Devices<nlohmann::json>::insert(const value_type& device)
     {
         auto sql = sqlPool.acquire_wait();
-        *sql << "insert into Device(id, man, mod, sn) values(:DeviceId, :man, :mod, :sn)",
+        *sql << "insert into Device(id, man, model, sn) values(:DeviceId, :man, :mod, :sn)",
             use(device);
     }
 
     // Note: The actions are already atomic so no need for the mutex lock
     void Devices<nlohmann::json>::insert(const value_type& device, std::vector<std::string> models)
     {
-        this->insert(device); // atomic
+        auto sql = sqlPool.acquire_wait();
+        
+        transaction tr(*sql);
+        *sql << "insert into Device(id, man, model, sn) values(:DeviceId, :man, :mod, :sn)",
+            use(device);
 
-        // associate the passed models
-        for (const auto& modelId : models)
-            modelAssociator.associate(device.DeviceId, modelId); // atomic
+        string modelId;
+        static statement stmt = (sql->prepare << "insert into Device_Model(Device_id, Model_id) "
+                          "values(:DeviceId, :ModelId)",
+                          use(device.DeviceId), use(modelId));
+
+        for (const auto& id : models)
+        {
+            modelId = id;
+            stmt.execute(true);
+        }
+
+        tr.commit();
     }
 
 
@@ -125,8 +138,6 @@ namespace resource
         if (data["sn"].is_null())
             throw status::MISSING_FIELD_SN;
 
-        // insert device and get id
-        // in case autogen was not set, will return null
         if (! data["models"].is_null())
             this->insert(data.get<Device>(), data["models"].get<vector<string>>());
         else

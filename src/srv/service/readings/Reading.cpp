@@ -12,6 +12,7 @@ namespace nlohmann
     {
         j = json {
             {"t",       obj.t},
+            {"sf",      obj.sf},
             {"value",   obj.value}
         };
     }
@@ -19,6 +20,7 @@ namespace nlohmann
     void adl_serializer<Reading>::from_json(const json& j, Reading& obj)
     {
         obj.t      = j.at("t").get<boost::posix_time::ptime>();
+        obj.sf      = j.at("sf").get<double>();
         obj.value  = j.at("value").get<Reading::point_type>();
     }
 
@@ -83,7 +85,7 @@ namespace soci
         p = Reading {
             .sf = v.get<double>("sf"),
             .t  = v.get<boost::posix_time::ptime>("t"),
-            .value  = v.get<string>("data")
+            .value  = v.get<string>("v")
         };
     }
 
@@ -93,7 +95,7 @@ namespace soci
     {
         v.set("sf", p.sf);
         v.set("t", p.t);
-        v.set("data", p.value);
+        v.set("v", p.value);
     }
 
     void type_conversion<Reading::point_type>::from_base(string const& v,

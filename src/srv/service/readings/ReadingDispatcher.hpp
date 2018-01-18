@@ -36,7 +36,7 @@ namespace resource
 
         // --- PUBLIC METHODS --------
         template <class Request>
-        response_type dispatch(Request&& request) const;
+        response_type dispatch(const Request& request) const;
     private:
         using fetcher_pool_type = carlosb::object_pool<ReadingFetcher>;
 

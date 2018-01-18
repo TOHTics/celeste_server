@@ -34,7 +34,7 @@ namespace resource
     {
         Reading out;
         sql 
-            << "select sf, t, data from PointRecord "
+            << "select sf, t, v from PointRecord "
             << "where Device_id = :DeviceId "
             << "and Model_id = :ModelId "
             << "and Point_id = :PointId "
@@ -50,7 +50,7 @@ namespace resource
     ReadingFetcher::fetch(const RangeReadRequest& req) const
     {
         rowset<Reading> res = (sql.prepare
-                               << "select sf, t, data from PointRecord "
+                               << "select sf, t, v from PointRecord "
                                << "where "
                                << "Device_id = :DeviceId "
                                << "and Model_id = :ModelId "
@@ -77,7 +77,7 @@ namespace resource
     ReadingFetcher::fetch(const AccumulatedReadRequest& req) const
     {
         rowset<row> res = (sql.prepare
-                           << "select Device_id, sum(data) "
+                           << "select Device_id, sum(v) "
                            << "from PointRecord " 
                            << "group by Device_id");  
         std::map<string, double> accMap;

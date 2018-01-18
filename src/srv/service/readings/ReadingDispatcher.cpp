@@ -58,7 +58,7 @@ namespace resource
         return json(reading);
     }
 
-    void ReadingDispatcher<json>::GET(const std::shared_ptr<restbed::Session> session)
+    void ReadingDispatcher<nlohmann::json>::GET(const std::shared_ptr<restbed::Session> session)
     {
         // get request
         const auto request = session->get_request();

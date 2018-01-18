@@ -37,8 +37,11 @@ namespace resource
         auto sql = sqlPool.acquire_wait();
 
         rowset<DeviceModelAssoc> res = (sql->prepare << "select * from Device_Model where Device_id = :DeviceId", use(deviceId));
+        
         std::vector<DeviceModelAssoc> assocs;
-        std::copy(res.begin(), res.end(), assocs.begin());
+        assocs.reserve(50);
+        for (auto it = res.begin(); it != res.end(); ++it)
+            assocs.push_back(*it);
         return assocs;
     }
 
@@ -49,8 +52,11 @@ namespace resource
         rowset<DeviceModelAssoc> res = (sql->prepare 
                                         << "select * from Device_Model where Device_id = :DeviceId and Model_id = :ModelId",
                                         use(deviceId), use(modelId));
+        
         std::vector<DeviceModelAssoc> assocs;
-        std::copy(res.begin(), res.end(), assocs.begin());
+        assocs.reserve(50);
+        for (auto it = res.begin(); it != res.end(); ++it)
+            assocs.push_back(*it);
         return assocs;
     }
 
@@ -73,20 +79,11 @@ namespace resource
     int DeviceModelAssocs<nlohmann::json>::associate(const std::string& deviceId, const std::string& modelId, const boost::optional<std::string>& note)
     {
         auto sql = sqlPool.acquire_wait();
-        
-        int idx;
-        {
-            transaction tr(*sql);
+        *sql    << "insert into Device_Model(Device_id, Model_id, note) values(:DeviceId, :ModelId, :note)",
+                use(deviceId), use(modelId), use(note);
 
-            *sql    << "(select ifnull(max(idx) + 1, 0) from" 
-                    << "(select idx from Device_Model where"
-                    << "Device_id = :DeviceId and Model_id = :ModelId) as tmp)",
-                    use(deviceId), use(modelId), use(note), into(idx);
-
-            *sql    << "insert into Device_Model(idx, Device_id, Model_id, note) values(:idx, :DeviceId, :ModelId, :note)",
-                    use(idx), use(deviceId), use(modelId), use(note);
-            tr.commit();
-        }
+        long idx;
+        sql->get_last_insert_id("PointRecord", idx);
         return idx;
     }
 
