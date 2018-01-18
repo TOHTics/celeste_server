@@ -1,14 +1,14 @@
 -- Version: 1.0
--- Project: CelesteDB
+-- Project: celestesensordataDB
 -- Author: Carlos Brito
 
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
-CREATE SCHEMA IF NOT EXISTS `Celeste` DEFAULT CHARACTER SET utf8 ;
+CREATE SCHEMA IF NOT EXISTS `celestesensordata` DEFAULT CHARACTER SET utf8 ;
 
-CREATE TABLE IF NOT EXISTS `Celeste`.`Device` (
+CREATE TABLE IF NOT EXISTS `celestesensordata`.`Device` (
   `id` VARCHAR(45) NOT NULL,
   `man` VARCHAR(45) NOT NULL,
   `mod` VARCHAR(45) NOT NULL,
@@ -18,14 +18,14 @@ CREATE TABLE IF NOT EXISTS `Celeste`.`Device` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
-CREATE TABLE IF NOT EXISTS `Celeste`.`Model` (
+CREATE TABLE IF NOT EXISTS `celestesensordata`.`Model` (
   `id` VARCHAR(45) NOT NULL,
   `ns` VARCHAR(45) NULL DEFAULT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
-CREATE TABLE IF NOT EXISTS `Celeste`.`Point` (
+CREATE TABLE IF NOT EXISTS `celestesensordata`.`Point` (
   `id` VARCHAR(45) NOT NULL,
   `Model_id` VARCHAR(45) NOT NULL,
   `type` INT(11) NOT NULL DEFAULT 0,
@@ -35,13 +35,13 @@ CREATE TABLE IF NOT EXISTS `Celeste`.`Point` (
   INDEX `fk_Point_Model1_idx` (`Model_id` ASC),
   CONSTRAINT `fk_Point_Model1`
     FOREIGN KEY (`Model_id`)
-    REFERENCES `Celeste`.`Model` (`id`)
+    REFERENCES `celestesensordata`.`Model` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
-CREATE TABLE IF NOT EXISTS `Celeste`.`DeviceRecord` (
+CREATE TABLE IF NOT EXISTS `celestesensordata`.`DeviceRecord` (
   `idx` INT(11) NOT NULL DEFAULT 0,
   `Device_id` VARCHAR(45) NOT NULL,
   `t` TIMESTAMP NOT NULL,
@@ -52,13 +52,13 @@ CREATE TABLE IF NOT EXISTS `Celeste`.`DeviceRecord` (
   INDEX `fk_DeviceRecord_Device1_idx` (`Device_id` ASC),
   CONSTRAINT `fk_DeviceRecord_Device1`
     FOREIGN KEY (`Device_id`)
-    REFERENCES `Celeste`.`Device` (`id`)
+    REFERENCES `celestesensordata`.`Device` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
-CREATE TABLE IF NOT EXISTS `Celeste`.`ModelRecord` (
+CREATE TABLE IF NOT EXISTS `celestesensordata`.`ModelRecord` (
   `Model_idx` INT(11) NOT NULL,
   `Model_id` VARCHAR(45) NOT NULL,
   `DeviceRecord_idx` INT(11) NOT NULL,
@@ -68,23 +68,23 @@ CREATE TABLE IF NOT EXISTS `Celeste`.`ModelRecord` (
   INDEX `fk_ModelRecord_DeviceRecord1_idx` (`DeviceRecord_idx` ASC, `Device_id` ASC),
   CONSTRAINT `fk_ModelRecord_Device_Model1`
     FOREIGN KEY (`Model_idx`)
-    REFERENCES `Celeste`.`Device_Model` (`idx`)
+    REFERENCES `celestesensordata`.`Device_Model` (`idx`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_ModelRecord_Model1`
     FOREIGN KEY (`Model_id`)
-    REFERENCES `Celeste`.`Model` (`id`)
+    REFERENCES `celestesensordata`.`Model` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_ModelRecord_DeviceRecord1`
     FOREIGN KEY (`DeviceRecord_idx` , `Device_id`)
-    REFERENCES `Celeste`.`DeviceRecord` (`idx` , `Device_id`)
+    REFERENCES `celestesensordata`.`DeviceRecord` (`idx` , `Device_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
-CREATE TABLE IF NOT EXISTS `Celeste`.`PointRecord` (
+CREATE TABLE IF NOT EXISTS `celestesensordata`.`PointRecord` (
   `idx` INT(11) NOT NULL,
   `Point_id` VARCHAR(45) NOT NULL,
   `Model_idx` INT(11) NOT NULL,
@@ -99,18 +99,18 @@ CREATE TABLE IF NOT EXISTS `Celeste`.`PointRecord` (
   INDEX `fk_PointRecord_ModelRecord1_idx` (`Model_idx` ASC, `Model_id` ASC, `DeviceRecord_idx` ASC, `Device_id` ASC),
   CONSTRAINT `fk_PointRecord_Point1`
     FOREIGN KEY (`Point_id`)
-    REFERENCES `Celeste`.`Point` (`id`)
+    REFERENCES `celestesensordata`.`Point` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_PointRecord_ModelRecord1`
     FOREIGN KEY (`Model_idx` , `Model_id` , `DeviceRecord_idx` , `Device_id`)
-    REFERENCES `Celeste`.`ModelRecord` (`Model_idx` , `Model_id` , `DeviceRecord_idx` , `Device_id`)
+    REFERENCES `celestesensordata`.`ModelRecord` (`Model_idx` , `Model_id` , `DeviceRecord_idx` , `Device_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
-CREATE TABLE IF NOT EXISTS `Celeste`.`Device_Model` (
+CREATE TABLE IF NOT EXISTS `celestesensordata`.`Device_Model` (
   `idx` INT(11) NOT NULL DEFAULT 0,
   `Device_id` VARCHAR(45) NOT NULL,
   `Model_id` VARCHAR(45) NOT NULL,
@@ -120,12 +120,12 @@ CREATE TABLE IF NOT EXISTS `Celeste`.`Device_Model` (
   INDEX `fk_Device_Model_Device1_idx` (`Device_id` ASC),
   CONSTRAINT `fk_Device_Model_Model1`
     FOREIGN KEY (`Model_id`)
-    REFERENCES `Celeste`.`Model` (`id`)
+    REFERENCES `celestesensordata`.`Model` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_Device_Model_Device1`
     FOREIGN KEY (`Device_id`)
-    REFERENCES `Celeste`.`Device` (`id`)
+    REFERENCES `celestesensordata`.`Device` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
