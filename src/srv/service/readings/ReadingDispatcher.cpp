@@ -72,6 +72,8 @@ namespace resource
         // get json_type from request
         json data = get_json<json>(*request);
 
+        if (data["DeviceId"].is_null())
+            throw status::MISSING_FIELD_DEVICEID;
         if (data["ModelId"].is_null())
             throw status::MISSING_FIELD_MODELID;
         if (data["PointId"].is_null())
@@ -112,18 +114,9 @@ namespace resource
         }
         else if (data["method"].get<string>() == "accumulated")
         {
-            if (data["DeviceIds"].is_null())
-                throw status::MISSING_FIELD_DEVICEIDS;
-
-            if (!data["DeviceIds"].is_array())
-                throw status::TYPE_MUST_BE_ARRAY;
-
-            if (data["DeviceIds"].empty())
-                throw status::EMPTY_ARRAY;
-
             json response = dispatch(
             AccumulatedReadRequest{
-                .DeviceIds = data["DeviceIds"],
+                .DeviceIds = data["DeviceId"],
                 .ModelId  = data["ModelId"],
                 .PointId  = data["PointId"],
                 .start = data["start"],

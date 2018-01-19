@@ -63,7 +63,9 @@ namespace resource
                                use(req.start, "start"),
                                use(req.end, "end"));
         std::vector<Reading> readings;
-        std::copy(res.begin(), res.end(), readings.begin());
+        readings.reserve(200);
+        for (auto it = res.begin(); it != res.end(); ++it)
+            readings.push_back(*it);
         return readings;
     }
 
@@ -76,13 +78,22 @@ namespace resource
     std::map<string, double> 
     ReadingFetcher::fetch(const AccumulatedReadRequest& req) const
     {
-        rowset<row> res = (sql.prepare
-                           << "select Device_id, sum(v) "
-                           << "from PointRecord " 
-                           << "group by Device_id");  
+        std::string deviceId;
+        double total;
+        statement stmt = (sql.prepare
+                           << "select sum(v) "
+                           << "from PointRecord "
+                           << "where Device_id = :DeviceId ",
+                           use(deviceId), into(total)
+                           );  
+        
         std::map<string, double> accMap;
-        for (auto it = res.begin(); it != res.end(); ++it)
-            accMap.insert({it->get<string>(0), it->get<double>(1)});
+        for (const auto& id : req.DeviceIds)
+        {
+            deviceId = id;
+            stmt.execute(true);
+            accMap.insert({deviceId, total});
+        }
         return accMap;
     }
 }

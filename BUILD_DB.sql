@@ -11,7 +11,7 @@ CREATE SCHEMA IF NOT EXISTS `celestesensordata` DEFAULT CHARACTER SET utf8 ;
 CREATE TABLE IF NOT EXISTS `celestesensordata`.`Device` (
   `id` VARCHAR(45) NOT NULL,
   `man` VARCHAR(45) NOT NULL,
-  `mod` VARCHAR(45) NOT NULL,
+  `model` VARCHAR(45) NOT NULL,
   `sn` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `sn_UNIQUE` (`sn` ASC))
@@ -20,7 +20,7 @@ DEFAULT CHARACTER SET = utf8;
 
 CREATE TABLE IF NOT EXISTS `celestesensordata`.`Model` (
   `id` VARCHAR(45) NOT NULL,
-  `ns` VARCHAR(45) NULL DEFAULT NULL,
+  `ns` VARCHAR(200) NULL DEFAULT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS `celestesensordata`.`Point` (
   `Model_id` VARCHAR(45) NOT NULL,
   `type` INT(11) NOT NULL DEFAULT 0,
   `u` VARCHAR(45) NULL DEFAULT NULL,
-  `d` VARCHAR(100) NULL DEFAULT NULL,
+  `d` VARCHAR(200) NULL DEFAULT NULL,
   PRIMARY KEY (`id`, `Model_id`),
   INDEX `fk_Point_Model1_idx` (`Model_id` ASC),
   CONSTRAINT `fk_Point_Model1`
@@ -114,7 +114,7 @@ CREATE TABLE IF NOT EXISTS `celestesensordata`.`Device_Model` (
   `idx` INT(11) NOT NULL DEFAULT 0,
   `Device_id` VARCHAR(45) NOT NULL,
   `Model_id` VARCHAR(45) NOT NULL,
-  `note` VARCHAR(45) NULL DEFAULT NULL,
+  `note` VARCHAR(200) NULL DEFAULT NULL,
   PRIMARY KEY (`idx`, `Device_id`, `Model_id`),
   INDEX `fk_Device_Model_Model1_idx` (`Model_id` ASC),
   INDEX `fk_Device_Model_Device1_idx` (`Device_id` ASC),
