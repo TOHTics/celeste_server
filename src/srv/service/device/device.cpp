@@ -50,7 +50,6 @@ namespace resource
             use(device);
     }
 
-    // Note: The actions are already atomic so no need for the mutex lock
     void Devices<nlohmann::json>::insert(const value_type& device, std::vector<std::string> models)
     {
         auto sql = sqlPool.acquire_wait();
@@ -60,7 +59,7 @@ namespace resource
             use(device);
 
         string modelId;
-        static statement stmt = (sql->prepare << "insert into Device_Model(Device_id, Model_id) "
+        statement stmt = (sql->prepare << "insert into Device_Model(Device_id, Model_id) "
                           "values(:DeviceId, :ModelId)",
                           use(device.DeviceId), use(modelId));
 
