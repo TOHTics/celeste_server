@@ -1,5 +1,5 @@
 -- MySQL Workbench Synchronization
--- Generated: 2018-01-19 16:43
+-- Generated: 2018-01-19 20:32
 -- Model: New Model
 -- Version: 1.0
 -- Project: Name of the project
@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS `celestesensordata`.`DeviceRecord` (
   `Device_id` VARCHAR(45) NOT NULL,
   `t` TIMESTAMP NOT NULL,
   `cid` VARCHAR(45) NULL DEFAULT NULL,
-  `if` VARCHAR(45) NULL DEFAULT NULL,
+  `ifc` VARCHAR(45) NULL DEFAULT NULL,
   `lid` VARCHAR(45) NULL DEFAULT NULL,
   PRIMARY KEY (`idx`, `Device_id`),
   INDEX `fk_DeviceRecord_Device1_idx` (`Device_id` ASC),
@@ -114,7 +114,7 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
 CREATE TABLE IF NOT EXISTS `celestesensordata`.`Device_Model` (
-  `idx` INT(11) NOT NULL AUTO_INCREMENT,
+  `idx` INT(11) NOT NULL DEFAULT 0,
   `Device_id` VARCHAR(45) NOT NULL,
   `Model_id` VARCHAR(45) NOT NULL,
   `note` VARCHAR(45) NULL DEFAULT NULL,

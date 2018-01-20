@@ -76,7 +76,7 @@ namespace resource
         DeviceModelAssoc get(const std::string& deviceId, const std::string& modelId, int idx);
 
         // TODO
-        int associate(const std::string& deviceId, const std::string& modelId, const boost::optional<std::string>& note = boost::none);
+        void associate(const DeviceModelAssoc& assoc);
 
         // TODO
         void dissasociate(const std::string& deviceId, const std::string& modelId, int idx);

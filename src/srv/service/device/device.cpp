@@ -59,8 +59,9 @@ namespace resource
             use(device);
 
         string modelId;
-        statement stmt = (sql->prepare << "insert into Device_Model(Device_id, Model_id) "
-                          "values(:DeviceId, :ModelId)",
+        statement stmt = (sql->prepare 
+                          << "insert into Device_Model(Device_id, Model_id) "
+                          << "values(:DeviceId, :ModelId)",
                           use(device.DeviceId), use(modelId));
 
         for (const auto& id : models)

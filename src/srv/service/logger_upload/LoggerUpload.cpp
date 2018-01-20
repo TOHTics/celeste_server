@@ -64,8 +64,8 @@ namespace resource
                 << "PointRecord(Device_id, Model_id, Point_id, Model_idx, sf, t, v, DeviceRecord_idx) "
                 << "values(:DeviceId, :ModelId, :PointId, :ModelIdx, :sf, :t, :v, :DeviceRecordIdx)",
                 use(dev_record.id), use(mod_record.id), use(point_record.id),
-                use(mod_record.x.empty() ? "0" : mod_record.x),
-                use(point_record.sf.empty() ? "0" : point_record.sf), use(point_record.t),
+                use(mod_record.x),
+                use(0), use(point_record.t),
                 use(point_record.value), use(devRecordIdx)
             );
 

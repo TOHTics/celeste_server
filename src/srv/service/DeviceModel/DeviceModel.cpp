@@ -76,15 +76,11 @@ namespace resource
             throw status::DEVICE_MODEL_NOT_FOUND;
     }
 
-    int DeviceModelAssocs<nlohmann::json>::associate(const std::string& deviceId, const std::string& modelId, const boost::optional<std::string>& note)
+    void DeviceModelAssocs<nlohmann::json>::associate(const DeviceModelAssoc& assoc)
     {
         auto sql = sqlPool.acquire_wait();
-        *sql    << "insert into Device_Model(Device_id, Model_id, note) values(:DeviceId, :ModelId, :note)",
-                use(deviceId), use(modelId), use(note);
-
-        long idx;
-        sql->get_last_insert_id("PointRecord", idx);
-        return idx;
+        *sql    << "insert into Device_Model(Device_id, Model_id, note, idx) values(:DeviceId, :ModelId, :note, :idx)",
+                use(assoc.DeviceId), use(assoc.ModelId), use(assoc.note), use(assoc.idx);
     }
 
     void DeviceModelAssocs<nlohmann::json>::dissasociate(const std::string& deviceId, const std::string& modelId, int idx)
@@ -163,17 +159,14 @@ namespace resource
         if (data["note"].is_null())
             data["note"] = nullptr;
 
+        if (data["idx"].is_null())
+            data["idx"] = 0;
+
         DeviceModelAssoc dm = data.get<DeviceModelAssoc>();
-        auto idx = this->associate(dm.DeviceId, dm.ModelId, dm.note);
-        json_type response{{"idx", idx}};
+        this->associate(dm);
 
         // close
-        session->close(restbed::OK,
-                       response.dump(),
-                       {
-                            { "Content-Length", to_string(response.dump().size()) },
-                            { "Connection",     "close" }
-                       });
+        session->close(restbed::OK);
     }
 
     void DeviceModelAssocs<nlohmann::json>::DELETE(const std::shared_ptr<restbed::Session> session)
