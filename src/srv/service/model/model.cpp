@@ -146,7 +146,7 @@ namespace soci
     void type_conversion<Model>::from_base(values const& v, indicator , Model& p)
     {
         p = Model {
-            .ModelId    = v.get<string>("ModelId"),
+            .ModelId    = v.get<string>("id"),
             .ns         = v.get<boost::optional<string>>("ns")
         };
     }

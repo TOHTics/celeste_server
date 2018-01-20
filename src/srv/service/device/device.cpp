@@ -184,7 +184,7 @@ namespace soci
         p = Device {
             .DeviceId   = v.get<string>("id"),
             .man        = v.get<string>("man"),
-            .mod        = v.get<string>("mod"),
+            .mod        = v.get<string>("model"),
             .sn         = v.get<string>("sn")
         };
     }
