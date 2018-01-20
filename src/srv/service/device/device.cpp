@@ -182,7 +182,7 @@ namespace soci
     void type_conversion<Device>::from_base(values const& v, indicator , Device& p)
     {
         p = Device {
-            .DeviceId   = v.get<string>("DeviceId"),
+            .DeviceId   = v.get<string>("id"),
             .man        = v.get<string>("man"),
             .mod        = v.get<string>("mod"),
             .sn         = v.get<string>("sn")
