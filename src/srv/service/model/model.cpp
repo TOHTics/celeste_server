@@ -32,7 +32,7 @@ namespace resource
     {
         auto sql = sqlPool.acquire_wait();
         Model model;
-        *sql    << "select * from where id = :ModelId",
+        *sql    << "select * from Model where id = :ModelId",
                 use(modelId), into(model);
         if (sql->got_data())
             return model;

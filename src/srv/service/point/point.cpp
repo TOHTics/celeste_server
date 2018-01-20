@@ -163,7 +163,7 @@ namespace soci
     void type_conversion<Point>::from_base(values const& v, indicator , Point& p)
     {
         p = Point {
-            .PointId    = v.get<string>("Point_id"),
+            .PointId    = v.get<string>("id"),
             .ModelId    = v.get<string>("Model_id"),
             .type       = v.get<int>("type"),
             .u          = v.get<string>("u"),
