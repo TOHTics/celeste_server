@@ -52,9 +52,12 @@ int main( const int argc, const char** argv)
 
     auto settings = make_shared<restbed::Settings>();
     settings->set_status_messages(status::STATUS_MAP);
-    settings->set_port(10000);
+    settings->set_port(9001);
     settings->set_root("celeste");
     settings->set_worker_limit(WORKER_COUNT);
+    settings->set_default_headers({
+        {"Access-Control-Allow-Origin", "*"}
+    });
 
     cout << "@ Publishing resources...\n";
 
