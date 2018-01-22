@@ -67,7 +67,7 @@ namespace resource
 
         std::string requestBody = reading.dump();
 
-        auto request = make_shared<restbed::Request>(restbed::Uri("http://localhost:10000/celeste/reading/"));
+        auto request = make_shared<restbed::Request>(restbed::Uri("http://localhost:9001/celeste/reading/"));
         request->set_method("GET");
         request->set_body(requestBody);
         request->set_header("Content-Length", to_string(requestBody.size()));
@@ -81,11 +81,10 @@ namespace resource
         bytes2string(response->get_body(), responseBody);
         json_type j = json_type::parse(responseBody);
         
-        return static_cast<int>(rand() % 2);
-        // if (j[deviceId].get<double>() > 300)
-        //     return 0;
-        // else
-        //     return 1;
+        if (j[deviceId].get<double>() > 300)
+            return 0;
+        else
+            return 1;
     }
     void DeviceStatusService<nlohmann::json>::GET(const shared_ptr<restbed::Session> session)
     {
