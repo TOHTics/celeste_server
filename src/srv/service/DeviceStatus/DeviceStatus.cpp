@@ -4,6 +4,7 @@
 #include "srv/service/common.hpp"
 
 #include <cstdlib>
+#include <soci/mysql/soci-mysql.h>
 
 using namespace std;
 
@@ -56,35 +57,11 @@ namespace resource
 
     [[deprecated]] int DeviceStatusService<nlohmann::json>::get_arduino(const string& deviceId)
     {
-        json_type reading {
-            {"DeviceIds", {deviceId}},
-            {"ModelId", "potenciometro"},
-            {"PointId", "consumo"},
-            {"method", "accumulated"},
-            {"start", boost::posix_time::second_clock::universal_time() - boost::posix_time::hours(1)},
-            {"end",  boost::posix_time::second_clock::universal_time()}
-        };
-
-        std::string requestBody = reading.dump();
-
-        auto request = make_shared<restbed::Request>(restbed::Uri("http://localhost:9001/celeste/reading/"));
-        request->set_method("GET");
-        request->set_body(requestBody);
-        request->set_header("Content-Length", to_string(requestBody.size()));
-
-        auto response = restbed::Http::sync(request);
-        size_t length = stoi(response->get_header("Content-Length"));
-        restbed::Http::fetch(length, response);
-
-
-        std::string responseBody;
-        bytes2string(response->get_body(), responseBody);
-        json_type j = json_type::parse(responseBody);
-        
-        if (j[deviceId].get<double>() > 300)
-            return 0;
-        else
-            return 1;
+        soci::session sql(soci::mysql, "db=celestesensordata user=***REMOVED*** password=***REMOVED*** port=3306");
+        bool status;
+        sql << "select status from DeviceStatus where Device_id = :DeviceId",
+            soci::into(status), soci::use(deviceId);
+        return static_cast<int>(status);
     }
     void DeviceStatusService<nlohmann::json>::GET(const shared_ptr<restbed::Session> session)
     {
