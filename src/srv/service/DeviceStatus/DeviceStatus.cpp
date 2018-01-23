@@ -58,10 +58,10 @@ namespace resource
     [[deprecated]] int DeviceStatusService<nlohmann::json>::get_arduino(const string& deviceId)
     {
         soci::session sql(soci::mysql, "db=celestesensordata user=csolar password=vY3wDDWU port=3306");
-        bool status;
+        int status;
         sql << "select status from DeviceStatus where Device_id = :DeviceId",
             soci::into(status), soci::use(deviceId);
-        return static_cast<int>(status);
+        return status;
     }
     void DeviceStatusService<nlohmann::json>::GET(const shared_ptr<restbed::Session> session)
     {
