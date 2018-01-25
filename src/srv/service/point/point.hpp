@@ -66,7 +66,7 @@ namespace resource
          *
          * @param[in]  dbSettings  DB settings for connection.
          */
-        Points(const std::string& dbSettings);
+        Points(const std::string& dbSettings, size_t max_connections);
 
         // --- Public methods --------
 

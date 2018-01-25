@@ -21,14 +21,14 @@ namespace resource
 {   
 
     // --- CLASS DEFINITIONS ---------
-    DeviceModelAssocs<nlohmann::json>::DeviceModelAssocs(const std::string& dbSettings)
+    DeviceModelAssocs<nlohmann::json>::DeviceModelAssocs(const std::string& dbSettings, size_t max_connections)
     {
         set_path("/device_model");
         set_method_handler("GET", [this] (const std::shared_ptr<restbed::Session> session) {GET(session);});
         set_method_handler("POST",   [this] (const std::shared_ptr<restbed::Session> session) {POST(session);});
         set_method_handler("DELETE", [this] (const std::shared_ptr<restbed::Session> session) {DELETE(session);});
         
-        for (int i = 0; i < 10; ++i)
+        for (int i = 0; i < max_connections; ++i)
             sqlPool.emplace(mysql, dbSettings);
     }
 
