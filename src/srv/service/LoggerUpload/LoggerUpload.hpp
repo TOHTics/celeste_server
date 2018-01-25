@@ -21,14 +21,26 @@ namespace resource
     class LoggerUpload : public restbed::Resource
     {
     public:
-        // --- Constructors ----------
+        // ==== Constructors =============================
         LoggerUpload(const std::string& dbSettings, size_t max_connections);
 
-        // --- Public methods --------
+        // ==== Public methods ===========================
+
+        /**
+         * @brief      Saves the data into the DB.
+         *
+         * @param[in]  data  SunSpec data packet.
+         */
         void persist_data(const sunspec::data::SunSpecData& data);
 
     private:
-        // --- Private methods -------
+        // ==== Private methods ==========================
+
+        /**
+         * @brief      Handles a POST request.
+         *
+         * @param[in]  session  The session
+         */
         void POST(const std::shared_ptr<restbed::Session> session);
 
         template <typename Error>
@@ -37,7 +49,7 @@ namespace resource
         template <typename Error>
         void get_db_error(Error &&e, const std::shared_ptr<restbed::Session> session);
 
-        // --- Member attributes -----
+        // ===== Member attributes =======================
         carlosb::object_pool<soci::session> sqlPool;
     };
 }

@@ -47,10 +47,10 @@ namespace resource
     class DeviceModelAssocs<nlohmann::json> : public restbed::Resource
     {
     public:
-        // --- Typedefs --------------
+        // ==== Typedefs =================================
         typedef nlohmann::json      json_type;
 
-        // --- Constructors ----------
+        // ==== Constructors =============================
 
         /**
          * @brief      Creates a resource where you can access the DeviceModelAssoc
@@ -60,25 +60,56 @@ namespace resource
          */
         DeviceModelAssocs(const std::string& dbSettings, size_t max_connections);
 
-        // --- Public methods --------
+        // ==== Public methods ===========================
 
         /**
-         * @brief      Gets the models of the Device.
+         * @brief      Gets the list of models that are associated with the Device.
          *
          * @param[in]  deviceId  The device identifier.
          *
-         * @return     An `std::vector<Model>`.
+         * @return     Vector of associations.
          */
         std::vector<DeviceModelAssoc> get(const std::string& deviceId);
+
+        /**
+         * @brief      Gets the list of models associated with the Device.
+         * Since associations may be aggregated, the distinction will be
+         * reflected in the `idx` field.
+         *
+         * @param[in]  deviceId  The device identifier
+         * @param[in]  modelId   The model identifier
+         *
+         * @return     Vector of associations.
+         */
         std::vector<DeviceModelAssoc> get(const std::string& deviceId, const std::string& modelId);
 
-        // TODO
+        /**
+         * @brief      Gets a single association on the Device and the Model with aggregated index.
+         *
+         * @param[in]  deviceId  The device identifier
+         * @param[in]  modelId   The model identifier
+         * @param[in]  idx       The index
+         *
+         * @return     { description_of_the_return_value }
+         */
         DeviceModelAssoc get(const std::string& deviceId, const std::string& modelId, int idx);
 
-        // TODO
+        /**
+         * @brief      Associates a Model to a Device using a `DeviceModelAssoc` object.
+         *
+         * @param[in]  assoc  The association
+         */
         void associate(const DeviceModelAssoc& assoc);
 
-        // TODO
+        /**
+         * @brief      Dissasociates a Model from a Device. It is necessary to specify
+         * the Device identifier, the Model identifier and which aggregated index you need
+         * to dissasociate.
+         *
+         * @param[in]  deviceId  The device identifier
+         * @param[in]  modelId   The model identifier
+         * @param[in]  idx       The index
+         */
         void dissasociate(const std::string& deviceId, const std::string& modelId, int idx);
 
     private:
