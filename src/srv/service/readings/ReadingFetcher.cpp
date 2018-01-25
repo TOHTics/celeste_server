@@ -31,7 +31,7 @@ namespace resource
         :   ReadingFetcher(other.dbSettings)
     {}
 
-    // --- LastReadRequest fetch implementations ---------
+    // ==== LastReadRequest fetch implementations ========
     template <>
     Reading
     ReadingFetcher::fetch(const LastReadRequest& req)
@@ -51,7 +51,7 @@ namespace resource
         return out;
     }
 
-    // --- RangeReadRequest fetch implementations --------
+    // ==== RangeReadRequest fetch implementations =======
     template <>
     vector<Reading> 
     ReadingFetcher::fetch(const RangeReadRequest& req)
@@ -84,7 +84,7 @@ namespace resource
         return readings;
     }
 
-    // --- YesterdayReadRequest fetch implementations ----
+    // ==== YesterdayReadRequest fetch implementations ===
     template <>
     map<string, vector<pair<int, double>>> ReadingFetcher::fetch(const YesterdayReadRequest& req)
     const
@@ -121,7 +121,7 @@ namespace resource
         return devMap;
     }
 
-    // --- TodayReadRequest fetch implementations --------
+    // ==== TodayReadRequest fetch implementations =======
     template <>
     map<string, vector<pair<int, double>>> ReadingFetcher::fetch(const TodayReadRequest& req)
     const

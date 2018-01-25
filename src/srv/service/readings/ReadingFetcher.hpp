@@ -37,8 +37,19 @@ namespace resource
         ReadingFetcher& operator=(ReadingFetcher&&) = delete;
 
         // --- PUBLIC METHODS --------
+        
+        /**
+         * @brief      Fetches a reading based on a request.
+         *
+         * @param[in]   req Incoming request.
+         *
+         * @tparam     Response   Representation of response.
+         * @tparam     Request    Type of request.
+         *
+         * @return     The response in its own representation.
+         */
         template <class Response, class Request>
-        Response fetch(Request&&) const;
+        Response fetch(Request&& req) const;
 
     private:
         // --- PRIVATE MEMBERS -------

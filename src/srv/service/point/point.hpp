@@ -54,11 +54,11 @@ namespace resource
     class Points<nlohmann::json> : public restbed::Resource
     {
     public:
-        // --- Typedefs --------------
+        // ==== Typedefs =================================
         typedef Point               value_type;
         typedef nlohmann::json      json_type;
 
-        // --- Constructors ----------
+        // ==== Constructors =============================
 
         /**
          * @brief      Creates a resource where you can access the Points
@@ -68,7 +68,7 @@ namespace resource
          */
         Points(const std::string& dbSettings, size_t max_connections);
 
-        // --- Public methods --------
+        // ==== Public methods ===========================
 
         /**
          * @brief      Gets a Point from the DB.
@@ -94,18 +94,18 @@ namespace resource
         void remove(const std::string& pointId, const std::string& modelId);
 
     private:
-        // --- Private methods -------
+        // ==== Private methods ==========================
         void GET(const std::shared_ptr<restbed::Session> session);
         void POST(const std::shared_ptr<restbed::Session> session);
         void DELETE(const std::shared_ptr<restbed::Session> session);
 
-        // --- Member attributes -----
+        // ==== Member attributes ========================
         carlosb::object_pool<soci::session> sqlPool;
     };
 }
 }
 
-// --- JSON SERIALIZATION ------------
+// ==== JSON SERIALIZATION ===============================
 namespace nlohmann
 {
     template <>
@@ -116,7 +116,7 @@ namespace nlohmann
     }; 
 }
 
-// ---- SQL MAPPING ------------------
+// ==== SQL MAPPING ======================================
 namespace soci
 {
     template <>
