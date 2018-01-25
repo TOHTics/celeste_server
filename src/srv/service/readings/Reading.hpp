@@ -10,6 +10,9 @@ namespace celeste
 {
 namespace resource
 {   
+    /**
+     * @brief      Represents the type that a point might take
+     */
     enum point_type_index : int
     {
         INTEGER = 0,
@@ -17,18 +20,21 @@ namespace resource
         STRING
     };
 
+    /**
+     * @brief      Represents a reading.
+     */
     struct Reading
     {
         using point_type = boost::variant<int, float, std::string>;
 
-        boost::optional<double>                     sf;
-        boost::optional<boost::posix_time::ptime>   t;
-        point_type                                  value;
+        boost::optional<double>                     sf;         ///< Scale factor
+        boost::optional<boost::posix_time::ptime>   t;          ///< timestamp
+        point_type                                  value;      ///< value
     };
 }
 }
 
-// --- JSON SERIALIZATION ------------
+// ==== JSON SERIALIZATION ===============================
 namespace nlohmann
 {
     template <>
@@ -52,7 +58,7 @@ namespace nlohmann
     };
 }
 
-// ---- SQL MAPPING ------------------
+// ==== SQL MAPPING ======================================
 namespace soci
 {
     template <>

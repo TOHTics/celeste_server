@@ -33,17 +33,27 @@ namespace resource
         using dispatch_map_type = std::map<std::string, std::function<response_type(nlohmann::json, int&)>>;
         using fetcher_pool_type = carlosb::object_pool<ReadingFetcher>;
 
-        // --- CONSTRUCTORS ----------
+        // ==== CONSTRUCTORS =============================
         ReadingDispatcher(const std::string& dbSettings, size_t max_connections);
 
-        // --- PUBLIC METHODS --------
+        // ==== PUBLIC METHODS ===========================
+
+        /**
+         * @brief      Gets the response on a request.
+         *
+         * @param[in]  request  Incoming request.
+         *
+         * @tparam     Request  Type of request.
+         *
+         * @return     The response.
+         */
         template <class Request>
         response_type dispatch(const Request& request) const;
     private:
-        // --- PRIVATE METHODS -------
+        // ==== PRIVATE METHODS ==========================
         void POST(const std::shared_ptr<restbed::Session> session);
 
-        // --- MEMBER ATTRIBUTES -----
+        // ==== MEMBER ATTRIBUTES ========================
         mutable fetcher_pool_type   fetcherPool;
         dispatch_map_type           dispatch_map;
     };

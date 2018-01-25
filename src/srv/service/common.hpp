@@ -19,8 +19,6 @@ namespace celeste
 {
 namespace resource
 {
-    // --- USEFUL TYPES --------------
-
     // --- METHODS -------------------
     
     /**
@@ -190,7 +188,8 @@ namespace soci
 
         static void to_base(const std::pair<_Tp, _Gp>& p, base_type& v, indicator&)
         {
-            // throw std::runtime_error("type_conversion<std::pair<_Tp, _Gp>>::to_base not implemented.");
+            throw std::runtime_error("type_conversion<std::pair<_Tp, _Gp>>::to_base not implemented."
+                                     "This means you tried to insert a pair into the DB using ORM.");
         }
     };
 
