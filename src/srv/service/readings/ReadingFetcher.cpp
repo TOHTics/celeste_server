@@ -48,6 +48,13 @@ namespace resource
             use(req.DeviceId, "DeviceId"),
             use(req.ModelId, "ModelId"),
             use(req.PointId, "PointId");
+
+        int type;
+        sql << "select type from Point where id = :PointId and Model_id = :ModelId",
+        into(type), use(req.PointId, "PointId"), use(req.ModelId, "ModelId");
+
+        string2point(type, boost::get<string>(out.value), out.value);
+
         return out;
     }
 
@@ -58,7 +65,6 @@ namespace resource
     const
     {
         Reading read;
-        indicator ind;
         statement stmt = (sql.prepare 
                           << "select sf, t, v from PointRecord "
                           << "where "
@@ -68,26 +74,29 @@ namespace resource
                           << "and t > :start "
                           << "and t < :end "
                           << "order by t desc "
-                          << "limit :limit",
-                          into(read, ind),
+                          << "limit :limn",
+                          into(read),
                           use(req.DeviceId,    "DeviceId"),
                           use(req.ModelId,     "ModelId"),
                           use(req.PointId,     "PointId"),
                           use(req.start,       "start"),
                           use(req.end,         "end"),
-                          use(req.limit,       "limit")
+                          use(req.limit,       "limn")
                           );
+        stmt.execute();
+
+        int type;
+        sql << "select type from Point where id = :PointId and Model_id = :ModelId",
+        into(type), use(req.PointId, "PointId"), use(req.ModelId, "ModelId");
 
         vector<Reading> readings;
         readings.reserve(req.limit);
-
-        if (sql.got_data())
+        while (stmt.fetch())
         {
-            do 
-            {
-                readings.push_back(read);
-            } while (stmt.fetch());
+            string2point(type, boost::get<string>(read.value), read.value);
+            readings.push_back(read);
         }
+
         return readings;
     }
 
@@ -119,10 +128,9 @@ namespace resource
             stmt.execute(true);
 
             vector<pair<int, double>> avgs;
-            avgs.reserve(24); // capacity is number of hours in a day
-
             if (sql.got_data())
             {
+                avgs.reserve(24); // capacity is number of hours in a day
                 do 
                 {
                     avgs.push_back(avg);
@@ -161,10 +169,9 @@ namespace resource
             stmt.execute(true);
 
             vector<pair<int, double>> avgs;
-            avgs.reserve(24); // capacity is numberof hours in a day
-
             if (sql.got_data())
             {
+                avgs.reserve(24); // capacity is numberof hours in a day
                 do 
                 {
                     avgs.push_back(avg);
@@ -278,10 +285,9 @@ namespace resource
             stmt.execute(true);
 
             vector<pair<int, double>> avgs;
-            avgs.reserve(24); // capacity is number of hours in a day
-
             if (sql.got_data())
             {
+                avgs.reserve(24); // capacity is number of hours in a day
                 do 
                 {
                     avgs.push_back(avg);
@@ -321,10 +327,9 @@ namespace resource
             stmt.execute(true);
 
             vector<pair<int, double>> avgs;
-            avgs.reserve(31); // capacity is max number of days in a month
-
             if (sql.got_data())
             {
+                avgs.reserve(31); // capacity is max number of days in a month
                 do 
                 {
                     avgs.push_back(avg);
@@ -364,10 +369,9 @@ namespace resource
             stmt.execute(true);
 
             vector<pair<int, double>> avgs;
-            avgs.reserve(12); // capacity is number of months in a year
-            
             if (sql.got_data())
             {
+                avgs.reserve(12); // capacity is number of months in a year
                 do 
                 {
                     avgs.push_back(avg);

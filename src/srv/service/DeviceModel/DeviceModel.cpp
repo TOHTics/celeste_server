@@ -234,7 +234,7 @@ namespace nlohmann
         dm = DeviceModelAssoc {
             .DeviceId   = j.at("DeviceId"),
             .ModelId    = j.at("ModelId"),
-            // .idx        = j.at("idx"),
+            .idx        = j.at("idx"),
             .note       = j.at("note")
         };
     }

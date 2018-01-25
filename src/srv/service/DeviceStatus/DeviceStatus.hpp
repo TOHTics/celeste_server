@@ -41,11 +41,13 @@ namespace resource
         // --- Constructors ----------
         DeviceStatusService(const std::string& dbSettings, size_t max_connections);
         DeviceStatus get_status(const std::string& deviceId);
+        void update_status(const std::string& deviceId, const json_type& new_status);
+
 
     private:
         // --- Private methods -------
         void GET(const std::shared_ptr<restbed::Session> session);
-        // void POST(const std::shared_ptr<restbed::Session> session);
+        void PUT(const std::shared_ptr<restbed::Session> session);
 
         carlosb::object_pool<soci::session> sqlPool;
     };

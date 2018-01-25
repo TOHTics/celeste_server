@@ -6,6 +6,39 @@
 using namespace celeste::resource;
 using namespace std;
 
+namespace celeste
+{
+namespace resource
+{
+    void string2point(int type, const std::string& str, Reading::point_type& out)
+    {
+        switch (type)
+        {
+            case point_type_index::INTEGER:
+            {
+                out = stoi(str);
+                return;
+            }
+            case point_type_index::FLOAT:
+            {
+                out = stof(str);
+                return;
+            }
+            case point_type_index::STRING:
+            {
+                out = str;
+                return;
+            }
+            default:
+            {
+                throw std::runtime_error("No type conversion");
+            }
+        }
+    }   
+}
+}
+
+
 namespace nlohmann
 {
     void adl_serializer<Reading>::to_json(json& j, const Reading& obj)
