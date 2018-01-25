@@ -134,6 +134,17 @@ CREATE TABLE IF NOT EXISTS `celestesensordata`.`Device_Model` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
+CREATE TABLE IF NOT EXISTS `celestesensordata`.`DeviceStatus` (
+  `Device_id` VARCHAR(45) NOT NULL,
+  `status` BLOB NOT NULL,
+  INDEX `fk_DeviceStatus_Device1_idx` (`Device_id` ASC),
+  CONSTRAINT `fk_DeviceStatus_Device1`
+    FOREIGN KEY (`Device_id`)
+    REFERENCES `celestesensordata`.`Device` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
