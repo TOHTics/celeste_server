@@ -58,6 +58,7 @@ namespace resource
     const
     {
         Reading read;
+        indicator ind;
         statement stmt = (sql.prepare 
                           << "select sf, t, v from PointRecord "
                           << "where "
@@ -68,6 +69,7 @@ namespace resource
                           << "and t < :end "
                           << "order by t desc "
                           << "limit :limit",
+                          into(read, ind),
                           use(req.DeviceId,    "DeviceId"),
                           use(req.ModelId,     "ModelId"),
                           use(req.PointId,     "PointId"),
@@ -79,8 +81,13 @@ namespace resource
         vector<Reading> readings;
         readings.reserve(req.limit);
 
-        while (stmt.fetch())
-            readings.push_back(read);
+        if (sql.got_data())
+        {
+            do 
+            {
+                readings.push_back(read);
+            } while (stmt.fetch());
+        }
         return readings;
     }
 
@@ -90,6 +97,7 @@ namespace resource
     const
     {
         pair<int, double> avg;
+        indicator ind;
         string deviceId;
         statement stmt = (sql.prepare
                           << "select hour(t), avg(v) from PointRecord "
@@ -98,7 +106,7 @@ namespace resource
                           << "Point_id = :PointId and "
                           << "day(t) = day(curdate() - 1) "
                           << "group by hour(t)",
-                          into(avg),
+                          into(avg, ind),
                           use(deviceId,     "DeviceId"),
                           use(req.ModelId,  "ModelId"),
                           use(req.PointId,  "PointId")
@@ -113,9 +121,13 @@ namespace resource
             vector<pair<int, double>> avgs;
             avgs.reserve(24); // capacity is number of hours in a day
 
-            while (stmt.fetch())
-                avgs.push_back(avg);
-
+            if (sql.got_data())
+            {
+                do 
+                {
+                    avgs.push_back(avg);
+                } while (stmt.fetch());
+            }
             devMap.insert({deviceId, std::move(avgs)});
         }
         return devMap;
@@ -127,6 +139,7 @@ namespace resource
     const
     {
         pair<int, double> avg;
+        indicator ind;
         string deviceId;
         statement stmt = (sql.prepare
                           << "select hour(t), avg(v) from PointRecord "
@@ -135,7 +148,7 @@ namespace resource
                           << "Point_id = :PointId and "
                           << "day(t) = day(curdate()) "
                           << "group by hour(t)",
-                          into(avg),
+                          into(avg, ind),
                           use(deviceId,     "DeviceId"),
                           use(req.ModelId,  "ModelId"),
                           use(req.PointId,  "PointId")
@@ -150,9 +163,13 @@ namespace resource
             vector<pair<int, double>> avgs;
             avgs.reserve(24); // capacity is numberof hours in a day
 
-            while (stmt.fetch())
-                avgs.push_back(avg);
-
+            if (sql.got_data())
+            {
+                do 
+                {
+                    avgs.push_back(avg);
+                } while (stmt.fetch());
+            }
             devMap.insert({deviceId, std::move(avgs)});
         }
         return devMap;
@@ -166,6 +183,7 @@ namespace resource
     {
         double total;
         string deviceId;
+        indicator ind;
         statement stmt = (sql.prepare
                            << "select sum(v) "
                            << "from PointRecord "
@@ -174,7 +192,7 @@ namespace resource
                            << "Point_id = :PointId and "
                            << "t > :start and "
                            << "t < :end",
-                           into(total),
+                           into(total, ind),
                            use(deviceId,    "DeviceId"),
                            use(req.ModelId, "ModelId"),
                            use(req.PointId, "PointId"),
@@ -187,6 +205,8 @@ namespace resource
         {
             deviceId = id;
             stmt.execute(true);
+            if (ind != i_ok)
+                total = 0;
             devMap.insert({deviceId, total});
         }
         return devMap;
@@ -198,6 +218,7 @@ namespace resource
     const
     {
         double avg;
+        indicator ind;
         string deviceId;
         statement stmt = (sql.prepare
                            << "select avg(v) "
@@ -207,7 +228,7 @@ namespace resource
                            << "Point_id = :PointId and "
                            << "t > :start and "
                            << "t < :end",
-                           into(avg),
+                           into(avg, ind),
                            use(deviceId,    "DeviceId"),
                            use(req.ModelId, "ModelId"),
                            use(req.PointId, "PointId"),
@@ -220,6 +241,9 @@ namespace resource
         {
             deviceId = id;
             stmt.execute(true);
+
+            if (ind != i_ok)
+                avg = 0;
             devMap.insert({deviceId, avg});
         }
         return devMap;
@@ -231,7 +255,7 @@ namespace resource
     const
     {
         pair<int, double> avg;
-
+        indicator ind;
         string deviceId;
         statement stmt = (sql.prepare
                           << "select hour(t), avg(v) from PointRecord "
@@ -256,9 +280,13 @@ namespace resource
             vector<pair<int, double>> avgs;
             avgs.reserve(24); // capacity is number of hours in a day
 
-            while (stmt.fetch())
-                avgs.push_back(avg);
-
+            if (sql.got_data())
+            {
+                do 
+                {
+                    avgs.push_back(avg);
+                } while (stmt.fetch());
+            }
             devMap.insert({deviceId, std::move(avgs)});
         }
         return devMap;
@@ -270,7 +298,7 @@ namespace resource
     const
     {   
         pair<int, double> avg;
-
+        indicator ind;
         string deviceId;
         statement stmt = (sql.prepare
                           << "select day(t), avg(v) from PointRecord "
@@ -279,7 +307,7 @@ namespace resource
                           << "Point_id = :PointId and "
                           << "month(t) = month(:month) "
                           << "group by day(t)",
-                          into(avg),
+                          into(avg, ind),
                           use(deviceId,     "DeviceId"),
                           use(req.ModelId,  "ModelId"),
                           use(req.PointId,  "PointId"),
@@ -295,9 +323,13 @@ namespace resource
             vector<pair<int, double>> avgs;
             avgs.reserve(31); // capacity is max number of days in a month
 
-            while (stmt.fetch())
-                avgs.push_back(avg);
-
+            if (sql.got_data())
+            {
+                do 
+                {
+                    avgs.push_back(avg);
+                } while (stmt.fetch());
+            }
             devMap.insert({deviceId, std::move(avgs)});
         }
         return devMap;
@@ -309,15 +341,19 @@ namespace resource
     const
     {
         pair<int, double> avg;
-
+        indicator ind;
         string deviceId;
         statement stmt = (sql.prepare
                           << "select month(t), avg(v) from PointRecord "
                           << "where Device_id = :DeviceId and "
+                          << "Model_id = :ModelId and "
+                          << "Point_id = :PointId and "
                           << "year(t) = year(:year) "
                           << "group by month(t)",
-                          into(avg),
-                          use(deviceId, "DeviceId"),
+                          into(avg, ind),
+                          use(deviceId,     "DeviceId"),
+                          use(req.ModelId,  "ModelId"),
+                          use(req.PointId,  "PointId"),
                           use(req.year, "year")
                           );  
         
@@ -329,10 +365,14 @@ namespace resource
 
             vector<pair<int, double>> avgs;
             avgs.reserve(12); // capacity is number of months in a year
-
-            while (stmt.fetch())
-                avgs.push_back(avg);
-
+            
+            if (sql.got_data())
+            {
+                do 
+                {
+                    avgs.push_back(avg);
+                } while (stmt.fetch());
+            }
             devMap.insert({deviceId, std::move(avgs)});
         }
         return devMap;

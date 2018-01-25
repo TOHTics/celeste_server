@@ -17,7 +17,7 @@ namespace celeste
         auto upload = make_shared<LoggerResource>(dbSettings, worker_limit);
         auto reading = make_shared<ReadingResource>(dbSettings, worker_limit);
         auto device_model = make_shared<DeviceModelAssocResource>(dbSettings, worker_limit);
-        auto device_status = make_shared<DeviceStatusResource>();
+        auto device_status = make_shared<DeviceStatusResource>(dbSettings, worker_limit);
 
         cout << "@ Configuring server...\n";
         m_srv_settings = make_shared<restbed::Settings>();

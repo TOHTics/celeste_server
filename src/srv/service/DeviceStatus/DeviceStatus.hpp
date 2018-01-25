@@ -6,21 +6,24 @@
 #include <soci.h>
 #include <json.hpp>
 #include <restbed>
+#include <object_pool.hpp>
 
 namespace celeste
 {
 namespace resource
 {
-    struct DeviceStatus
-    {
-        bool            isPowerCut;
-        bool            isOn;
-        bool            isConnectedToServer;
-        bool            hasMalfunction;
 
-        std::string     DeviceId;
-        int             pingTimeToServer;
+    template <class Status>
+    struct BasicDeviceStatus;
+
+    template <class Status>
+    struct BasicDeviceStatus
+    { 
+        std::string DeviceId;
+        Status      status;
     };
+
+    using DeviceStatus = BasicDeviceStatus<nlohmann::json>;
 
     template <class Json>
     class DeviceStatusService : public restbed::Resource
@@ -36,16 +39,15 @@ namespace resource
         typedef nlohmann::json      json_type;
 
         // --- Constructors ----------
-        DeviceStatusService();
-
-        DeviceStatus get(const std::string& deviceId);
-        bool isPowerCut(const std::string& deviceId);
-        [[deprecated]] int get_arduino(const std::string& deviceId);
+        DeviceStatusService(const std::string& dbSettings, size_t max_connections);
+        DeviceStatus get_status(const std::string& deviceId);
 
     private:
         // --- Private methods -------
         void GET(const std::shared_ptr<restbed::Session> session);
         // void POST(const std::shared_ptr<restbed::Session> session);
+
+        carlosb::object_pool<soci::session> sqlPool;
     };
 }
 }

@@ -188,6 +188,19 @@ namespace resource
                 });
             }
         },
+        { "month",
+            [this](json data, int& code)
+            {
+                code = restbed::OK;
+                return dispatch(
+                MonthReadRequest{
+                    .DeviceIds  = data["DeviceId"],
+                    .ModelId    = data["ModelId"],
+                    .PointId    = data["PointId"],
+                    .month       = data["month"]
+                });
+            }
+        },
         { "accumulated",
             [this](json data, int& code)
             {
