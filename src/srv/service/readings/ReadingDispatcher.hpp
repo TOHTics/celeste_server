@@ -23,28 +23,29 @@ namespace resource
 {   
     template <class Response>
     class ReadingDispatcher : public restbed::Resource
-    { };
+    {};
 
     template <>
     class ReadingDispatcher<nlohmann::json> : public restbed::Resource
     {
     public:
         using response_type = nlohmann::json;
+        using dispatch_map_type = std::map<std::string, std::function<response_type(nlohmann::json, int&)>>;
+        using fetcher_pool_type = carlosb::object_pool<ReadingFetcher>;
 
         // --- CONSTRUCTORS ----------
-        ReadingDispatcher(const std::string& dbSettings);
+        ReadingDispatcher(const std::string& dbSettings, size_t max_connections);
 
         // --- PUBLIC METHODS --------
         template <class Request>
         response_type dispatch(const Request& request) const;
     private:
-        using fetcher_pool_type = carlosb::object_pool<ReadingFetcher>;
-
         // --- PRIVATE METHODS -------
-        void GET(const std::shared_ptr<restbed::Session> session);
+        void POST(const std::shared_ptr<restbed::Session> session);
 
         // --- MEMBER ATTRIBUTES -----
-        mutable fetcher_pool_type        fetcherPool;
+        mutable fetcher_pool_type   fetcherPool;
+        dispatch_map_type           dispatch_map;
     };
 
     template <>
@@ -57,7 +58,31 @@ namespace resource
 
     template <>
     nlohmann::json
+    ReadingDispatcher<nlohmann::json>::dispatch(const YesterdayReadRequest&) const;
+
+    template <>
+    nlohmann::json
+    ReadingDispatcher<nlohmann::json>::dispatch(const TodayReadRequest&) const;
+
+    template <>
+    nlohmann::json
     ReadingDispatcher<nlohmann::json>::dispatch(const AccumulatedReadRequest&) const;
+
+    template <>
+    nlohmann::json
+    ReadingDispatcher<nlohmann::json>::dispatch(const AverageReadRequest&) const;
+
+    template <>
+    nlohmann::json
+    ReadingDispatcher<nlohmann::json>::dispatch(const DayReadRequest&) const;
+
+    template <>
+    nlohmann::json
+    ReadingDispatcher<nlohmann::json>::dispatch(const MonthReadRequest&) const;
+
+    template <>
+    nlohmann::json
+    ReadingDispatcher<nlohmann::json>::dispatch(const YearReadRequest&) const;
 }
 }
 

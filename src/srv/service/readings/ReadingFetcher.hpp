@@ -48,15 +48,48 @@ namespace resource
 
     // --- DEFAULT SPECIALIZATIONS ---
     template <>
-    Reading ReadingFetcher::fetch(const LastReadRequest&)
+    Reading
+    ReadingFetcher::fetch(const LastReadRequest&)
     const;
 
     template <>
-    std::vector<Reading> ReadingFetcher::fetch(const RangeReadRequest&)
+    std::vector<Reading>
+    ReadingFetcher::fetch(const RangeReadRequest&)
     const;
 
     template <>
-    std::map<std::string, double> ReadingFetcher::fetch(const AccumulatedReadRequest&)
+    std::map<std::string, std::vector<std::pair<int, double>>>
+    ReadingFetcher::fetch(const YesterdayReadRequest&)
+    const;
+
+    template <>
+    std::map<std::string, std::vector<std::pair<int, double>>>
+    ReadingFetcher::fetch(const TodayReadRequest&)
+    const;
+
+    template <>
+    std::map<std::string, double>
+    ReadingFetcher::fetch(const AccumulatedReadRequest&)
+    const;
+
+    template <>
+    std::map<std::string, double>
+    ReadingFetcher::fetch(const AverageReadRequest&)
+    const;
+
+    template <>
+    std::map<std::string, std::vector<std::pair<int, double>>>
+    ReadingFetcher::fetch(const DayReadRequest&)
+    const;
+
+    template <>
+    std::map<std::string, std::vector<std::pair<int, double>>>
+    ReadingFetcher::fetch(const MonthReadRequest&)
+    const;
+
+    template <>
+    std::map<std::string, std::vector<std::pair<int, double>>>
+    ReadingFetcher::fetch(const YearReadRequest&)
     const;
 }
 }

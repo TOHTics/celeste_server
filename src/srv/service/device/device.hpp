@@ -61,8 +61,9 @@ namespace resource
          * on the DB.
          *
          * @param[in]  dbSettings  DB settings for connection.
+         * @param[in]  max_connections  max DB connections.
          */
-        Devices(const std::string& dbSettings);
+        Devices(const std::string& dbSettings, size_t max_connections);
 
         // --- Public methods --------
 

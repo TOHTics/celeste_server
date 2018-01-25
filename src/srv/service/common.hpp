@@ -1,15 +1,18 @@
 #ifndef CELESTE_SERVICE_COMMON_HPP
 #define CELESTE_SERVICE_COMMON_HPP
 
-#include <memory>
-#include <string>
 #include <json.hpp>
 #include <restbed>
+#include <soci.h>
+
+#include <memory>
+#include <string>
 #include <utility>
+
 #include <boost/optional.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/variant.hpp>
-#include <soci.h>
+
 #include "srv/service/status.hpp"
 
 namespace celeste
@@ -127,24 +130,29 @@ namespace resource
 // --- JSON SERIALIZERS --------------
 namespace nlohmann 
 {
-    template <typename T>
-    struct adl_serializer<boost::optional<T>> 
+    template <class _Tp>
+    struct adl_serializer<boost::optional<_Tp>> 
     {
-        static void to_json(json& j, const boost::optional<T>& opt) {
-            if (opt == boost::none) {
+        static void to_json(json& j, const boost::optional<_Tp>& opt)
+        {
+            if (opt == boost::none)
+            {
                 j = nullptr;
-            } else {
+            } else
+            {
               j = *opt; // this will call adl_serializer<T>::to_json which will
                         // find the free function to_json in T's namespace!
             }
         }
 
-        static void from_json(const json& j, boost::optional<T>& opt) 
+        static void from_json(const json& j, boost::optional<_Tp>& opt) 
         {
-            if (j.is_null()) {
+            if (j.is_null())
+            {
                 opt = boost::none;
-            } else {
-                opt = j.get<T>(); // same as above, but with 
+            } else
+            {
+                opt = j.get<_Tp>(); // same as above, but with 
                                   // adl_serializer<T>::from_json
             }
         }
@@ -168,6 +176,38 @@ namespace soci
         static void from_base(const base_type&, indicator, boost::posix_time::ptime&);
 
         static void to_base(const boost::posix_time::ptime&, base_type&, indicator&);
+    };
+
+    template <class _Tp, class _Gp>
+    struct type_conversion<std::pair<_Tp, _Gp>>
+    {
+        using base_type = values;
+
+        static void from_base(const base_type& v, indicator, std::pair<_Tp, _Gp>& p)
+        {
+            p = {v.get<_Tp>(0), v.get<_Gp>(1)};
+        }
+
+        static void to_base(const std::pair<_Tp, _Gp>& p, base_type& v, indicator&)
+        {
+            // throw std::runtime_error("type_conversion<std::pair<_Tp, _Gp>>::to_base not implemented.");
+        }
+    };
+
+    template <>
+    struct type_conversion<bool>
+    {
+        using base_type = int;
+
+        static void from_base(const base_type& v, indicator, bool& p)
+        {
+            p = (v != 0);
+        }
+
+        static void to_base(bool p, base_type& v, indicator&)
+        {
+            v = static_cast<int>(p);
+        }
     };
 }
 

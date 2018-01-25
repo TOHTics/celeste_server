@@ -58,7 +58,7 @@ namespace resource
          *
          * @param[in]  dbSettings  DB settings for connection.
          */
-        DeviceModelAssocs(const std::string& dbSettings);
+        DeviceModelAssocs(const std::string& dbSettings, size_t max_connections);
 
         // --- Public methods --------
 
