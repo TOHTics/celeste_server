@@ -124,14 +124,8 @@ namespace resource
         // get request
         const auto request = session->get_request();
 
-        // get headers
-        size_t content_length = (size_t) request->get_header("Content-Length", 0);
-
-        // fetch data to access later
-        session->fetch(content_length, [] (const shared_ptr<restbed::Session> session, const restbed::Bytes &bytes) {});
-
-        // get json from request
-        json_type data = get_json<json_type>(*request);
+        // get json from parameters
+        json_type data = request->get_query_parameters();
 
         // validate data
         if (data["PointId"].is_null())
