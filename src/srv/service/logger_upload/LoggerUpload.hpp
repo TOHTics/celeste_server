@@ -22,7 +22,7 @@ namespace resource
     {
     public:
         // --- Constructors ----------
-        LoggerUpload(const std::string& dbSettings);
+        LoggerUpload(const std::string& dbSettings, size_t max_connections);
 
         // --- Public methods --------
         void persist_data(const sunspec::data::SunSpecData& data);

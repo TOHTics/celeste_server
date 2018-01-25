@@ -31,38 +31,40 @@ namespace resource
 
         std::string     start;
         std::string     end;
+
+        int             limit;
     };
 
     struct TodayReadRequest
     {
-        std::string     DeviceId;
-        std::string     ModelId;
-        std::string     PointId;
+        std::vector<std::string>    DeviceIds;
+        std::string                 ModelId;
+        std::string                 PointId;
     };
 
     struct YesterdayReadRequest
     {
-        std::string     DeviceId;
+        std::vector<std::string>    DeviceIds;
         std::string     ModelId;
         std::string     PointId;
     };
 
     struct MonthReadRequest
     {
-        std::string     DeviceId;
-        std::string     ModelId;
-        std::string     PointId;
+        std::vector<std::string>    DeviceIds;
+        std::string                 ModelId;
+        std::string                 PointId;
 
-        int             month;
+        std::string                 month;
     };
 
     struct YearReadRequest
     {
-        std::string     DeviceId;
-        std::string     ModelId;
-        std::string     PointId;
+        std::vector<std::string>    DeviceIds;
+        std::string                 ModelId;
+        std::string                 PointId;
 
-        int             year;
+        std::string                 year;
     };
 
     struct AccumulatedReadRequest
@@ -75,7 +77,24 @@ namespace resource
         std::string                 end;
     };
 
-}
-}
+    struct AverageReadRequest
+    {
+        std::vector<std::string>    DeviceIds;
+        std::string                 ModelId;
+        std::string                 PointId;
 
+        std::string                 start;
+        std::string                 end;
+    };
+
+    struct DayReadRequest
+    {
+        std::vector<std::string>    DeviceIds;
+        std::string                 ModelId;
+        std::string                 PointId;
+
+        std::string                 day;
+    };
+}
+}
 #endif

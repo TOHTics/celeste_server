@@ -21,12 +21,12 @@ namespace celeste
 namespace resource
 {
     // --- CLASS DEFINITIONS ---------
-    LoggerUpload::LoggerUpload(const std::string& dbSettings)
+    LoggerUpload::LoggerUpload(const std::string& dbSettings, size_t max_connections)
     {
         set_paths({"/logger/upload/verbose/", "/logger/upload"});
         set_method_handler("POST", [this] (const std::shared_ptr<restbed::Session> session) {POST(session);});
         
-        for (int i = 0; i < 10; ++i)
+        for (int i = 0; i < max_connections; ++i)
             sqlPool.emplace(mysql, dbSettings);
     }
 
@@ -128,7 +128,6 @@ namespace resource
         {
             bytes2string(bytes, body);
         });
-
         bool verbose = ("/logger/upload/verbose/" == request->get_path());
         try
         {
@@ -143,7 +142,14 @@ namespace resource
                 session->close(status::XML_SYNTAX_ERROR, e.what());
             else
                 throw status::XML_SYNTAX_ERROR;
+        } catch (const std::exception& e)
+        {
+            if (verbose)
+                session->close(status::UNHANDLED_EXCEPTION, e.what());
+            else
+                throw e;
         }
+
     }
 }
 }

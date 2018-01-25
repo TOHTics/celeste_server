@@ -17,7 +17,7 @@ namespace celeste
 namespace resource
 {   
     // --- CLASS DEFINITIONS ---------
-    Points<nlohmann::json>::Points(const std::string& dbSettings)
+    Points<nlohmann::json>::Points(const std::string& dbSettings, size_t max_connections)
     {
         set_path("/point");
         set_method_handler("GET", [this] (const std::shared_ptr<restbed::Session> session) {GET(session);});
