@@ -24,7 +24,8 @@ namespace celeste
         m_srv_settings->set_status_messages(status::STATUS_MAP);
         m_srv_settings->set_port(port);
         m_srv_settings->set_root(root);
-        // m_srv_settings->set_worker_limit(worker_limit);
+        m_srv_settings->set_worker_limit(worker_limit);
+        m_srv_settings->set_connection_timeout(std::chrono::seconds(10));
         m_srv_settings->set_default_headers({
             {"Access-Control-Allow-Origin", "*"}
         });

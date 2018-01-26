@@ -299,7 +299,7 @@ namespace resource
                        body,
                        {
                             { "Content-Length", to_string(body.size()) },
-                            { "Connection",     "close" }
+                            { "Connection",     "close" },
                        });
     }
 }

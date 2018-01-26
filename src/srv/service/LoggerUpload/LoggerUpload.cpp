@@ -135,7 +135,7 @@ namespace resource
             persist_data(data::SunSpecData::from_xml(body));
         
             // close
-            session->close(restbed::OK);
+            session->yield(restbed::OK, {{"Content-Length", "0"}, { "Connection",     "keep-alive" }});
         } catch (const data::XMLException& e)
         {
             if (verbose)
