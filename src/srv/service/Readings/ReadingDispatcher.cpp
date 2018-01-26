@@ -257,10 +257,13 @@ namespace resource
         size_t content_length = (size_t) request->get_header("Content-Length", 0);
 
         // fetch data to access later
-        session->fetch(content_length, [] (const shared_ptr<restbed::Session> session, const restbed::Bytes &bytes) {});
+        string req_body;
+        session->fetch(content_length, [&req_body] (const shared_ptr<restbed::Session> session, const restbed::Bytes &bytes) {
+            bytes2string(bytes, req_body);
+        });
 
         // get json_type from request
-        json data = get_json<json>(*request);
+        json data = json::parse(req_body);
 
         if (data["DeviceId"].is_null())
             throw status::MISSING_FIELD_DEVICEID;
@@ -295,12 +298,25 @@ namespace resource
         string body = response.dump();
 
         // close
-        session->close(code,
-                       body,
-                       {
+        if (request->get_header("Connection", "close") == "keep-alive")
+        {
+            session->yield(code,
+                           body,
+                           {
+                            { "Content-Length", to_string(body.size()) },
+                            { "Connection",     "keep-alive" },
+                        });
+        }
+        else
+        {
+            session->close(code,
+                           body,
+                           {
                             { "Content-Length", to_string(body.size()) },
                             { "Connection",     "close" },
-                       });
+                        });
+        }
+        
     }
 }
 }

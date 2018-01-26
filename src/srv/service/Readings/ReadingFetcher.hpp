@@ -53,8 +53,8 @@ namespace resource
 
     private:
         // --- PRIVATE MEMBERS -------
-        mutable soci::session   sql;
-        std::string             dbSettings;
+        mutable soci::session   m_sql;
+        std::string             m_dbSettings;
     };
 
     // --- DEFAULT SPECIALIZATIONS ---

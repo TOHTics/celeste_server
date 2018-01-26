@@ -17,24 +17,22 @@ namespace celeste
 namespace resource
 {   
     // --- CLASS DEFINITIONS ---------
-    Models<nlohmann::json>::Models(const std::string& dbSettings, size_t max_connections)
+    Models<nlohmann::json>::Models(const std::string& dbSettings)
+        : m_dbSettings(dbSettings)
     {
         set_path("/model");
         set_method_handler("GET", [this] (const std::shared_ptr<restbed::Session> session) {GET(session);});
         set_method_handler("POST",   [this] (const std::shared_ptr<restbed::Session> session) {POST(session);});
         set_method_handler("DELETE", [this] (const std::shared_ptr<restbed::Session> session) {DELETE(session);});
-    
-        for (int i = 0; i < max_connections; ++i)
-            sqlPool.emplace(mysql, dbSettings);
     }
 
     Model Models<nlohmann::json>::get(const std::string& modelId)
     {
-        auto sql = sqlPool.acquire_wait();
+        session sql(mysql, m_dbSettings);
         Model model;
-        *sql    << "select * from Model where id = :ModelId",
+        sql    << "select * from Model where id = :ModelId",
                 use(modelId), into(model);
-        if (sql->got_data())
+        if (sql.got_data())
             return model;
         else
             throw status::MODEL_NOT_FOUND;
@@ -42,15 +40,15 @@ namespace resource
 
     void Models<nlohmann::json>::insert(const value_type& model)
     {
-        auto sql = sqlPool.acquire_wait();
-        *sql    << "insert into Model(id, ns) values(:ModelId, :ns)",
+        session sql(mysql, m_dbSettings);
+        sql    << "insert into Model(id, ns) values(:ModelId, :ns)",
                 use(model);
     }
 
     void Models<nlohmann::json>::remove(const std::string& modelId)
     {
-        auto sql = sqlPool.acquire_wait();
-        *sql    << "delete from Model where id = :ModelId",
+        session sql(mysql, m_dbSettings);
+        sql    << "delete from Model where id = :ModelId",
                 use(modelId);
     }
 

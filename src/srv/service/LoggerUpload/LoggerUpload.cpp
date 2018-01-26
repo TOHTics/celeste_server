@@ -22,17 +22,30 @@ namespace resource
 {
     // --- CLASS DEFINITIONS ---------
     LoggerUpload::LoggerUpload(const std::string& dbSettings, size_t max_connections)
+        : m_dbSettings(dbSettings)
     {
         set_paths({"/logger/upload/verbose/", "/logger/upload"});
         set_method_handler("POST", [this] (const std::shared_ptr<restbed::Session> session) {POST(session);});
         
         for (int i = 0; i < max_connections; ++i)
-            sqlPool.emplace(mysql, dbSettings);
+            m_sqlPool.emplace(mysql, dbSettings);
     }
 
     void LoggerUpload::persist_data(const sunspec::data::SunSpecData& data)
     {
-        auto sql = sqlPool.acquire_wait();
+        // we dont even want to wait for a connection to open up
+        auto sql = m_sqlPool.allocate(mysql, m_dbSettings);
+
+        try
+        {
+            *sql << "select 1"; // "ping" the server
+        } catch (mysql_soci_error&)
+        {
+            sql->reconnect(); // attempt reconnect
+        } catch (exception&)
+        {
+            sql->open(mysql, m_dbSettings); // if everything went bad attempt to open connection again
+        }
 
         data::DeviceData dev_record;
         statement insert_device_rec
@@ -136,7 +149,8 @@ namespace resource
         
             // close
             session->yield(restbed::OK, {{"Content-Length", "0"}, { "Connection",     "keep-alive" }});
-        } catch (const data::XMLException& e)
+        }
+        catch (const data::XMLException& e)
         {
             if (verbose)
                 session->close(status::XML_SYNTAX_ERROR, e.what());

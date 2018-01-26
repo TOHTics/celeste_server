@@ -50,7 +50,8 @@ namespace resource
         void get_db_error(Error &&e, const std::shared_ptr<restbed::Session> session);
 
         // ===== Member attributes =======================
-        carlosb::object_pool<soci::session> sqlPool;
+        carlosb::object_pool<soci::session> m_sqlPool;
+        std::string                         m_dbSettings;
     };
 }
 }

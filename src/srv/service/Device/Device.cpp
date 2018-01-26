@@ -13,53 +13,49 @@
 using namespace std;
 using namespace soci;
 
+
 namespace celeste
 {
 namespace resource
 {   
     // --- CLASS DEFINITIONS ---------
-    Devices<nlohmann::json>::Devices(const std::string& dbSettings, size_t max_connections)
-        : modelAssociator(dbSettings, max_connections)
+    Devices<nlohmann::json>::Devices(const std::string& dbSettings)
+        : m_dbSettings(dbSettings)
     {
         set_path("/device");
         set_method_handler("GET", [this] (const std::shared_ptr<restbed::Session> session) {GET(session);});
         set_method_handler("POST",   [this] (const std::shared_ptr<restbed::Session> session) {POST(session);});
         set_method_handler("DELETE", [this] (const std::shared_ptr<restbed::Session> session) {DELETE(session);});
-    
-        for (int i = 0; i < max_connections; ++i)
-            sqlPool.emplace(mysql, dbSettings);
     }
 
     Device Devices<nlohmann::json>::get(const std::string& deviceId)
     {
-
-        auto sql = sqlPool.acquire_wait();
+        session sql(mysql, m_dbSettings);
         Device dev;
-        *sql << "select * from Device where id = :DeviceId", into(dev), use(deviceId);
-
-        if (sql->got_data())
+        sql << "select * from Device where id = :DeviceId", into(dev), use(deviceId);
+        if (sql.got_data())
             return dev;
         else
-            throw status::DEVICE_NOT_FOUND;
+            throw status::DEVICE_NOT_FOUND;        
     }
 
     void Devices<nlohmann::json>::insert(const value_type& device)
     {
-        auto sql = sqlPool.acquire_wait();
-        *sql << "insert into Device(id, man, model, sn) values(:DeviceId, :man, :mod, :sn)",
+        session sql(mysql, m_dbSettings);
+        sql << "insert into Device(id, man, model, sn) values(:DeviceId, :man, :mod, :sn)",
             use(device);
     }
 
     void Devices<nlohmann::json>::insert(const value_type& device, std::vector<std::string> models)
     {
-        auto sql = sqlPool.acquire_wait();
+        session sql(mysql, m_dbSettings);
         
-        transaction tr(*sql);
-        *sql << "insert into Device(id, man, model, sn) values(:DeviceId, :man, :mod, :sn)",
+        transaction tr(sql);
+        sql << "insert into Device(id, man, model, sn) values(:DeviceId, :man, :mod, :sn)",
             use(device);
 
         string modelId;
-        statement stmt = (sql->prepare 
+        statement stmt = (sql.prepare 
                           << "insert into Device_Model(Device_id, Model_id) "
                           << "values(:DeviceId, :ModelId)",
                           use(device.DeviceId), use(modelId));
@@ -76,8 +72,8 @@ namespace resource
 
     void Devices<nlohmann::json>::remove(const std::string& deviceId)
     {
-        auto sql = sqlPool.acquire_wait();
-        *sql << "delete from Device where id = :DeviceId",
+        session sql(mysql, m_dbSettings);
+        sql << "delete from Device where id = :DeviceId",
             use(deviceId);
     }
 

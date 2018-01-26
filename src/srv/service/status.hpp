@@ -115,6 +115,7 @@ namespace status
         {TYPE_MUST_BE_NUMERIC,      "The type of the readings must be numeric for this method to work."},
         {VALUE_IS_OUT_OF_RANGE,     "One of the passed values falls out of range."},
         {TYPE_MUST_BE_ARRAY,        "Field must be array of elements."},
+        {1022,                      "Duplicate key."},
     };
 }
 }

@@ -17,25 +17,24 @@ namespace celeste
 namespace resource
 {   
     // --- CLASS DEFINITIONS ---------
-    Points<nlohmann::json>::Points(const std::string& dbSettings, size_t max_connections)
+    Points<nlohmann::json>::Points(const std::string& dbSettings)
+        : m_dbSettings(dbSettings)
     {
         set_path("/point");
         set_method_handler("GET", [this] (const std::shared_ptr<restbed::Session> session) {GET(session);});
         set_method_handler("POST",   [this] (const std::shared_ptr<restbed::Session> session) {POST(session);});
         set_method_handler("DELETE", [this] (const std::shared_ptr<restbed::Session> session) {DELETE(session);});
-    
-        for (int i = 0; i < 10; ++i)
-            sqlPool.emplace(mysql, dbSettings);
     }
 
     Point Points<nlohmann::json>::get(const std::string& pointId,
                                       const std::string& modelId)
     {
-        auto sql = sqlPool.acquire_wait();
+        session sql(mysql, m_dbSettings);
         Point point;
-        *sql    << "select * from Point where id = :PointId and Model_id = :ModelId",
-                use(pointId), use(modelId), into(point);
-        if (sql->got_data())
+
+        sql << "select * from Point where id = :PointId and Model_id = :ModelId",
+            use(pointId), use(modelId), into(point);
+        if (sql.got_data())
             return point;
         else
             throw status::POINT_NOT_FOUND;
@@ -43,17 +42,39 @@ namespace resource
 
     void Points<nlohmann::json>::insert(const value_type& point)
     {
-        auto sql = sqlPool.acquire_wait();
-        *sql    << "insert into Point(id, Model_id, type, u, d) values(:PointId, :ModelId, :type, :u, :d)",
-                use(point);
+        session sql(mysql, m_dbSettings);
+        statement stmt = (sql.prepare 
+                          << "insert into Point(id, Model_id, type, u, d) "
+                          << "values(:PointId, :ModelId, :type, :u, :d)",
+                          use(point)
+                          );
+        try
+        {
+            stmt.execute(true);
+        } catch (const mysql_soci_error& e)
+        {
+            sql.reconnect();
+            stmt.execute(true);
+        }
     }
 
     void Points<nlohmann::json>::remove(const std::string& pointId,
                                         const std::string& modelId)
     {
-        auto sql = sqlPool.acquire_wait();
-        *sql    << "delete from Point where id = :PointId and Model_id = :ModelId",
-                use(pointId), use(modelId);
+        session sql(mysql, m_dbSettings);
+        statement stmt = (sql.prepare 
+                          << "delete from Point "
+                          << "where id = :PointId and Model_id = :ModelId",
+                          use(pointId), use(modelId)
+                        );
+        try
+        {
+            stmt.execute(true);
+        } catch (const mysql_soci_error& e)
+        {
+            sql.reconnect();
+            stmt.execute(true);
+        }
     }
 
     void Points<nlohmann::json>::GET(const std::shared_ptr<restbed::Session> session)

@@ -12,23 +12,21 @@ namespace celeste
 {
 namespace resource
 {
-    DeviceStatusService<nlohmann::json>::DeviceStatusService(const string& dbSettings, size_t max_connections)
+    DeviceStatusService<nlohmann::json>::DeviceStatusService(const string& dbSettings)
+        : m_dbSettings(dbSettings)
     {
         set_paths({"/device/status", "/device/status/arduino"});
         set_method_handler("GET", [this] (const shared_ptr<restbed::Session> session) {GET(session);});
         set_method_handler("PUT", [this] (const shared_ptr<restbed::Session> session) {PUT(session);});
-        
-        for (int i = 0; i < max_connections; ++i)
-            sqlPool.emplace(mysql, dbSettings);
     }
 
 
     DeviceStatus DeviceStatusService<nlohmann::json>::get_status(const string& deviceId)
     {
-        auto sql = sqlPool.acquire_wait();
+        session sql(mysql, m_dbSettings);
         indicator ind;
         std::string blob;
-        *sql << "select status from DeviceStatus where Device_id = :DeviceId",
+        sql << "select status from DeviceStatus where Device_id = :DeviceId",
             soci::into(blob, ind), soci::use(deviceId);
         
         if (ind != i_ok)
@@ -48,8 +46,8 @@ namespace resource
 
     void DeviceStatusService<nlohmann::json>::update_status(const std::string& deviceId, const json_type& new_status)
     {
-        auto sql = sqlPool.acquire_wait();
-        statement stmt = (sql->prepare
+        session sql(mysql, m_dbSettings);
+        statement stmt = (sql.prepare
                           << "insert into DeviceStatus (Device_id, status) values(:DeviceId, :status) "
                           << "on duplicate key "
                           << "update status=:status",
@@ -113,13 +111,11 @@ namespace nlohmann
 
     void adl_serializer<DeviceStatus>::to_json(json& j, const DeviceStatus& obj)
     {
-        // j["DeviceId"] = obj.DeviceId;
         j = obj.status;
     }
 
     void adl_serializer<DeviceStatus>::from_json(const json& j, DeviceStatus& obj)
     {
-        // obj.DeviceId = j.at("DeviceId");
         obj.status = j.at("status");
     }
 }

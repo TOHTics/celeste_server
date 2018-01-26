@@ -21,22 +21,19 @@ namespace resource
 {   
 
     // --- CLASS DEFINITIONS ---------
-    DeviceModelAssocs<nlohmann::json>::DeviceModelAssocs(const std::string& dbSettings, size_t max_connections)
+    DeviceModelAssocs<nlohmann::json>::DeviceModelAssocs(const std::string& dbSettings)
     {
         set_path("/device_model");
         set_method_handler("GET", [this] (const std::shared_ptr<restbed::Session> session) {GET(session);});
         set_method_handler("POST",   [this] (const std::shared_ptr<restbed::Session> session) {POST(session);});
         set_method_handler("DELETE", [this] (const std::shared_ptr<restbed::Session> session) {DELETE(session);});
-        
-        for (int i = 0; i < max_connections; ++i)
-            sqlPool.emplace(mysql, dbSettings);
     }
 
     std::vector<DeviceModelAssoc> DeviceModelAssocs<nlohmann::json>::get(const std::string& deviceId)
     {
-        auto sql = sqlPool.acquire_wait();
+        session sql(mysql, m_dbSettings);
 
-        rowset<DeviceModelAssoc> res = (sql->prepare << "select * from Device_Model where Device_id = :DeviceId", use(deviceId));
+        rowset<DeviceModelAssoc> res = (sql.prepare << "select * from Device_Model where Device_id = :DeviceId", use(deviceId));
         
         std::vector<DeviceModelAssoc> assocs;
         assocs.reserve(50);
@@ -47,9 +44,9 @@ namespace resource
 
     std::vector<DeviceModelAssoc> DeviceModelAssocs<nlohmann::json>::get(const std::string& deviceId, const std::string& modelId)
     {
-        auto sql = sqlPool.acquire_wait();
+        session sql(mysql, m_dbSettings);
 
-        rowset<DeviceModelAssoc> res = (sql->prepare 
+        rowset<DeviceModelAssoc> res = (sql.prepare 
                                         << "select * from Device_Model where Device_id = :DeviceId and Model_id = :ModelId",
                                         use(deviceId), use(modelId));
         
@@ -63,14 +60,14 @@ namespace resource
 
     DeviceModelAssoc DeviceModelAssocs<nlohmann::json>::get(const std::string& deviceId, const std::string& modelId, int idx)
     {   
-        auto sql = sqlPool.acquire_wait();
+        session sql(mysql, m_dbSettings);
         
         DeviceModelAssoc assoc;
-        *sql    << "select * from Device_Model"
+        sql     << "select * from Device_Model"
                 << "where Device_id = :DeviceId and Model_id = :ModelId and idx = :idx",
                 use(deviceId), use(modelId), use(idx), into(assoc);
 
-        if (sql->got_data())
+        if (sql.got_data())
             return assoc;
         else
             throw status::DEVICE_MODEL_NOT_FOUND;
@@ -78,16 +75,16 @@ namespace resource
 
     void DeviceModelAssocs<nlohmann::json>::associate(const DeviceModelAssoc& assoc)
     {
-        auto sql = sqlPool.acquire_wait();
-        *sql    << "insert into Device_Model(Device_id, Model_id, note, idx) values(:DeviceId, :ModelId, :note, :idx)",
+        session sql(mysql, m_dbSettings);
+        sql    << "insert into Device_Model(Device_id, Model_id, note, idx) values(:DeviceId, :ModelId, :note, :idx)",
                 use(assoc.DeviceId), use(assoc.ModelId), use(assoc.note), use(assoc.idx);
     }
 
     void DeviceModelAssocs<nlohmann::json>::dissasociate(const std::string& deviceId, const std::string& modelId, int idx)
     {
-        auto sql = sqlPool.acquire_wait();
+        session sql(mysql, m_dbSettings);
         
-        *sql    << "delete from Device_Model where"
+        sql    << "delete from Device_Model where"
                 << "Device_id = :DeviceId and Model_id = :ModelId and idx = :idx",
                 use(deviceId), use(modelId), use(idx);
     }

@@ -35,21 +35,37 @@ namespace resource
     class DeviceStatusService<nlohmann::json> : public restbed::Resource
     {
     public:
-        // --- Typedefs --------------
+        // ==== Typedefs =================================
         typedef nlohmann::json      json_type;
 
-        // --- Constructors ----------
-        DeviceStatusService(const std::string& dbSettings, size_t max_connections);
+        // ==== Constructors =============================
+        DeviceStatusService(const std::string& dbSettings);
+
+        /**
+         * @brief      Retrieves the status of a Device.
+         *
+         * @param[in]  deviceId  The device identifier
+         *
+         * @return     The status.
+         */
         DeviceStatus get_status(const std::string& deviceId);
+
+        /**
+         * @brief      Updates the status of a Device.
+         *
+         * @param[in]  deviceId    The device identifier
+         * @param[in]  new_status  The new status
+         */
         void update_status(const std::string& deviceId, const json_type& new_status);
 
 
     private:
-        // --- Private methods -------
+        // ==== Private methods ==========================
         void GET(const std::shared_ptr<restbed::Session> session);
         void PUT(const std::shared_ptr<restbed::Session> session);
 
-        carlosb::object_pool<soci::session> sqlPool;
+        // ==== Private members ==========================
+        std::string m_dbSettings;
     };
 }
 }

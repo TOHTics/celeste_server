@@ -23,12 +23,12 @@ namespace celeste
 namespace resource
 {   
     ReadingFetcher::ReadingFetcher(const string& dbSettings)
-        :   sql(mysql, dbSettings),
-            dbSettings(dbSettings)
+        :   m_sql(mysql, dbSettings),
+            m_dbSettings(dbSettings)
     {}
 
     ReadingFetcher::ReadingFetcher(const ReadingFetcher& other)
-        :   ReadingFetcher(other.dbSettings)
+        :   ReadingFetcher(other.m_dbSettings)
     {}
 
     // ==== LastReadRequest fetch implementations ========
@@ -37,8 +37,20 @@ namespace resource
     ReadingFetcher::fetch(const LastReadRequest& req)
     const
     {
+        // "ping" the server
+        try
+        {
+            m_sql << "select 1 from dual";
+        } catch (mysql_soci_error&)
+        {
+            m_sql.reconnect();
+        } catch (exception&)
+        {
+            m_sql.open(mysql, m_dbSettings);
+        }
+
         Reading out;
-        sql 
+        m_sql 
             << "select sf, t, v from PointRecord "
             << "where Device_id = :DeviceId "
             << "and Model_id = :ModelId "
@@ -50,7 +62,7 @@ namespace resource
             use(req.PointId, "PointId");
 
         int type;
-        sql << "select type from Point where id = :PointId and Model_id = :ModelId",
+        m_sql << "select type from Point where id = :PointId and Model_id = :ModelId",
         into(type), use(req.PointId, "PointId"), use(req.ModelId, "ModelId");
 
         string2point(type, boost::get<string>(out.value), out.value);
@@ -64,6 +76,7 @@ namespace resource
     ReadingFetcher::fetch(const RangeReadRequest& req)
     const
     {
+        session sql(mysql, m_dbSettings);
         Reading read;
         statement stmt = (sql.prepare 
                           << "select sf, t, v from PointRecord "
@@ -83,7 +96,13 @@ namespace resource
                           use(req.end,         "end"),
                           use(req.limit,       "limn")
                           );
-        stmt.execute();
+        try
+        {
+           stmt.execute(true); 
+        } catch (mysql_soci_error&)
+        {
+            sql.reconnect();
+        }
 
         int type;
         sql << "select type from Point where id = :PointId and Model_id = :ModelId",
@@ -105,6 +124,7 @@ namespace resource
     map<string, vector<pair<int, double>>> ReadingFetcher::fetch(const YesterdayReadRequest& req)
     const
     {
+        session sql(mysql, m_dbSettings);
         pair<int, double> avg;
         indicator ind;
         string deviceId;
@@ -125,8 +145,7 @@ namespace resource
         for (const auto& id : req.DeviceIds)
         {
             deviceId = id;
-            stmt.execute(true);
-
+            stmt.execute(true); 
             vector<pair<int, double>> avgs;
             if (sql.got_data())
             {
@@ -146,6 +165,7 @@ namespace resource
     map<string, vector<pair<int, double>>> ReadingFetcher::fetch(const TodayReadRequest& req)
     const
     {
+        session sql(mysql, m_dbSettings);
         pair<int, double> avg;
         indicator ind;
         string deviceId;
@@ -166,6 +186,7 @@ namespace resource
         for (const auto& id : req.DeviceIds)
         {
             deviceId = id;
+
             stmt.execute(true);
 
             vector<pair<int, double>> avgs;
@@ -188,6 +209,7 @@ namespace resource
     ReadingFetcher::fetch(const AccumulatedReadRequest& req)
     const
     {
+        session sql(mysql, m_dbSettings);
         double total;
         string deviceId;
         indicator ind;
@@ -224,6 +246,7 @@ namespace resource
     map<string, double> ReadingFetcher::fetch(const AverageReadRequest& req)
     const
     {
+        session sql(mysql, m_dbSettings);
         double avg;
         indicator ind;
         string deviceId;
@@ -261,6 +284,7 @@ namespace resource
     map<string, vector<pair<int, double>>> ReadingFetcher::fetch(const DayReadRequest& req)
     const
     {
+        session sql(mysql, m_dbSettings);
         pair<int, double> avg;
         indicator ind;
         string deviceId;
@@ -282,8 +306,7 @@ namespace resource
         for (const auto& id : req.DeviceIds)
         {
             deviceId = id;
-            stmt.execute(true);
-
+            stmt.execute(true); 
             vector<pair<int, double>> avgs;
             if (sql.got_data())
             {
@@ -302,7 +325,8 @@ namespace resource
     template <>
     map<string, vector<pair<int, double>>> ReadingFetcher::fetch(const MonthReadRequest& req)
     const
-    {   
+    {
+    session sql(mysql, m_dbSettings);   
         pair<int, double> avg;
         indicator ind;
         string deviceId;
@@ -324,8 +348,7 @@ namespace resource
         for (const auto& id : req.DeviceIds)
         {
             deviceId = id;
-            stmt.execute(true);
-
+            stmt.execute(true); 
             vector<pair<int, double>> avgs;
             if (sql.got_data())
             {
@@ -345,6 +368,7 @@ namespace resource
     map<string, vector<pair<int, double>>> ReadingFetcher::fetch(const YearReadRequest& req)
     const
     {
+        session sql(mysql, m_dbSettings);
         pair<int, double> avg;
         indicator ind;
         string deviceId;
@@ -361,13 +385,11 @@ namespace resource
                           use(req.PointId,  "PointId"),
                           use(req.year, "year")
                           );  
-        
         map<string, vector<pair<int, double>>> devMap;
         for (const auto& id : req.DeviceIds)
         {
             deviceId = id;
-            stmt.execute(true);
-
+            stmt.execute(true); 
             vector<pair<int, double>> avgs;
             if (sql.got_data())
             {

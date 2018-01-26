@@ -63,7 +63,7 @@ namespace resource
          * @param[in]  dbSettings  DB settings for connection.
          * @param[in]  max_connections  max DB connections.
          */
-        Devices(const std::string& dbSettings, size_t max_connections);
+        Devices(const std::string& dbSettings);
 
         // ==== Public methods =============================
 
@@ -106,8 +106,7 @@ namespace resource
         void DELETE(const std::shared_ptr<restbed::Session> session);
 
         // ==== Member attributes =========================
-        DeviceModelAssocs<json_type>    modelAssociator;
-        carlosb::object_pool<soci::session> sqlPool;
+        std::string                     m_dbSettings;
     };
 }
 }

@@ -11,13 +11,13 @@ namespace celeste
     {
         cout << "\e[33m";
         cout << "@ Making resources...\n";
-        auto devices = make_shared<DeviceResource>(dbSettings, worker_limit);
-        auto models = make_shared<ModelResource>(dbSettings, worker_limit);
-        auto points = make_shared<PointResource>(dbSettings, worker_limit);
+        auto devices = make_shared<DeviceResource>(dbSettings);
+        auto models = make_shared<ModelResource>(dbSettings);
+        auto points = make_shared<PointResource>(dbSettings);
         auto upload = make_shared<LoggerResource>(dbSettings, worker_limit);
         auto reading = make_shared<ReadingResource>(dbSettings, worker_limit);
-        auto device_model = make_shared<DeviceModelAssocResource>(dbSettings, worker_limit);
-        auto device_status = make_shared<DeviceStatusResource>(dbSettings, worker_limit);
+        auto device_model = make_shared<DeviceModelAssocResource>(dbSettings);
+        auto device_status = make_shared<DeviceStatusResource>(dbSettings);
 
         cout << "@ Configuring server...\n";
         m_srv_settings = make_shared<restbed::Settings>();
