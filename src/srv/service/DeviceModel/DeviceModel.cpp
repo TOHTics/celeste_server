@@ -22,6 +22,7 @@ namespace resource
 
     // --- CLASS DEFINITIONS ---------
     DeviceModelAssocs<nlohmann::json>::DeviceModelAssocs(const std::string& dbSettings)
+        : m_dbSettings(dbSettings)
     {
         set_path("/device_model");
         set_method_handler("GET", [this] (const std::shared_ptr<restbed::Session> session) {GET(session);});
@@ -58,12 +59,12 @@ namespace resource
     }
 
 
-    DeviceModelAssoc DeviceModelAssocs<nlohmann::json>::get(const std::string& deviceId, const std::string& modelId, int idx)
+    DeviceModelAssoc DeviceModelAssocs<nlohmann::json>::get(const std::string& deviceId, const std::string& modelId, const std::string& idx)
     {   
         session sql(mysql, m_dbSettings);
         
         DeviceModelAssoc assoc;
-        sql     << "select * from Device_Model"
+        sql     << "select * from Device_Model "
                 << "where Device_id = :DeviceId and Model_id = :ModelId and idx = :idx",
                 use(deviceId), use(modelId), use(idx), into(assoc);
 
@@ -80,7 +81,7 @@ namespace resource
                 use(assoc.DeviceId), use(assoc.ModelId), use(assoc.note), use(assoc.idx);
     }
 
-    void DeviceModelAssocs<nlohmann::json>::dissasociate(const std::string& deviceId, const std::string& modelId, int idx)
+    void DeviceModelAssocs<nlohmann::json>::dissasociate(const std::string& deviceId, const std::string& modelId, const std::string& idx)
     {
         session sql(mysql, m_dbSettings);
         
@@ -108,7 +109,7 @@ namespace resource
         {
             response = this->get(data["DeviceId"]);
         }
-        else if (data["ModelId"].is_null())
+        else if (data["idx"].is_null())
         {
             response = this->get(data["DeviceId"], data["ModelId"]);
         }

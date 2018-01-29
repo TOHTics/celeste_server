@@ -92,7 +92,7 @@ namespace resource
          *
          * @return     { description_of_the_return_value }
          */
-        DeviceModelAssoc get(const std::string& deviceId, const std::string& modelId, int idx);
+        DeviceModelAssoc get(const std::string& deviceId, const std::string& modelId, const std::string& idx);
 
         /**
          * @brief      Associates a Model to a Device using a `DeviceModelAssoc` object.
@@ -110,7 +110,7 @@ namespace resource
          * @param[in]  modelId   The model identifier
          * @param[in]  idx       The index
          */
-        void dissasociate(const std::string& deviceId, const std::string& modelId, int idx);
+        void dissasociate(const std::string& deviceId, const std::string& modelId, const std::string& idx);
 
     private:
         // --- Private methods -------
