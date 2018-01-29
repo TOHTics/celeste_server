@@ -34,6 +34,7 @@ namespace resource
 
         id_type                         ModelId;
         boost::optional<std::string>    ns;
+        std::vector<std::string>        PointIds;
     };
 
     /**

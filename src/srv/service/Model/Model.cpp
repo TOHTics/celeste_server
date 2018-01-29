@@ -32,10 +32,27 @@ namespace resource
         Model model;
         sql    << "select * from Model where id = :ModelId",
                 use(modelId), into(model);
-        if (sql.got_data())
-            return model;
-        else
+
+        if (! sql.got_data())
             throw status::MODEL_NOT_FOUND;
+
+        indicator ind;
+        string pointId;
+        statement stmt = (sql.prepare << "select * from Point where Model_id = :ModelId",
+                          into(pointId, ind), use(modelId)
+                          );
+
+        vector<string> pointIds;
+        stmt.execute(true);
+        pointIds.reserve(50);     
+        
+        do
+        {
+            pointIds.push_back(pointId);
+        } while (stmt.fetch());
+        model.PointIds = move(pointIds);
+
+        return model;
     }
 
     void Models<nlohmann::json>::insert(const value_type& model)
@@ -153,15 +170,17 @@ namespace nlohmann
     {
         j = json {
             {"ModelId", obj.ModelId},
-            {"ns", obj.ns}
+            {"ns",      obj.ns},
+            {"Points",  obj.PointIds}
         };
     }
 
     void adl_serializer<Model>::from_json(const json& j, Model& obj)
     {
         obj = Model {
-            .ModelId = j.at("ModelId"),
-            .ns = j.at("ns")
+            .ModelId    = j.at("ModelId"),
+            .ns         = j.at("ns"),
+            .PointIds   = j.at("Points")
         };
     }
 }
