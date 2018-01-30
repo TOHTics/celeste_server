@@ -35,7 +35,7 @@ if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
 endif()
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++ -std=c++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -Wall -Wextra")
 
@@ -47,7 +47,9 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # ---- Server ---------------------------------
 file(GLOB_RECURSE SERVER_SRC
     "src/*.hpp"
+    "src/*.h"
     "src/*.cpp"
+    "src/*.cc"
     )
 set(server ${SERVER_SRC})
 
@@ -67,7 +69,8 @@ find_package(json           REQUIRED)
 find_package(object_pool    REQUIRED)
 find_package(Boost          REQUIRED
              COMPONENTS
-             date_time)
+             date_time
+             program_options)
 
 include_directories("src/")
 include_directories(".")
@@ -114,3 +117,5 @@ else()
 endif()
 
 target_link_libraries(celeste_server ${Boost_LIBRARIES})
+
+configure_file("${CMAKE_SOURCE_DIR}/logger-conf.conf" "${CMAKE_BINARY_DIR}/logger-conf.conf" COPYONLY)
