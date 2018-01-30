@@ -22,7 +22,7 @@ void print_welcome_message()
 
 int main( const int argc, const char** argv)
 {  
-    std::string dbSettings("host=localhost db=mydb user=root password=root port=3306");
+    std::string dbSettings("db=mydb user=root password=root port=3306");
     print_welcome_message();
 
     celeste_server server(9001, dbSettings, 10, "celeste");
