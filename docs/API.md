@@ -18,7 +18,7 @@ The Celeste system to query and process readings from Loggers connected to Solar
 # Device
 ---
 
-````
+```
 @ - - - - - - - - @
 |  M is a Model   |
 @ - - - - - - - - @
@@ -31,7 +31,7 @@ The Celeste system to query and process readings from Loggers connected to Solar
 | .     . . |    Internet    8           o
 | M . . . M |                @ o o o o o @
 @-----------@
-````
+```
 
 A Device is that which contains the sensors (a.k.a Models) like a Voltmeter or a Thermometer. It is the one in charge of assembling the "Device Data Packets", which are the collection of readings from its models. The API offers these operations:
 
@@ -42,40 +42,41 @@ A Device is that which contains the sensors (a.k.a Models) like a Voltmeter or a
 |   `remove`  | DELETE  | `/celeste/device/`   | Deletes a device on the DB along with its associated records. |
 
 ## `get`
+
 ### Request
-We can query the details for a device using the following JSON format:
 
-````
-{
-	"DeviceId" : string
-}
-````
-
-Where:
+We can query the details for a device using the following query parameters:
 
 | Field       | R/O       | Description                       |
 |:-----------:|:---------:|-----------------------------------|
 | `DeviceId`  | Required  | Unique identifier for the device. |
 
+E.g. 
+
+```
+http://work.tohtics.com:9001/celeste/device?DeviceId=TEST
+```
+
 ### Response
-````http
+```http
 Status Code:    200
 Status Message: OK
-````
-````
+```
+
+```
 {
 	"DeviceId" : string,
 	"man" : string,
 	"mod" : string,
 	"sn"  : string
 }
-````
+```
 
 ## `insert`
 ### Request
 We can insert a new device into the database with the following format:
 
-````
+```
 {
     "DeviceId" : string,
     "man" : string,
@@ -89,7 +90,7 @@ We can insert a new device into the database with the following format:
        ...
     ]
 }
-````
+```
 
 Where:
 
@@ -103,19 +104,20 @@ Where:
 
 
 ### Response
-````http
+```http
 Status Code:    200
 Status Message: OK
-````
+```
 
 ## `remove`
 The `remove` operation will delete the device on the database **along with every and any record** that the device has sent. **This cannot be undone**.
+
 ### Request
-````
-{
-	"DeviceId" : string
-}
-````
+
+```
+http://[host]:[port]/celeste/device?DeviceId=[IDENTIFIER]
+```
+
 Where:
 
 | Field       | R/O       | Description                       |
@@ -123,10 +125,10 @@ Where:
 | `DeviceId`  | Required  | Unique identifier for the device. |
 
 ### Response
-````http
+```http
 Status Code:    200
 Status Message: OK
-````
+```
 If one attempts to `remove` a device which does not exist in the database, then the operation will return the response.
 
 
@@ -134,7 +136,7 @@ If one attempts to `remove` a device which does not exist in the database, then 
 
 # Model
 ---
-````
+```
     is read by
 M @-------------\
 M @--------------\
@@ -144,7 +146,7 @@ M @--------------\
 M @--------------/             @ - - - - - - - - @
 M @-------------/
 
-````
+```
 A Model can be a sensor or system such as:
 
 - GPS
@@ -162,14 +164,9 @@ Each Model measures a set of Points. For example, a GPS measures latitude, altit
 |   `remove`  | DELETE  | `/celeste/model/`    | Deletes a model on the DB along with its associated records.                                                              |
 
 ## `get`
-### Request
-We can query the details for a device using the following JSON format:
 
-````
-{
-	"ModelId" : string
-}
-````
+### Request
+We can query the details for a device using the following query parameters:
 
 Where:
 
@@ -177,52 +174,59 @@ Where:
 |:-----------:|:---------:|-----------------------------------|
 | `ModelId`   | Required  | Unique identifier for the model.  |
 
+E.g. 
+
+```
+http://[host]:[port]/celeste/model?ModelId=[IDENTIFIER]
+```
+
 ### Response
-````http
-Status Code:    200
-Status Message: OK
-````
-````
+
+```
 {
 	"ModelId": string,
-	"ns": string
+	"ns": string,
+	"Points" : [string, ...]
 }
-````
+```
 
 ## `insert`
 ### Request
 We can insert a new device into the database with the following format:
 
-````
+```
 {
 	"ModelId" : string,
 	"ns" : string
 }
-````
+```
 
 Where:
 
 | Field       | R/O       | Description                          |
 |:-----------:|:---------:|--------------------------------------|
 | `ModelId`   | Required  | Unique identifier for the Model.     |
-| `ns`        | Optional  | Namespace or Notes for the Model. One may use this to annotate this particular model.                                  |
+| `ns`        | Optional  | Namespace or Notes for the Model. One may use this to annotate this particular model. |
 
 
 
 ### Response
-````http
+
+```http
 Status Code:    200
 Status Message: OK
-````
+```
 
 ## `remove`
+
 The `remove` operation will delete the model on the database **along with every and any record** that the model has sent. **This cannot be undone**.
+
 ### Request
-````
-{
-	"ModelId" : string
-}
-````
+
+```
+http://[host]:[port]/celeste/model?ModelId=[IDENTIFIER]
+```
+
 Where:
 
 | Field       | R/O       | Description                       |
@@ -230,14 +234,14 @@ Where:
 | `ModelId`  | Required  | Unique identifier for the model.   |
 
 ### Response
-````http
+```http
 Status Code:    200
 Status Message: OK
-````
+```
 If one attempts to `remove` a device which does not exist in the database, then the operation will return the response.
 
 
-# Device has Model
+# Model is assigned to Device
 ---
 
 This action associates a model to a device so that it is understood as *the device with identifier `device_id` has a model `model_id`*.
@@ -249,6 +253,7 @@ This action associates a model to a device so that it is understood as *the devi
 |   `dissasociate`  | DELETE  | `/celeste/device_model/`   | Dissasociates a Model from a Device. |
 
 ## `get`
+
 This method has the following functionality:
 
 - Gets a particular association given by `DeviceId`, `ModelId`, `idx`. That is, gets the details of the association between the aggregated model `ModelId` and the `DeviceId` with index `idx`.
@@ -256,13 +261,12 @@ This method has the following functionality:
 - Gets all the Model associations that the `DeviceId`. Gets all of the associations the Device `DeviceId` has.
 
 ### Request
-````
-{
-	"DeviceId" : integer
-	"ModelId" : string
-	"idx" : string
-}
-````
+
+E.g. 
+
+```
+http://[host]:[port]/celeste/device?DeviceId=[IDENTIFIER]&ModelId=[IDENTIFIER]&idx=[INDEX]
+```
 
 Where:
 
@@ -273,41 +277,39 @@ Where:
 | `idx`   | Optional | The aggregated index for Devices that may have multiple identical Models. If the Device only has one of `ModelId` then you should set `idx = 0`. |
 
 ### Response
-````http
+```http
 Status Code:    200
 Status Message: OK
-````
+```
 
 If all fields are set then:
 
-````
+```
 {
 	"DeviceId" : string,
 	"ModelId" : string,
 	"idx" : integer,
 	"note" : string
 }
-````
+```
 
-If only `DeviceId` and `ModelId` are set:
+If only `DeviceId` and `ModelId` are set, it returns the association between the Device and Models with the particular identifier:
 
-````
-{
-	[
-		{
-			"DeviceId" : string,
-			"ModelId" : string,
-			"idx" : integer,
-			"note" : string
-		},
-		.
-		.
-		.
-	]
-}
-````
+```
+[
+	{
+		"DeviceId" : string,
+		"ModelId" : string,
+		"idx" : integer,
+		"note" : string
+	},
+	.
+	.
+	.
+]
+```
 
-If only `DeviceId` is set, then same as above.
+If only `DeviceId` is set, then same as above but it will return all of the Models associated with the Device.
 
 ## `associate`
 
@@ -315,13 +317,14 @@ Associates a Model with the Device. That is it "adds a Model to the Device". We 
 
 ### Request
 
-````
+```
 {
 	"DeviceId" : string,
 	"ModelId" : string,
-	"note" : string
+	"note" : string,
+	"idx" : integer
 }
-````
+```
 
 Where:
 
@@ -330,54 +333,42 @@ Where:
 | `DeviceId`  | Required  | Unique identifier for the model. Must already exist in the database.  |
 | `ModelId`   | Required  | Unique identifier for the model. Must already exist in the database. |
 | `note`   | Optional  | A note about the association. This may be used to differentiate a duplicate model that was already associated to the device. For example, we may have two Thermometers on the Model; one in the garden and one on the roof. We may differentiate both by setting note to `"note" : "Garden"` and the other to `"note" : "Roof"`.|
+| `idx` | Required | Aggregated index of the Device. For example, a Device might have two GPS. In which case, you might pass `idx : 2`. If not set, `idx` is defaulted to zero.
 
 ### Response
-````http
+```http
 Status Code:    200
 Status Message: OK
-````
+```
 
-````
-{
-	"idx" : integer
-}
-````
 The field `idx` indicates the index of the inserted model. For example, if there is already a model with the same `ModelId` on the Device then the response will look like:
 
-````
+```
 {
 	"idx" : 2
 }
-````
+```
 
 #### Example
 Let's assume we have a device with identifier `DeviceId = "A001-3312-312B"`. Let's also assume that we have inserted a model named `PowerMeter` which measures, for example, watts. We would like to tell the server that Device `4001` has a model `PowerMeter`. 
 
-````
+```
  ------------------                       ------------
 |  Device          | - - - - - - - - - - | PowerMeter |
 | Id:              |    reads from        ------------
 | 'A001-3312-312B' |
  ------------------
-````
+```
 
 Our request would look like:
 
-````
+```
 {
 	"DeviceId" : "A001-3312-312B"
 	"ModelId" : "PowerMeter"
 	"note" : "This sensor is located next to the Inverter!"
 }
-````
-
-And the response would look like:
-
-````
-{
-	"idx" : 0
-}
-````
+```
 
 ## `dissasociate`
 
@@ -385,13 +376,9 @@ Dissasociates a Model from a Device.
 
 ### Request
 
-````
-{
-	"DeviceId" : string,
-	"ModelId" : string,
-	"idx" : int
-}
-````
+```
+http://[host]:[port]/celeste/device?DeviceId=[IDENTIFIER]&ModelId=[IDENTIFIER]&idx=[INDEX]
+```
 
 Where:
 
@@ -403,10 +390,10 @@ Where:
 
 ### Response
 
-````http
+```http
 Status Code:    200
 Status Message: OK
-````
+```
 
 # Point
 ---
@@ -436,10 +423,9 @@ A Point needs to have a data type assigned to it. Currently the following types 
 
 | Type      | id  |
 | :-------: | :-: |
-| `string`  | 0   |
-| `integer` | 1   |
-| `double`  | 2   |
-| `float`   | 3   |
+| `integer` | 0   |
+| `float`   | 1   |
+| `string`  | 2   |
 
 The API offers the following operations:
 
@@ -454,28 +440,25 @@ The API offers the following operations:
 
 ### Request
 
-````
-{
-	"PointId" : string,
-	"ModelId" : string
-}
-````
+```
+http://[host]:[port]/celeste/point?PointId=[IDENTIFIER]&ModelId=[IDENTIFIER]
+```
 
 Where:
 
 | Field       | R/O       | Description                       |
 |:-----------:|:---------:|-----------------------------------|
 | `PointId`  | Required  | Unique identifier for the Point. Must already exist in the database.  |
-| `ModelId`   | Required  | Unique identifier for the Model. Must already exist in the database. |
+| `ModelId`   | Required  | Unique identifier for the Model to which the Point belongs to. Must already exist in the database. |
 
 ### Response
 
-````http
+```http
 Status Code:    200
 Status Message: OK
-````
+```
 
-````
+```
 {
 	"PointId" : string,
 	"ModelId" : string,
@@ -483,14 +466,14 @@ Status Message: OK
 	"u" : string,
 	"d" : string
 }
-````
+```
 
 
 ## `insert`
 
 ### Request
 
-````
+```
 {
 	"PointId" : string,
 	"ModelId" : string,
@@ -498,7 +481,7 @@ Status Message: OK
 	"u" : string,
 	"d" : string
 }
-````
+```
 
 Where:
 
@@ -512,21 +495,19 @@ Where:
 
 ### Response
 
-````http
+```http
 Status Code:    200
 Status Message: OK
-````
+```
 
 
 ## `remove`
 
 ### Request
-````
-{
-	"PointId" : string,
-	"ModelId" : string
-}
-````
+
+```
+http://[host]:[port]/celeste/model?PointId=[IDENTIFIER]&ModelId=[IDENTIFIER]
+```
 
 Where:
 
@@ -537,10 +518,10 @@ Where:
 
 ### Response
 
-````http
+```http
 Status Code:    200
 Status Message: OK
-````
+```
 
 
 # Reading
@@ -551,11 +532,13 @@ The Reading resource is a very important part of the Celeste system. It allows t
 |:-----------:|--------------------------------------------------|
 |  `last`     | Gets the last reading from a sensor on a device. |
 |  `range`    | Gets a range of readings from one starting date to an ending date. |
-| `hour` | Gets a range of the last hour's readings. TODO. |
-| `today` | Gets a range of all the readings from the start of the current day, to the current time. TODO. |
-| `week` | Gets a range of all the readings from the start of the current week to the current time. Each week starts on `Monday 00:00:01`. TODO. | 
-| `year` | Gets a range of all the readings from the start of the year to the current time. Each year starts on `January 1st 00:00:01`. TODO. |
-| `accumulated` | Gets the accumalated (or total) value of a range of readings. This is only valid for numerical values.
+| `accumulated` | Gets the accumalated (or total) value of a range of readings. |
+| `average` | Gets the average of the readings in a specified range. |
+| `day` | Gets an array of the average per hour of a given day's readings. |
+| `month` | Gets an array of the average per day of a given month's readings. |
+| `year` | Gets an array of the average per month of a given year's readings. |
+| `yesterday` | Gets an array of the average per hour of today's readings. |
+| `today` | Gets an array of the average per hour of today's readings. |
 
 ## Requesting a Reading
 To request the server for a reading, you must send certain parameters that allow the server to answer back with the data. 
@@ -564,53 +547,57 @@ The API offers the following operations:
 
 | Operation   | Method  | Url                   | Description                           |
 |:-----------:|:-------:|-----------------------|---------------------------------------|
-|   `get`     | GET     | `/celeste/reading/`   | Gets a "reading" of information. This reading might be an actual reading, a statistic, a document, etc.   |
+|   `get`     | POST     | `/celeste/reading/`   | Gets a "reading" of information. This reading might be an actual reading, a statistic, a document, etc.   |
 
+**The method is POST since we eventually might request more complex readings.**
 
+If you're gonna make a lot of requests, we suggest utilizing a `keep-alive` connection. To do this, simply use the header:
 
-In general, **all reading requests will require the following 4 parameters**:
+```http
+Connection: keep-alive
+```
+
+Which will keep the connection alive for up to 20 seconds.
+
+## `last`
+
+Retrieves the last reading uploaded to the server. Note that if the Device is not uploading data then this method will always return the same value.
+
+### Request
+
+```
+{
+    "DeviceId" : string,
+    "ModelId" : string,
+    "PointId" : string,
+    "method" : "last"
+}
+```
 
 | Parameter   | Description                                      |
 |:-----------:|--------------------------------------------------|
 |  `DeviceId` | Unique identifier of a device.                   |
 |  `ModelId`  | Unique identifier of a model on the device.      |
 |  `PointId`  | Unique identifier of a point which belongs to the model. |
-|  `method`   | Which reading method to use. E.g. `"last"`, `"range"`, etc.
-
-These three parameters allow the server to pinpoint exactly which measurement we want to query. Thus the request body for the reading will look like:
-
-````
-{
-	"DeviceId" : string,
-	"ModelId" : string,
-	"PointId" : string
-	"method" : string
-	
-	// Other parameters
-	// ...
-}
-````
-
-To summarize, every request shall require the four mentioned parameters.
-There, however, might be more parameters for other types of reading and each reading will have a different response depending on `method`. The following sections will formalize these details.
-
-## `last`
-
-This action obtains the last reading recorded by a device. For example, we might have a Device which logs the temperature from a Thermometer every 10 minutes. There will be many records available in the DB. Namely, every single record from the start of logging to the current time. It is often of interest to consult the last reading logged by the device. In order to do this we set the method to `"method" : "last"`. No other parameters, except the ones mentioned in "Requesting a Reading" are needed.
+|  `method`   | `last` |
+|  `start`      | Start time. |
+|  `end`      | End time. |
 
 ### Response
-````http
+
+```http
 Status Code:    200
 Status Message: OK
-````
+```
 
-````
+```
 {
 	"value" : string, integer, double,
 	"sf" : double
 	"t" : string
 }
-````
+```
+
 Where:
 
 | Field     | Description                                      |
@@ -621,23 +608,30 @@ Where:
 
 ## `range` 
 
-To obtain a range of readings we first define what we mean. A *range of readings* is an ordered list of values. The list* is ordered in **ascending order** starting with the earliest date, down to the latest. For this reading, we need two extra parameters: `start` and `end` where `end > start`. That is, `end` is the later date. To employ this method we set `"method" : "last"`.
+Retrieves a range of readings in the interval from start to end. That is, an array of readings. The list is in descending order, with the first entry being the closest time to `end`.
+
 
 | Parameter   | Description                                      |
 |:-----------:|--------------------------------------------------|
-|  `start`    | Start date. |
-|  `end`      | End date.   |
+|  `DeviceId` | Unique identifier of a device.                   |
+|  `ModelId`  | Unique identifier of a model on the device.      |
+|  `PointId`  | Unique identifier of a point which belongs to the model. |
+|  `method`   | `range` |
+|  `start`      | Start time. |
+|  `end`      | End time. |
+
 
 **\*The range is inclusive from both sides.**
 
 ### Response
 The response an ordered JSON array of values with their timestamps in ascending order, starting with the earliest date.
 
-````http
+```http
 Status Code:    200
 Status Message: OK
-````
-````
+```
+
+```
 [
 	{
 		"value" : value1,
@@ -658,13 +652,13 @@ Status Message: OK
 		"t" : timestampN
 	}
 ]
-````
+```
 
 
 ### Example
 An example might be taking requesting all the readings from a Thermometer on a Device with id `"A001-3312-312B"` from `21-12-2017 00:00:01` to `22-12-2017 00:00:01`. The request will look like:
 
-````
+```
 {
 	"DeviceId" : "A001-3312-312B",
 	"ModelId" : "Thermometer",
@@ -674,10 +668,10 @@ An example might be taking requesting all the readings from a Thermometer on a D
 	"start" : "21-12-2017 00:00:01",
 	"end" : "22-12-2017 00:00:01"
 }
-````
+```
 The response might look like:
 
-````
+```
 [
 	{
 		"value" : 20.2,
@@ -700,16 +694,16 @@ The response might look like:
 		"t" : 22-12-2017 00:00:01
 	}
 ]
-````
+```
 
 ## `accumulated`
 
-This method will get an accumulated total for all the readings in the specified range. The type of the readings must be numeric for this to work.
+Gets an accumulated reading from the server. That is the total sum of the readings in the interval between `start` and `end`.
 
 ### Request
 ```
 {
-	"DeviceIds" : 
+	"DeviceId" : 
 	[
 		string,
 		string,
@@ -719,8 +713,8 @@ This method will get an accumulated total for all the readings in the specified 
 	"PointId" : string,
 	"method" : "accumulated",
 
-	"start" : string,
-	"end" : string
+	"start" : string in utc format,
+	"end" : string in utc format
 }
 ```
 
@@ -728,8 +722,13 @@ Where:
 
 | Parameter   | Description                                      |
 |:-----------:|--------------------------------------------------|
-|  `start`    | Start date. |
-|  `end`      | End date.   |
+|  `DeviceId` | Array of Device identifiers.                  |
+|  `ModelId`  | Unique identifier of a model on the device.      |
+|  `PointId`  | Unique identifier of a point which belongs to the model. |
+|  `method`   | `range` |
+|  `start`      | Start time. |
+|  `end`      | End time. |
+
 
 ### Response
 
@@ -753,7 +752,7 @@ We might request this service like this:
 
 ```
 {
-	"DeviceIds" : ["A001-3312-312B", "A002-3312-312B"],
+	"DeviceId" : ["A001-3312-312B", "A002-3312-312B"],
 	"ModelId" : "potenciometro",
 	"PointId" : "consumo",
 
@@ -771,7 +770,203 @@ And get the following, example, response:
 }
 ```
 
+## `average`
 
+Returns the average of the interval between `start` and `end`.
+
+### Request
+
+```
+{
+    "DeviceId" : [string, ...],
+    "ModelId" : string,
+    "PointId" : string,
+    "method" : "average",
+
+    "start" : string in utc format,
+    "end" : string in utc format
+}
+```
+
+Where:
+
+| Parameter   | Description                                      |
+|:-----------:|--------------------------------------------------|
+|  `DeviceId` | Array of Device identifiers.                       |
+|  `ModelId`  | Unique identifier of a model on the device.      |
+|  `PointId`  | Unique identifier of a point which belongs to the model. |
+|  `method`   | `average` |
+|  `start`      | Start time. |
+|  `end`      | End time. |
+
+
+### Response
+
+```
+{
+    "DeviceId1" : double,
+    "DeviceId2" : double,
+    ...
+}
+```
+
+Where:
+
+| Parameter   | Description                                      |
+|:-----------:|--------------------------------------------------|
+|  `DeviceIdxxx`    | Accumulated total. |
+
+
+## `day`
+
+Returns up to 24 entries that represent the average reading per hour of the given day. This method will return an array of pairs per each Device passed. Each pair contains the hour along with the average. You may pass the day in either of the formats:
+
+`yyyy-mm-dd hh:mm:ss`
+
+`yyyy-mm-dd`
+
+Either way, only the day will be extracted.
+
+### Request
+
+```
+{
+    "DeviceId" : [string, ...],
+    "ModelId" : string,
+    "PointId" : string,
+    "method" : "day",
+    "day" : string in utc format
+}
+```
+
+Where:
+
+| Parameter   | Description                                      |
+|:-----------:|--------------------------------------------------|
+|  `DeviceId` | Array of Device identifiers.                   |
+|  `ModelId`  | Unique identifier of a model on the device.      |
+|  `PointId`  | Unique identifier of a point which belongs to the model. |
+|  `method`   | `day` |
+| `day` | Given day. |
+
+
+### Response
+
+The first field `integer` is the hour (0 - 23). The second is the average reading in that hour.
+
+```
+{
+    "DeviceIdentifier": [
+        [
+            integer,
+            double
+        ],
+        ...
+    ]
+    ...
+}
+```
+
+
+## `month`
+
+Returns up to 31 entries that represent the average reading per day of the given month. This method will return an array of pairs per each Device passed. Each pair contains the day along with the average. You may pass the day in either of the formats:
+
+`yyyy-mm-dd hh:mm:ss`
+
+`yyyy-mm-dd`
+
+Either way, only the day will be extracted.
+
+### Request
+
+```
+{
+    "DeviceId" : [string, ...],
+    "ModelId" : string,
+    "PointId" : string,
+    "method" : "month",
+    "month" : string in utc format
+}
+```
+
+Where:
+
+| Parameter   | Description                                      |
+|:-----------:|--------------------------------------------------|
+|  `DeviceId` | Array of Device identifiers.                   |
+|  `ModelId`  | Unique identifier of a model on the device.      |
+|  `PointId`  | Unique identifier of a point which belongs to the model. |
+|  `method`   | `month` |
+| `month` | Given day. |
+
+
+### Response
+
+The first field `integer` is the day (1 - 31). The second is the average reading in that day.
+
+```
+{
+    "DeviceIdentifier": [
+        [
+            integer,
+            double
+        ],
+        ...
+    ]
+    ...
+}
+```
+
+## `year`
+
+Returns up to 12 entries that represent the average reading per month of the given year. This method will return an array of pairs per each Device passed. Each pair contains the month along with the average. You may pass the day in either of the formats:
+
+`yyyy-mm-dd hh:mm:ss`
+
+`yyyy-mm-dd`
+
+Either way, only the day will be extracted.
+
+### Request
+
+```
+{
+    "DeviceId" : [string, ...],
+    "ModelId" : string,
+    "PointId" : string,
+    "method" : "year",
+    "year" : string in utc format
+}
+```
+
+Where:
+
+| Parameter   | Description                                      |
+|:-----------:|--------------------------------------------------|
+|  `DeviceId` | Array of Device identifiers.                   |
+|  `ModelId`  | Unique identifier of a model on the device.      |
+|  `PointId`  | Unique identifier of a point which belongs to the model. |
+|  `method`   | `year` |
+| `year` | Given day. |
+
+
+### Response
+
+The first field `integer` is the month (1 - 12). The second is the average reading in that month.
+
+```
+{
+    "DeviceIdentifier": [
+        [
+            integer,
+            double
+        ],
+        ...
+    ]
+    ...
+}
+```
 
 # Logger
 ---
@@ -779,15 +974,14 @@ Like the [Reading](#reading) resource, the Logger resource is one of the most im
 
 It will be necessary to specify the following headers whenever you use the logger:
 
-````http
+```http
 Content-Length: length
-Content-Type:   application/xml
-````
+Content-Type: application/xml
+```
 | Header            | Description                           |
 |:-----------------:|---------------------------------------|
 | `Content-Length`  | The number of characters in the body. |
 | `Content-Type`    | One of the following: <br/> `application/xml` <br/> `application/json`<br/> `application/CelesteRN`             |
-
 
 
 ## Uploading to the Logger
@@ -810,7 +1004,7 @@ We have said that the server will only accept a handful of structured formats. T
 #### XML
 The following is the format to send the records in:
 
-````xml
+```xml
 <SunSpecData v="1.0">
     <d id="[0-9]+" lid="[0-9]+" t="YYYY-MM-DD HH:MM:SS">
         <m id="[a-zA-Z]+" x="[0-9]+">
@@ -823,7 +1017,7 @@ The following is the format to send the records in:
     </d>
     ...
 </SunSpecData>
-````
+```
 The `...` is meant to indicate a list. So clearly  `SunSpecData` contains a list of `Devices`. Each Device `d` contains a list of Models. Each Model `m` contains a list of Points. Each Point `p` only contains a value. This value may be a `string` or a `number`. 
 
 #### Tag Table
@@ -845,24 +1039,24 @@ Not all of the attributes defined in the grammar are mandatory. It proves useful
 #### Success
 A succesful response implies that the records we succesfully persisted into the database and no errors were found. As of writing, it is of no interest to answer back with a verbose message to indicate success. Therefore, the HTTP response will look like:
 
-````http
+```http
 Status Code:    200
 Status Message: OK
 HTTP Version:   1.1
 HTTP Protocol:  HTTP
-````
+```
 
 #### Failure
 On failure, if `verbose?=1` then it will answer back with a verbose message. If `verbose?=0` we can expect to only receive a response like the one shown before. That will mostly (and only) depend on the status code. Practically, the non-verbose versions will be the same as the verbose ones, only they won't have the body. Thus, if one reads the following verbose responses, then one knows their non-verbose versions. For each response, we give the HTTP status code returned and what the body will look like. One may notice that the HTTP codes and the `status` field in the response body **will not coincide**. This is expected since they have another meaning. As of current writing, it is in development more specific error messages and codes. The HTTP codes will remain the same, but more codes for the sub-protocol will be added. For now, it is sufficient to follow the HTTP error semantics. 
 
 ##### Parsing Error
 
-````http
+```http
 Status Code:    400
 Status Message: BAD REQUEST
-````
+```
 
-````xml
+```xml
 <SunSpecDataResponse>
 	<status> 400 </status>
 	<code> FAILURE </code>
@@ -871,17 +1065,17 @@ Status Message: BAD REQUEST
 		[Message indicating where the error is]
 	</message>
 </SunSpecDataResponse>
-````
+```
 
 
 ##### Database Error
 
-````http
+```http
 Status Code:    500
 Status Message: INTERNAL SERVER ERROR
-````
+```
 
-````xml
+```xml
 <SunSpecDataResponse>
 	<status> 400 </status>
 	<code> FAILURE </code>
@@ -890,12 +1084,12 @@ Status Message: INTERNAL SERVER ERROR
 		[Message explaining why the insertion to the database failed]
 	</message>
 </SunSpecDataResponse>
-````
+```
 
 ## XML Example
 To make the usage of the grammar simpler, we will give an example. Suppose we would like to save some records by a Device with only one Thermometer. Firstly we need to pinpoint the Device by its identifier. Say this Device in particular has the identifier `4001`. The scheme will then look like this:
 
-````
+```
 @ - - - - - - - - - @
 | Date: 2017-11-21  |
 | Time: 15:30:01    |
@@ -910,7 +1104,7 @@ To make the usage of the grammar simpler, we will give an example. Suppose we wo
  --------------           Internet            o    Server   o
                        [ Data Packet ]        o             o
                                               @ o o o o o o @
-````
+```
 
 We would like to know what `[Data Packet]` looks like. As we have said previously, this data will take the form of an HTTP Response with the body containing the information of the actual measurements. We notice that we would like to tell the server we have recorded a reading of `30` degrees celsius and we assembled the packet at the date and time shown. It is of use to give the values which each field takes at this instance.
 
@@ -925,7 +1119,7 @@ We would like to know what `[Data Packet]` looks like. As we have said previousl
 
 Translating over to XML we get:
 
-````xml
+```xml
 <SunSpecData v="1.0">
     <d id="4001" t="2017-11-21 15:30:01">
     	<m id="Thermometer" x="1">
@@ -935,25 +1129,23 @@ Translating over to XML we get:
     	</m> 
     </d>
 </SunSpecData>
-````
+```
 
 One need not worry about the units of measurement since it is required to specify them when one first inserts a Point into the database.
 
 # Device Status
 
-It will be necessary to be able to query the Device Status from a client that might manage them, or the Device itself. Right now, the only attribute which makes up a "Device Status" is whether we want to cut off the power remotely or not. The following table outlines the attributes:
-
-| Attributes     | Description           |
-|:--------------:|-----------------------|
-| `isPowerCut`   | Indicates whether the Device should cut the power and prevent further energy consumption. If `true`, the Device will attempt to cut the power. If `false`, Device will continue to allow the consumption of energy.|
-
+It will be necessary to be able to query the Device Status from a client that might manage them, or the Device itself. 
 
 The following operations are valid:
 
 | Operation   | Method  | Url                           |
 |:-----------:|:-------:|-------------------------------|
 |   `get`     | GET     | `/celeste/device/status/`     |
+|   `update`  | PUT     | `/celeste/device/status/`     |
 
+
+There is no specified format for the Device. The developers of the Device are free to choose their own JSON representation and parse it accordingly.
 
 
 ## `get` - Querying the Status
@@ -961,25 +1153,31 @@ The following operations are valid:
 ### Request
 
 ```
-{
-	"DeviceId" : string
-}
+http://[host]:[port]/celeste/device/status/?DeviceId=[IDENTIFIER]
 ```
 
 ### Response
-````http
-Status Code:    200
-Status Message: OK
-````
+
+```
+document
+```
+
+## `update` - Updating the Device Status
+
+The Device is free to post whatever it wants. The document that gets posted, will be the one that is answered with in the `get` request.
+
+### Request
 
 ```
 {
-	"isPowerCut" : bool
+	"DeviceId" : string,
+	"status" : document
 }
 ```
 
 
 # HTTP Status Codes
+----
 
 | Status                            | Code    | Description                            |
 |----------------------------------|:-------:|----------------------------------------|

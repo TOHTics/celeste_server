@@ -36,7 +36,7 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -std=c++11")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -Wall -Wextra")
 
 set(CMAKE_CXX_STANDARD 11)
@@ -104,7 +104,7 @@ else()
 endif()
 
 if (NOT soci_LIBRARY)
-    set(SOCI_TESTS OFF)
+    set(SOCI_TESTS off)
     add_subdirectory("dependency/soci/")
     target_link_libraries(celeste_server soci_core )
     target_link_libraries(celeste_server soci_mysql )
