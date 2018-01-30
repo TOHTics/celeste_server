@@ -4,8 +4,10 @@ The Celeste server assumes that there exists a DB connection to a MySQL server w
 
 # Table of Contents
 
-1. [MySQL Installation](#mysql-installation)
-2. [DB Configuration](#db-configuration)
+1. [Add the MySQL APT repository](#add-the-mysql-apt-repository)
+2. [Install the server](#install-the-server)
+3. [Start and set to restart on reboot](#start-and-set-to-restart-on-reboot)
+4. [Build the Schema](#build-the-schema)
 
 
 # MySQL Installation
@@ -59,6 +61,19 @@ sudo /usr/sbin/update-rc.d mysql defaults
 ```
 
 
-# DB Configuration
+## 4. Build the Schema
 
-Now we move on to the configuration 
+Celeste Server requires some tables to be on the DB. For this, we provide the `BUILD_DB.sql` script. To execute this script log in to the MySQL client and enter your password:
+
+```
+cd dir_to_script/
+mysql -u USER -p
+```
+
+And type:
+
+```
+mysql> source BUILD_DB.sql
+```
+
+This will create a schema named `celestesensordata` along with its associated tables.

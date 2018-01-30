@@ -15,7 +15,6 @@ It is expected that these steps become easier as the project advances. It is als
 - `>= cmake-3.0` - To configure the Makefile
 - `>= boost1.55` - Dependency
 
-If you don't have any one these dependencies, you can check the section [Dependency Installation](#dependency-installation) on how ot install these.
 
 # Table of Contents
 
@@ -109,6 +108,4 @@ The body of the ticket **should contain the error log and a description of the e
 # Installing
 
 
-
-# Dependency Installation
 
