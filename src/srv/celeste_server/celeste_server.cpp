@@ -1,4 +1,5 @@
 #include "celeste_server.hpp"
+#include "../logger/Logger.hpp"
 
 #include <iostream>
 #include <memory>
@@ -9,8 +10,6 @@ namespace celeste
 {
     celeste_server::celeste_server(int port, string dbSettings,  int worker_limit, std::string root)
     {
-        cout << "\e[33m";
-        cout << "@ Making resources...\n";
         auto devices = make_shared<DeviceResource>(dbSettings);
         auto models = make_shared<ModelResource>(dbSettings);
         auto points = make_shared<PointResource>(dbSettings);
@@ -19,7 +18,6 @@ namespace celeste
         auto device_model = make_shared<DeviceModelAssocResource>(dbSettings);
         auto device_status = make_shared<DeviceStatusResource>(dbSettings);
 
-        cout << "@ Configuring server...\n";
         m_srv_settings = make_shared<restbed::Settings>();
         m_srv_settings->set_status_messages(status::STATUS_MAP);
         m_srv_settings->set_port(port);
@@ -30,8 +28,6 @@ namespace celeste
             {"Access-Control-Allow-Origin", "*"}
         });
 
-        cout << "@ Publishing resources...\n";
-
         m_api.publish(devices);
         m_api.publish(models);
         m_api.publish(points);
@@ -39,6 +35,8 @@ namespace celeste
         m_api.publish(reading);
         m_api.publish(device_model);
         m_api.publish(device_status);
+
+        m_api.set_logger(make_shared<CelesteLogger>());
     }
 
     void celeste_server::start()
