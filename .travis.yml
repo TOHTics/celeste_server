@@ -14,10 +14,13 @@ matrix:
             - libc++1
             - clang-3.5
             - cmake
-            - libboost1.55-all-dev
       env:
         - MATRIX_EVAL="CC=clang-3.5 && CXX=clang++-3.5"
+
 script:
+  - export CXX=clang++-3.5
+  - export CC=clang-3.5
+  - apt-get install libboost1.55-all-dev
   - mkdir build
   - cd build
   - cmake .. -DBUILD_SSL=YES -DCMAKE_BUILD_TYPE=Debug
