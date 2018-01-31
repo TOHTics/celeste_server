@@ -25,8 +25,6 @@ namespace resource
      */
     struct DeviceModelAssoc
     {
-        DeviceModelAssoc() = default;
-
         int                             idx;
         std::string                     DeviceId;
         std::string                     ModelId;
