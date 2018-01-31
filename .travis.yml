@@ -18,8 +18,6 @@ matrix:
         - MATRIX_EVAL="CC=clang-3.5 && CXX=clang++-3.5"
 
 script:
-  - export CXX=clang++-3.5
-  - export CC=clang-3.5
   - sudo apt-get install libboost1.55-all-dev
   - mkdir build
   - cd build
