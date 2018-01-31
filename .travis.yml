@@ -1,23 +1,26 @@
 dist: trusty
 sudo: false
 language: cpp
-compiler: gcc
+compiler: gcc5
 
-matrix:
-  include:
-    - os: linux
-      addons:
-        apt:
-          packages:
-            - libc++-dev
-            - libc++-helpers
-            - libc++1
-            - cmake
-            - libboost1.55-dev
-            - libboost1.55-tools-dev
-            - libboost1.55-all-dev
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - libc++-dev
+      - libc++-helpers
+      - libc++1
+      - cmake
+      - libboost1.55-dev
+      - libboost1.55-tools-dev
+      - libboost1.55-all-dev
+      - gcc-5
+      - g++-5
 
 script:
+  - export CXX=g++-5
+  - export CC=gcc-5
   - mkdir build
   - cd build
   - cmake .. -DBUILD_SSL=YES -DCMAKE_BUILD_TYPE=Debug
