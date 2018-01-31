@@ -9,12 +9,6 @@ The server receives sensor data sent by CelesteAlpha. It saves this data in the 
 
 ![diagram](SolarPanels.png)
 
-# TODO
-- Add error codes
-- Finish basic services
-- Add better parsing for the point values
-- Add JSON support for receiving data from a logger
-- Port over to Boost.Beast
 
 # Building
 One can build the celeste server by creating another directory and just using cmake:
@@ -28,6 +22,26 @@ cd build
 cmake ..
 make -j4
 ````
+
+# Usage
+
+```
+bash > ./celeste_server -h
+
+  -h [ --help ]                    Help screen
+  -r [ --api-root ] arg (=celeste) Root where to run the service; where the API
+                                   may be accessed.
+                                   E.g. http://[host]:[port]/[api-root]/
+  -p [ --port ] arg (=9001)        Port where CelesteServer will run.
+  -j [ --worker-limit ] arg (=4)   Limit of workers that the server has 
+                                   available for use.
+  --db arg (=celestesensordata)    The name of the schema.
+  --user arg (=root)               Name of user for access to the DB.
+  --password arg                   Password to authenticate the user on the DB.
+  --db-port arg (=3306)            Port where the DB listens for incoming 
+                                   connections.
+
+```
 
 # About
 This software is licensed under the AGPL.
