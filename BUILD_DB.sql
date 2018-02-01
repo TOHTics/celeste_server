@@ -1,5 +1,5 @@
 -- MySQL Workbench Synchronization
--- Generated: 2018-01-25 17:50
+-- Generated: 2018-02-01 11:55
 -- Model: New Model
 -- Version: 1.0
 -- Project: Name of the project
@@ -144,6 +144,27 @@ CREATE TABLE IF NOT EXISTS `celestesensordata`.`DeviceStatus` (
     REFERENCES `celestesensordata`.`Device` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `celestesensordata`.`DevicePasswords` (
+  `Device_id` VARCHAR(45) NOT NULL,
+  `pwd` VARCHAR(100) NOT NULL,
+  PRIMARY KEY (`Device_id`),
+  INDEX `fk_DevicePasswords_Device1_idx` (`Device_id` ASC),
+  CONSTRAINT `fk_DevicePasswords_Device1`
+    FOREIGN KEY (`Device_id`)
+    REFERENCES `celestesensordata`.`Device` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `celestesensordata`.`APIUsers` (
+  `email` VARCHAR(100) NOT NULL,
+  `password` VARCHAR(100) NOT NULL,
+  `type` VARCHAR(45) NOT NULL DEFAULT 'Basic',
+  PRIMARY KEY (`email`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 

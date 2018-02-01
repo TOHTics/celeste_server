@@ -2,7 +2,8 @@
 #include <iostream>
 #include <boost/program_options.hpp>
 #include <string>
-#include "srv/celeste_server/celeste_server.hpp"
+#include <soci/mysql/soci-mysql.h>
+#include "srv/CelesteServer.hpp"
 
 using namespace std;
 using namespace celeste;
@@ -70,7 +71,7 @@ int main( const int argc, const char** argv)
                                " port=" + to_string(vm["db-port"].as<int>())
                                );
 
-            celeste_server server(vm["port"].as<int>(),
+            CelesteServer server(vm["port"].as<int>(),
                                   dbSettings,
                                   vm["worker-limit"].as<int>(),
                                   vm["api-root"].as<string>()
@@ -82,22 +83,30 @@ int main( const int argc, const char** argv)
         }
 
     }
-    catch (const error &ex)
+    catch (error& e)
     {
         cerr 
-            << ex.what() 
+            << "\e[0;31merror: \e[0m"
+            << e.what() 
+            << '\n';
+    }
+    catch (soci::mysql_soci_error& e)
+    {
+        cerr
+            << "\e[0;31mdatabase specific error: \e[0m"
+            << e.what()
             << '\n';
     }
     catch (exception& e)
     {
         cerr 
-            << "error: "
+            << "\e[0;31merror: \e[0m"
             << e.what() 
             << '\n';
     }
     catch (...)
     {
-        cout 
+        cerr 
             << "Something went wrong while starting the server!\n"
             << "Please use --help or -h to see the available options.\n";
     }
