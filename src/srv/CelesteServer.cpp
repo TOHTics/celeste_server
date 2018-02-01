@@ -1,5 +1,6 @@
-#include "celeste_server.hpp"
-#include "../logger/Logger.hpp"
+#include "CelesteServer.hpp"
+#include "service/status.hpp"
+#include "logging/Logger.hpp"
 
 #include <iostream>
 #include <memory>
@@ -8,7 +9,7 @@ using namespace std;
 
 namespace celeste
 {
-    celeste_server::celeste_server(int port, string dbSettings,  int worker_limit, std::string root)
+    CelesteServer::CelesteServer(int port, string dbSettings,  int worker_limit, std::string root)
     {
         auto devices = make_shared<DeviceResource>(dbSettings);
         auto models = make_shared<ModelResource>(dbSettings);
@@ -39,12 +40,12 @@ namespace celeste
         m_api.set_logger(make_shared<CelesteLogger>());
     }
 
-    void celeste_server::start()
+    void CelesteServer::start()
     {
         m_api.start(m_srv_settings);
     }
 
-    void celeste_server::stop()
+    void CelesteServer::stop()
     {
         m_api.stop();
     }

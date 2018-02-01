@@ -19,7 +19,8 @@ namespace celeste
 namespace resource
 {   
     // --- CLASS DEFINITIONS ---------
-    Devices<nlohmann::json>::Devices(const std::string& dbSettings)
+    Devices<nlohmann::json>
+    ::Devices(const std::string& dbSettings)
         : m_dbSettings(dbSettings)
     {
         set_path("/device");

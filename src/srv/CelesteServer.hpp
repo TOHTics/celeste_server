@@ -3,23 +3,22 @@
 
 #include <restbed>
 #include <json.hpp>
-#include "srv/service/services.hpp"
-#include "srv/service/status.hpp"
+#include "service/services.hpp"
 
 namespace celeste
 {
-    class celeste_server
+    class CelesteServer
     {
-        using DeviceResource = resource::Devices<nlohmann::json>;
-        using ModelResource = resource::Models<nlohmann::json>;
-        using PointResource = resource::Points<nlohmann::json>;
+        using DeviceResource    = resource::Devices<nlohmann::json>;
+        using ModelResource     = resource::Models<nlohmann::json>;
+        using PointResource     = resource::Points<nlohmann::json>;
         using DeviceModelAssocResource = resource::DeviceModelAssocs<nlohmann::json>;
-        using LoggerResource = resource::LoggerUpload;
-        using ReadingResource = resource::ReadingDispatcher<nlohmann::json>;
+        using LoggerResource    = resource::LoggerUpload;
+        using ReadingResource   = resource::ReadingDispatcher<nlohmann::json>;
         using DeviceStatusResource = resource::DeviceStatusService<nlohmann::json>;
 
     public:
-        celeste_server(int port, std::string dbSettings, int worker_limit, std::string root = "celeste");
+        CelesteServer(int port, std::string dbSettings, int worker_limit, std::string root = "celeste");
         void start();
         void stop();
     private:
