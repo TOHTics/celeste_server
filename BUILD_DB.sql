@@ -149,6 +149,7 @@ DEFAULT CHARACTER SET = utf8;
 
 CREATE TABLE IF NOT EXISTS `celestesensordata`.`DevicePasswords` (
   `Device_id` VARCHAR(45) NOT NULL,
+  `salt` VARCHAR(100) NOT NULL,
   `pwd` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`Device_id`),
   INDEX `fk_DevicePasswords_Device1_idx` (`Device_id` ASC),
@@ -161,7 +162,8 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
 CREATE TABLE IF NOT EXISTS `celestesensordata`.`APIUsers` (
-  `email` VARCHAR(100) NOT NULL,
+  `username` VARCHAR(100) NOT NULL,
+  `salt` VARCHAR(100) NOT NULL,
   `password` VARCHAR(100) NOT NULL,
   `type` VARCHAR(45) NOT NULL DEFAULT 'Basic',
   PRIMARY KEY (`email`))

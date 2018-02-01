@@ -9,8 +9,11 @@
 #include <soci/error.h>
 
 #include "LoggerUpload.hpp"
+
 #include "srv/service/status.hpp"
 #include "srv/service/common.hpp"
+
+#include "srv/service/base64.h"
 
 using namespace std;
 using namespace sunspec;
@@ -21,20 +24,26 @@ namespace celeste
 namespace resource
 {
     // --- CLASS DEFINITIONS ---------
-    LoggerUpload::LoggerUpload(const std::string& dbSettings, size_t max_connections)
-        : m_dbSettings(dbSettings)
+    LoggerUpload::LoggerUpload(const string& dbSettings, size_t max_connections)
+        : m_db_settings(dbSettings)
     {
         set_paths({"/logger/upload/verbose/", "/logger/upload"});
-        set_method_handler("POST", [this] (const std::shared_ptr<restbed::Session> session) {POST(session);});
-        
+        set_method_handler("POST", [this] (const shared_ptr<restbed::Session> session) {POST(session);});
+        set_authentication_handler(
+                [this] (const shared_ptr<restbed::Session> s,
+                        const function<void(const shared_ptr<restbed::Session>)>& c) {AUTH(s, c);});
+
         for (int i = 0; i < max_connections; ++i)
-            m_sqlPool.emplace(mysql, dbSettings);
+            m_sql_pool.emplace(mysql, dbSettings);
+
+        for (int i = 0; i < max_connections; ++i)
+            m_auth_pool.emplace(dbSettings);
     }
 
     void LoggerUpload::persist_data(const sunspec::data::SunSpecData& data)
     {
         // we dont even want to wait for a connection to open up
-        auto sql = m_sqlPool.allocate(mysql, m_dbSettings);
+        auto sql = m_sql_pool.allocate(mysql, m_db_settings);
 
         try
         {
@@ -44,7 +53,7 @@ namespace resource
             sql->reconnect(); // attempt reconnect
         } catch (exception&)
         {
-            sql->open(mysql, m_dbSettings); // if everything went bad attempt to open connection again
+            sql->open(mysql, m_db_settings); // if everything went bad attempt to open connection again
         }
 
         data::DeviceData dev_record;
@@ -106,7 +115,7 @@ namespace resource
     }
 
     template <typename Error>
-    void handle_parsing_error(Error &&e, const std::shared_ptr<restbed::Session> session)
+    void handle_parsing_error(Error &&e, const shared_ptr<restbed::Session> session)
     {
         data::SunSpecDataResponse ssr;
         ssr.status = sdx::FAILURE;
@@ -124,8 +133,31 @@ namespace resource
                        });
     }
 
+    void
+    LoggerUpload
+    ::AUTH(const shared_ptr<restbed::Session> session,
+           const function<void(const shared_ptr<restbed::Session>)>& callback)
+    {
+        auto authorisation = session->get_request()->get_header("Authorization");
+        auto authorizer = m_auth_pool.acquire_wait();
 
-    void LoggerUpload::POST(const std::shared_ptr<restbed::Session> session)
+        std::string decoded = base64_decode(authorisation.substr(authorisation.find(' ') + 1));        
+        
+        auto pos = decoded.find(':');
+        std::string id = decoded.substr(0, pos);
+        std::string pwd = decoded.substr(pos + 1);
+
+        AuthStatus status;
+        authorizer->auth_device(id, pwd, status);
+        cout << status << endl;
+
+        if (status == SUCCESS)
+            callback(session);
+        else
+            session->close(restbed::FORBIDDEN);
+    }
+
+    void LoggerUpload::POST(const shared_ptr<restbed::Session> session)
     {
         // get request
         const auto request = session->get_request();
@@ -156,7 +188,7 @@ namespace resource
                 session->close(status::XML_SYNTAX_ERROR, e.what());
             else
                 throw status::XML_SYNTAX_ERROR;
-        } catch (const std::exception& e)
+        } catch (const exception& e)
         {
             if (verbose)
                 session->close(status::UNHANDLED_EXCEPTION, e.what());

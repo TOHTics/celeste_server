@@ -30,6 +30,7 @@ namespace resource
         std::string             man;
         std::string             mod;
         std::string             sn;
+        std::string             password;
     };
 
     template <class Json>
@@ -77,7 +78,7 @@ namespace resource
          *
          * @param[in]  device   Device to be inserted.
          */
-        void insert(const value_type& device);
+        void insert(const value_type& device, const std::string& pwd);
 
         /**
          * @brief      Inserts a device into the DB with its associated models.
@@ -86,7 +87,7 @@ namespace resource
          * @param[in]  device  Device to be inserted
          * @param[in]  models  Vector of the ids of the Models
          */
-        void insert(const value_type& device, std::vector<std::string>models);
+        void insert(const value_type& device, const std::string& pwd, std::vector<std::string>models);
 
         /**
          * @brief      Removes a model from the DB.

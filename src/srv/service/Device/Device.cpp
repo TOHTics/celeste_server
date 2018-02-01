@@ -7,12 +7,16 @@
  */
 #include <mutex>
 #include <soci/mysql/soci-mysql.h>
+#include <ctime>
+#include <chrono>
+#include <sstream>
+#include <cstdlib>
 #include "Device.hpp"
 #include "srv/service/common.hpp"
+#include "srv/crypt/CelesteEncrypter.hpp"
 
 using namespace std;
 using namespace soci;
-
 
 namespace celeste
 {
@@ -20,16 +24,18 @@ namespace resource
 {   
     // --- CLASS DEFINITIONS ---------
     Devices<nlohmann::json>
-    ::Devices(const std::string& dbSettings)
+    ::Devices(const string& dbSettings)
         : m_dbSettings(dbSettings)
     {
         set_path("/device");
-        set_method_handler("GET", [this] (const std::shared_ptr<restbed::Session> session) {GET(session);});
-        set_method_handler("POST",   [this] (const std::shared_ptr<restbed::Session> session) {POST(session);});
-        set_method_handler("DELETE", [this] (const std::shared_ptr<restbed::Session> session) {DELETE(session);});
+        set_method_handler("GET", [this] (const shared_ptr<restbed::Session> session) {GET(session);});
+        set_method_handler("POST",   [this] (const shared_ptr<restbed::Session> session) {POST(session);});
+        set_method_handler("DELETE", [this] (const shared_ptr<restbed::Session> session) {DELETE(session);});
     }
 
-    Device Devices<nlohmann::json>::get(const std::string& deviceId)
+    Device
+    Devices<nlohmann::json>
+    ::get(const string& deviceId)
     {
         session sql(mysql, m_dbSettings);
         Device dev;
@@ -40,14 +46,41 @@ namespace resource
             throw status::DEVICE_NOT_FOUND;        
     }
 
-    void Devices<nlohmann::json>::insert(const value_type& device)
+    void
+    Devices<nlohmann::json>
+    ::insert(const value_type& device, const string& pwd)
     {
         session sql(mysql, m_dbSettings);
+        transaction tr(sql);
+
         sql << "insert into Device(id, man, model, sn) values(:DeviceId, :man, :mod, :sn)",
             use(device);
+
+        // Generate salt
+        string salt;
+        srand(time(nullptr));
+        time_t seconds_past_epoch = time(0);
+        stringstream ss;
+        ss << seconds_past_epoch << rand();
+
+        CelesteEncrypter crypt;
+        crypt.encrypt(ss.str(), salt);
+
+        std::string encrypted_pwd;
+        crypt.encrypt(salt + pwd, encrypted_pwd);
+
+        // Register Device
+        sql << "insert into DevicePasswords(Device_id, pwd, salt) values(:DeviceId, :pwd, :salt)",
+            use(device.DeviceId, "DeviceId"),
+            use(encrypted_pwd, "pwd"),
+            use(salt, "salt");
+
+        tr.commit();
     }
 
-    void Devices<nlohmann::json>::insert(const value_type& device, std::vector<std::string> models)
+    void
+    Devices<nlohmann::json>
+    ::insert(const value_type& device, const string& pwd, vector<string> models)
     {
         session sql(mysql, m_dbSettings);
         
@@ -55,6 +88,26 @@ namespace resource
         sql << "insert into Device(id, man, model, sn) values(:DeviceId, :man, :mod, :sn)",
             use(device);
 
+        // Generate salt
+        string salt;
+        srand(time(nullptr));
+        time_t seconds_past_epoch = time(0);
+        stringstream ss;
+        ss << seconds_past_epoch << rand();
+
+        CelesteEncrypter crypt;
+        crypt.encrypt(ss.str(), salt);
+
+        std::string encrypted_pwd;
+        crypt.encrypt(salt + pwd, encrypted_pwd);
+
+        // Register Device
+        sql << "insert into DevicePasswords(Device_id, pwd, salt) values(:DeviceId, :pwd, :salt)",
+            use(device.DeviceId, "DeviceId"),
+            use(encrypted_pwd, "pwd"),
+            use(salt, "salt");
+
+        // insert models
         string modelId;
         statement stmt = (sql.prepare 
                           << "insert into Device_Model(Device_id, Model_id) "
@@ -71,14 +124,16 @@ namespace resource
     }
 
 
-    void Devices<nlohmann::json>::remove(const std::string& deviceId)
+    void Devices<nlohmann::json>::remove(const string& deviceId)
     {
         session sql(mysql, m_dbSettings);
         sql << "delete from Device where id = :DeviceId",
             use(deviceId);
     }
 
-    void Devices<nlohmann::json>::GET(const std::shared_ptr<restbed::Session> session)
+    void
+    Devices<nlohmann::json>
+    ::GET(const shared_ptr<restbed::Session> session)
     {   
         // get request
         const auto request = session->get_request();
@@ -102,7 +157,9 @@ namespace resource
                        });
     }
 
-    void Devices<nlohmann::json>::POST(const std::shared_ptr<restbed::Session> session)
+    void
+    Devices<nlohmann::json>
+    ::POST(const shared_ptr<restbed::Session> session)
     {
         // get request
         const auto request = session->get_request();
@@ -129,16 +186,24 @@ namespace resource
         if (data["sn"].is_null())
             throw status::MISSING_FIELD_SN;
 
+        if (data["pwd"].is_null())
+            throw 400;
+
+        if (data["pwd"].get<string>().size() < 4)
+            throw 400;
+
         if (! data["models"].is_null())
-            this->insert(data.get<Device>(), data["models"].get<vector<string>>());
+            this->insert(data.get<Device>(), data["pwd"], data["models"].get<vector<string>>());
         else
-            this->insert(data.get<Device>());
+            this->insert(data.get<Device>(), data["pwd"]);
 
         // close
         session->close(restbed::OK);
     }
 
-    void Devices<nlohmann::json>::DELETE(const std::shared_ptr<restbed::Session> session)
+    void
+    Devices<nlohmann::json>
+    ::DELETE(const shared_ptr<restbed::Session> session)
     {
         // get request
         const auto request = session->get_request();

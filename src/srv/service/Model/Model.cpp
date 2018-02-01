@@ -114,6 +114,9 @@ namespace resource
         if (data["ns"].is_null())
             data["ns"] = nullptr;
 
+        if (data["Points"].is_null())
+            data["Points"] = vector<string>{};
+
         this->insert(data.get<Model>());
 
         // close
