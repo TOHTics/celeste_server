@@ -115,11 +115,9 @@ namespace soci
                                              indicator,
                                              Reading& p)
     {
-        p = Reading {
-            .sf = v.get<double>("sf"),
-            .t  = v.get<boost::posix_time::ptime>("t"),
-            .value  = v.get<string>("v")
-        };
+        p.sf = v.get<double>("sf");
+        p.t  = v.get<boost::posix_time::ptime>("t");
+        p.value  = v.get<string>("v");
     }
 
     void type_conversion<Reading>::to_base(const Reading& p,

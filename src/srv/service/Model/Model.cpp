@@ -148,10 +148,8 @@ namespace soci
 
     void type_conversion<Model>::from_base(values const& v, indicator , Model& p)
     {
-        p = Model {
-            .ModelId    = v.get<string>("id"),
-            .ns         = v.get<boost::optional<string>>("ns")
-        };
+        p.ModelId    = v.get<string>("id");
+        p.ns         = v.get<boost::optional<string>>("ns");
     }
 
     void type_conversion<Model>::to_base(const Model& p, values& v, indicator& ind)
@@ -177,10 +175,8 @@ namespace nlohmann
 
     void adl_serializer<Model>::from_json(const json& j, Model& obj)
     {
-        obj = Model {
-            .ModelId    = j.at("ModelId"),
-            .ns         = j.at("ns"),
-            .PointIds   = j.at("Points")
-        };
+        obj.ModelId    = j.at("ModelId");
+        obj.ns         = j.at("ns").get<decltype(obj.ns)>();
+        obj.PointIds   = j.at("Points").get<decltype(obj.PointIds)>();
     }
 }

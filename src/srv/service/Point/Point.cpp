@@ -171,13 +171,11 @@ namespace soci
 
     void type_conversion<Point>::from_base(values const& v, indicator , Point& p)
     {
-        p = Point {
-            .PointId    = v.get<string>("id"),
-            .ModelId    = v.get<string>("Model_id"),
-            .type       = v.get<int>("type"),
-            .u          = v.get<string>("u"),
-            .d          = v.get<string>("d")
-        };
+        p.PointId    = v.get<string>("id");
+        p.ModelId    = v.get<string>("Model_id");
+        p.type       = v.get<int>("type");
+        p.u          = v.get<string>("u");
+        p.d          = v.get<string>("d");
     }
 
     void type_conversion<Point>::to_base(const Point& p, values& v, indicator& ind)
@@ -208,12 +206,10 @@ namespace nlohmann
 
     void adl_serializer<Point>::from_json(const json& j, Point& obj)
     {
-        obj = Point {
-            .PointId = j.at("PointId"),
-            .ModelId = j.at("ModelId"),
-            .type = j.at("type"),
-            .u = j.at("u"),
-            .d = j.at("d")
-        };
+        obj.PointId = j.at("PointId");
+        obj.ModelId = j.at("ModelId");
+        obj.type = j.at("type");
+        obj.u = j.at("u").get<decltype(obj.u)>();
+        obj.d = j.at("d").get<decltype(obj.d)>();
     }
 }

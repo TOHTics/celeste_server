@@ -195,12 +195,10 @@ namespace soci
 
     void type_conversion<DeviceModelAssoc>::from_base(values const& v, indicator , DeviceModelAssoc& p)
     {
-        p = DeviceModelAssoc {
-            .idx        = v.get<int>("idx"),
-            .DeviceId   = v.get<string>("Device_id"),
-            .ModelId    = v.get<string>("Model_id"),
-            .note       = v.get<boost::optional<string>>("note", boost::none)
-        };
+        p.idx        = v.get<int>("idx"),
+        p.DeviceId   = v.get<string>("Device_id"),
+        p.ModelId    = v.get<string>("Model_id"),
+        p.note       = v.get<boost::optional<string>>("note", boost::none);
     }
 
     void type_conversion<DeviceModelAssoc>::to_base(const DeviceModelAssoc& p, values& v, indicator& ind)
@@ -229,11 +227,9 @@ namespace nlohmann
 
     void adl_serializer<DeviceModelAssoc>::from_json(const json& j, DeviceModelAssoc& dm)
     {
-        dm = DeviceModelAssoc {
-            .DeviceId   = j.at("DeviceId"),
-            .ModelId    = j.at("ModelId"),
-            .idx        = j.at("idx"),
-            .note       = j.at("note")
-        };
+        dm.DeviceId   = j.at("DeviceId");
+        dm.ModelId    = j.at("ModelId");
+        dm.idx        = j.at("idx");
+        dm.note       = j.at("note").get<decltype(dm.note)>();
     }
 }

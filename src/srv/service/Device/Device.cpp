@@ -165,12 +165,10 @@ namespace soci
 
     void type_conversion<Device>::from_base(values const& v, indicator , Device& p)
     {
-        p = Device {
-            .DeviceId   = v.get<string>("id"),
-            .man        = v.get<string>("man"),
-            .mod        = v.get<string>("model"),
-            .sn         = v.get<string>("sn")
-        };
+        p.DeviceId   = v.get<string>("id");
+        p.man        = v.get<string>("man");
+        p.mod        = v.get<string>("model");
+        p.sn         = v.get<string>("sn");
     }
 
     void type_conversion<Device>::to_base(const Device& p, values& v, indicator& ind)
@@ -200,11 +198,9 @@ namespace nlohmann
 
     void adl_serializer<Device>::from_json(const json& j, Device& device)
     {
-        device = Device {
-            .DeviceId   = j.at("DeviceId"),
-            .man        = j.at("man"),
-            .mod        = j.at("mod"),
-            .sn         = j.at("sn")
-        };
+        device.DeviceId   = j.at("DeviceId");
+        device.man        = j.at("man");
+        device.mod        = j.at("mod");
+        device.sn         = j.at("sn");
     }
 }
