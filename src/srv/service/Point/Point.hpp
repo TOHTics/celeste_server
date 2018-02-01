@@ -26,11 +26,7 @@ namespace resource
      */
     struct Point
     {
-        typedef std::string id_type;
-
-        Point() = default;
-
-        id_type                         PointId;
+        std::string                     PointId;
         std::string                     ModelId;
         int                             type;
         boost::optional<std::string>    u;

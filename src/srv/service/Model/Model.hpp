@@ -28,11 +28,7 @@ namespace resource
      */
     struct Model
     {
-        typedef std::string id_type;
-
-        Model() = default;
-
-        id_type                         ModelId;
+        std::string                     ModelId;
         boost::optional<std::string>    ns;
         std::vector<std::string>        PointIds;
     };

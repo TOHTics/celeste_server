@@ -26,10 +26,6 @@ namespace resource
      */
     struct Device
     {
-        typedef int id_type;
-
-        Device() = default;
-
         std::string             DeviceId;
         std::string             man;
         std::string             mod;
