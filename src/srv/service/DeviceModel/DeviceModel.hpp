@@ -25,9 +25,9 @@ namespace resource
      */
     struct DeviceModelAssoc
     {
-        int                             idx;
         std::string                     DeviceId;
         std::string                     ModelId;
+        int                             idx;
         boost::optional<std::string>    note;
     };
 
