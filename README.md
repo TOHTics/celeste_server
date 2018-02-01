@@ -13,8 +13,8 @@ The server receives sensor data sent by CelesteAlpha. It saves this data in the 
 # Building
 One can build the celeste server by creating another directory and just using cmake:
 ````
-git clone https://github.com/carlosb/celeste.git
-cd celeste
+git clone https://github.com/TOHTics/celeste_server
+cd celeste_server
 git submodule update --init --recursive
 
 mkdir build
@@ -26,7 +26,7 @@ make -j4
 # Usage
 
 ```
-bash > ./celeste_server -h
+./celeste_server -h
 
   -h [ --help ]                    Help screen
   -r [ --api-root ] arg (=celeste) Root where to run the service; where the API
