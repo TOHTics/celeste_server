@@ -65,35 +65,36 @@ int main( const int argc, const char** argv)
         }
         else
         {
-            std::string dbSettings("db=" + vm["db"].as<string>() +
-                               " user=" + vm["user"].as<string>() +
-                               " password=" + vm["password"].as<string>() +
-                               " port=" + to_string(vm["db-port"].as<int>())
-                               );
+            std::string db_settings
+            (
+             "db=" + vm["db"].as<string>() +
+             " user=" + vm["user"].as<string>() +
+             " password=" + vm["password"].as<string>() +
+             " port=" + to_string(vm["db-port"].as<int>())
+            );
 
-            CelesteServer server(vm["port"].as<int>(),
-                                  dbSettings,
-                                  vm["worker-limit"].as<int>(),
-                                  vm["api-root"].as<string>()
-                                  );
-
+            auto settings = make_shared<CelesteSettings>();
+            settings->set_port(vm["port"].as<int>());
+            settings->set_db_settings(db_settings);
+            settings->set_worker_limit(vm["worker-limit"].as<int>());
+            settings->set_root(vm["api-root"].as<string>());
+            
+            CelesteServer server;
             cout << "Running...\nPress ctrl-c to stop.\n"; 
-
-            server.start();
+            server.start(settings);
         }
-
     }
     catch (error& e)
     {
         cerr 
-            << "\e[0;31merror: \e[0m"
+            << "\e[0;31minput error: \e[0m"
             << e.what() 
             << '\n';
     }
     catch (soci::mysql_soci_error& e)
     {
         cerr
-            << "\e[0;31mdatabase specific error: \e[0m"
+            << "\e[0;31mdatabase error: \e[0m"
             << e.what()
             << '\n';
     }

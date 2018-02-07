@@ -73,6 +73,8 @@ namespace status
     // --- SPECIAL ERRORS ---------------------
     static constexpr int UNHANDLED_EXCEPTION         = 8000;
 
+    static constexpr int WEAK_PASSWORD         = 8001;
+
     static const std::map<int, std::string> STATUS_MAP
     {
         {DEVICE_NOT_FOUND,          "Device not found."},
@@ -115,6 +117,7 @@ namespace status
         {TYPE_MUST_BE_NUMERIC,      "The type of the readings must be numeric for this method to work."},
         {VALUE_IS_OUT_OF_RANGE,     "One of the passed values falls out of range."},
         {TYPE_MUST_BE_ARRAY,        "Field must be array of elements."},
+        {WEAK_PASSWORD,             "Passwords must be more than 4 characters long."},
         {1022,                      "Duplicate key."},
     };
 }

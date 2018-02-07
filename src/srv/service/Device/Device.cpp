@@ -11,7 +11,10 @@
 #include <chrono>
 #include <sstream>
 #include <cstdlib>
+
 #include "Device.hpp"
+
+#include "srv/service/status.hpp"
 #include "srv/service/common.hpp"
 #include "srv/crypt/CelesteEncrypter.hpp"
 
@@ -25,7 +28,7 @@ namespace resource
     // --- CLASS DEFINITIONS ---------
     Devices<nlohmann::json>
     ::Devices(const string& dbSettings)
-        : m_dbSettings(dbSettings)
+        : m_db_settings(dbSettings)
     {
         set_path("/device");
         set_method_handler("GET", [this] (const shared_ptr<restbed::Session> session) {GET(session);});
@@ -37,9 +40,10 @@ namespace resource
     Devices<nlohmann::json>
     ::get(const string& deviceId)
     {
-        session sql(mysql, m_dbSettings);
+        session sql(mysql, m_db_settings);
         Device dev;
-        sql << "select * from Device where id = :DeviceId", into(dev), use(deviceId);
+        sql << "select * from Device where id = :DeviceId",
+            into(dev), use(deviceId);
         if (sql.got_data())
             return dev;
         else
@@ -50,7 +54,7 @@ namespace resource
     Devices<nlohmann::json>
     ::insert(const value_type& device, const string& pwd)
     {
-        session sql(mysql, m_dbSettings);
+        session sql(mysql, m_db_settings);
         transaction tr(sql);
 
         sql << "insert into Device(id, man, model, sn) values(:DeviceId, :man, :mod, :sn)",
@@ -70,10 +74,11 @@ namespace resource
         crypt.encrypt(salt + pwd, encrypted_pwd);
 
         // Register Device
-        sql << "insert into DevicePasswords(Device_id, pwd, salt) values(:DeviceId, :pwd, :salt)",
-            use(device.DeviceId, "DeviceId"),
-            use(encrypted_pwd, "pwd"),
-            use(salt, "salt");
+        sql << "insert into APIUsers(id, pwd, salt, ugroup) values(:DeviceId, :pwd, :salt, :ugroup)",
+            use(device.DeviceId),
+            use(encrypted_pwd),
+            use(salt),
+            use(string("Device"));
 
         tr.commit();
     }
@@ -82,7 +87,7 @@ namespace resource
     Devices<nlohmann::json>
     ::insert(const value_type& device, const string& pwd, vector<string> models)
     {
-        session sql(mysql, m_dbSettings);
+        session sql(mysql, m_db_settings);
         
         transaction tr(sql);
         sql << "insert into Device(id, man, model, sn) values(:DeviceId, :man, :mod, :sn)",
@@ -102,10 +107,11 @@ namespace resource
         crypt.encrypt(salt + pwd, encrypted_pwd);
 
         // Register Device
-        sql << "insert into DevicePasswords(Device_id, pwd, salt) values(:DeviceId, :pwd, :salt)",
-            use(device.DeviceId, "DeviceId"),
-            use(encrypted_pwd, "pwd"),
-            use(salt, "salt");
+        sql << "insert into APIUsers(id, pwd, salt, ugroup) values(:DeviceId, :pwd, :salt, :ugroup)",
+            use(device.DeviceId),
+            use(encrypted_pwd),
+            use(salt),
+            use(string("Device"));
 
         // insert models
         string modelId;
@@ -126,7 +132,7 @@ namespace resource
 
     void Devices<nlohmann::json>::remove(const string& deviceId)
     {
-        session sql(mysql, m_dbSettings);
+        session sql(mysql, m_db_settings);
         sql << "delete from Device where id = :DeviceId",
             use(deviceId);
     }
@@ -175,7 +181,7 @@ namespace resource
 
         // validate data
         if (data["DeviceId"].is_null())
-            throw status::MISSING_FIELD_DEVICEID;
+            throw runtime_error("Missing DeviceId field.");
 
         if (data["man"].is_null())
             throw status::MISSING_FIELD_MAN;
@@ -190,7 +196,7 @@ namespace resource
             throw 400;
 
         if (data["pwd"].get<string>().size() < 4)
-            throw 400;
+            throw runtime_error("Password must be at least 4 characters.");
 
         if (! data["models"].is_null())
             this->insert(data.get<Device>(), data["pwd"], data["models"].get<vector<string>>());

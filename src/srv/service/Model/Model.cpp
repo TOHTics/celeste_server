@@ -18,7 +18,7 @@ namespace resource
 {   
     // --- CLASS DEFINITIONS ---------
     Models<nlohmann::json>::Models(const std::string& dbSettings)
-        : m_dbSettings(dbSettings)
+        : m_db_settings(dbSettings)
     {
         set_path("/model");
         set_method_handler("GET", [this] (const std::shared_ptr<restbed::Session> session) {GET(session);});
@@ -28,7 +28,7 @@ namespace resource
 
     Model Models<nlohmann::json>::get(const std::string& modelId)
     {
-        session sql(mysql, m_dbSettings);
+        session sql(mysql, m_db_settings);
         Model model;
         sql    << "select * from Model where id = :ModelId",
                 use(modelId), into(model);
@@ -57,14 +57,14 @@ namespace resource
 
     void Models<nlohmann::json>::insert(const value_type& model)
     {
-        session sql(mysql, m_dbSettings);
+        session sql(mysql, m_db_settings);
         sql    << "insert into Model(id, ns) values(:ModelId, :ns)",
                 use(model);
     }
 
     void Models<nlohmann::json>::remove(const std::string& modelId)
     {
-        session sql(mysql, m_dbSettings);
+        session sql(mysql, m_db_settings);
         sql    << "delete from Model where id = :ModelId",
                 use(modelId);
     }

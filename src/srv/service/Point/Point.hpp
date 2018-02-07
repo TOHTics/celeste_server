@@ -96,7 +96,7 @@ namespace resource
         void DELETE(const std::shared_ptr<restbed::Session> session);
 
         // ==== Member attributes ========================
-        std::string m_dbSettings;
+        std::string m_db_settings;
     };
 }
 }

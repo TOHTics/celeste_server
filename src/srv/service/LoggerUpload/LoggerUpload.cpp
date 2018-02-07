@@ -12,7 +12,6 @@
 
 #include "srv/service/status.hpp"
 #include "srv/service/common.hpp"
-
 #include "srv/service/base64.h"
 
 using namespace std;
@@ -29,15 +28,9 @@ namespace resource
     {
         set_paths({"/logger/upload/verbose/", "/logger/upload"});
         set_method_handler("POST", [this] (const shared_ptr<restbed::Session> session) {POST(session);});
-        set_authentication_handler(
-                [this] (const shared_ptr<restbed::Session> s,
-                        const function<void(const shared_ptr<restbed::Session>)>& c) {AUTH(s, c);});
 
         for (int i = 0; i < max_connections; ++i)
             m_sql_pool.emplace(mysql, dbSettings);
-
-        for (int i = 0; i < max_connections; ++i)
-            m_auth_pool.emplace(dbSettings);
     }
 
     void LoggerUpload::persist_data(const sunspec::data::SunSpecData& data)
@@ -133,30 +126,6 @@ namespace resource
                        });
     }
 
-    void
-    LoggerUpload
-    ::AUTH(const shared_ptr<restbed::Session> session,
-           const function<void(const shared_ptr<restbed::Session>)>& callback)
-    {
-        auto authorisation = session->get_request()->get_header("Authorization");
-        auto authorizer = m_auth_pool.acquire_wait();
-
-        std::string decoded = base64_decode(authorisation.substr(authorisation.find(' ') + 1));        
-        
-        auto pos = decoded.find(':');
-        std::string id = decoded.substr(0, pos);
-        std::string pwd = decoded.substr(pos + 1);
-
-        AuthStatus status;
-        authorizer->auth_device(id, pwd, status);
-        cout << status << endl;
-
-        if (status == SUCCESS)
-            callback(session);
-        else
-            session->close(restbed::FORBIDDEN);
-    }
-
     void LoggerUpload::POST(const shared_ptr<restbed::Session> session)
     {
         // get request
@@ -178,9 +147,16 @@ namespace resource
         {
             // Persist records
             persist_data(data::SunSpecData::from_xml(body));
-        
+            
             // close
-            session->yield(restbed::OK, {{"Content-Length", "0"}, { "Connection",     "keep-alive" }});
+            if (request->get_header("Connection", "close") == "keep-alive")
+            {
+                session->yield(restbed::OK, {{"Content-Length", "0"}, { "Connection",     "keep-alive" }});
+            }
+            else
+            {
+               session->close(restbed::OK, {{"Content-Length", "0"}, { "Connection",     "close" }});
+            }
         }
         catch (const data::XMLException& e)
         {

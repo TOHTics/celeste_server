@@ -16,6 +16,7 @@
 #include <object_pool.hpp>
 
 #include "../DeviceModel/DeviceModel.hpp"
+#include "srv/authenticator/CelesteAuth.hpp"
 
 namespace celeste
 {   
@@ -103,7 +104,7 @@ namespace resource
         void DELETE(const std::shared_ptr<restbed::Session> session);
 
         // ==== Member attributes =========================
-        std::string                     m_dbSettings;
+        std::string                             m_db_settings;
     };
 }
 }

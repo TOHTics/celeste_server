@@ -14,7 +14,7 @@
 #include <object_pool.hpp>
 #include <sunspec.hpp>
 
-#include "srv/authenticator/CelesteAuthenticator.hpp"
+#include "srv/authenticator/CelesteAuth.hpp"
 
 namespace celeste
 {   
@@ -45,9 +45,6 @@ namespace resource
          */
         void POST(const std::shared_ptr<restbed::Session> session);
 
-        void AUTH(const std::shared_ptr<restbed::Session> session,
-                  const std::function<void(const std::shared_ptr<restbed::Session>)>& callback);
-
         template <typename Error>
         void get_parse_error(Error &&e, const std::shared_ptr<restbed::Session> session);
 
@@ -55,9 +52,8 @@ namespace resource
         void get_db_error(Error &&e, const std::shared_ptr<restbed::Session> session);
 
         // ===== Member attributes =======================
-        carlosb::object_pool<soci::session>         m_sql_pool;
-        carlosb::object_pool<CelesteAuthenticator>  m_auth_pool;
-        std::string                                 m_db_settings;
+        carlosb::object_pool<soci::session>     m_sql_pool;
+        std::string                             m_db_settings;
     };
 }
 }

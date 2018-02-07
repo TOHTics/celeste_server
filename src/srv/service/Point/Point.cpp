@@ -18,7 +18,7 @@ namespace resource
 {   
     // --- CLASS DEFINITIONS ---------
     Points<nlohmann::json>::Points(const std::string& dbSettings)
-        : m_dbSettings(dbSettings)
+        : m_db_settings(dbSettings)
     {
         set_path("/point");
         set_method_handler("GET", [this] (const std::shared_ptr<restbed::Session> session) {GET(session);});
@@ -29,7 +29,7 @@ namespace resource
     Point Points<nlohmann::json>::get(const std::string& pointId,
                                       const std::string& modelId)
     {
-        session sql(mysql, m_dbSettings);
+        session sql(mysql, m_db_settings);
         Point point;
 
         sql << "select * from Point where id = :PointId and Model_id = :ModelId",
@@ -42,7 +42,7 @@ namespace resource
 
     void Points<nlohmann::json>::insert(const value_type& point)
     {
-        session sql(mysql, m_dbSettings);
+        session sql(mysql, m_db_settings);
         statement stmt = (sql.prepare 
                           << "insert into Point(id, Model_id, type, u, d) "
                           << "values(:PointId, :ModelId, :type, :u, :d)",
@@ -61,7 +61,7 @@ namespace resource
     void Points<nlohmann::json>::remove(const std::string& pointId,
                                         const std::string& modelId)
     {
-        session sql(mysql, m_dbSettings);
+        session sql(mysql, m_db_settings);
         statement stmt = (sql.prepare 
                           << "delete from Point "
                           << "where id = :PointId and Model_id = :ModelId",
