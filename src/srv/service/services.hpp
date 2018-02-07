@@ -5,7 +5,7 @@
 #include "Model/Model.hpp"
 #include "Point/Point.hpp"
 #include "LoggerUpload/LoggerUpload.hpp"
-#include "Readings/ReadingDispatcher.hpp"
+#include "Reading/ReadingDispatcher.hpp"
 #include "DeviceModel/DeviceModel.hpp"
 #include "DeviceStatus/DeviceStatus.hpp"
 

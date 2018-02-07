@@ -7,26 +7,29 @@
 
 namespace celeste
 {
-    class CelesteServer
+
+    class CelesteSettings : public restbed::Settings
     {
-        using DeviceResource    = resource::Devices<nlohmann::json>;
-        using ModelResource     = resource::Models<nlohmann::json>;
-        using PointResource     = resource::Points<nlohmann::json>;
-        using DeviceModelAssocResource = resource::DeviceModelAssocs<nlohmann::json>;
-        using LoggerResource    = resource::LoggerUpload;
-        using ReadingResource   = resource::ReadingDispatcher<nlohmann::json>;
-        using DeviceStatusResource = resource::DeviceStatusService<nlohmann::json>;
-
     public:
-        CelesteServer(int port, std::string dbSettings, int worker_limit, std::string root = "celeste");
-        void start();
-        void stop();
-    private:
-        restbed::Service    m_api;
-        std::shared_ptr<restbed::Settings>   m_srv_settings;
-        int                 m_port;
-        std::string         m_root;
+        CelesteSettings();
 
+        void set_db_settings(const std::string& settings);
+        std::string get_db_settings() const;
+    private:
+        std::string m_db_settings;
+    };
+
+    class CelesteServer : public restbed::Service
+    {
+    public:
+        CelesteServer();
+        void start(const std::shared_ptr<const CelesteSettings> settings);
+
+    private:
+        void AUTH(const std::shared_ptr<restbed::Session> session,
+                  const std::function<void(const std::shared_ptr<restbed::Session>)>& callback);
+
+        carlosb::object_pool<CelesteAuth>       m_auth_pool;
     };
 }
 
