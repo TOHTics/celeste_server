@@ -7,7 +7,7 @@ namespace celeste
 {
     struct CelesteEncrypter
     {
-        void encrypt(const std::string& src, std::string& encrypted);
+        void encrypt(const std::string& src, std::string& encrypted) const;
     };
 }
 

@@ -30,7 +30,6 @@ namespace resource
     {
         std::string                     ModelId;
         boost::optional<std::string>    ns;
-        std::vector<std::string>        PointIds;
     };
 
     /**
@@ -74,6 +73,13 @@ namespace resource
          * @return     Fetched Model.
          */
         Model get(const std::string& modelId);
+
+        /**
+         * @brief      Fetches all Models currently stored.
+         *
+         * @return     A vector of all Models.
+         */
+        std::vector<Model> get_all();
 
         /**
          * @brief      Inserts a Model into the DB.

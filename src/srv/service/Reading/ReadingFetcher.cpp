@@ -8,12 +8,13 @@
 #include <cmath>
 #include <soci/mysql/soci-mysql.h>
 
+#include "srv/error.hpp"
+#include "srv/service/common.hpp"
+
+#include "Reading.hpp"
+#include "ReadRequest.hpp"
 #include "ReadingFetcher.hpp"
 
-#include "ReadRequest.hpp"
-#include "Reading.hpp"
-
-#include "srv/service/common.hpp"
 
 using namespace std;
 using namespace soci;
@@ -61,12 +62,17 @@ namespace resource
             use(req.ModelId, "ModelId"),
             use(req.PointId, "PointId");
 
-        int type;
-        m_sql << "select type from Point where id = :PointId and Model_id = :ModelId",
-        into(type), use(req.PointId, "PointId"), use(req.ModelId, "ModelId");
-
-        string2point(type, boost::get<string>(out.value), out.value);
-
+        if (m_sql.got_data())
+        {
+            int type;
+            m_sql << "select type from Point where id = :PointId and Model_id = :ModelId",
+            into(type), use(req.PointId, "PointId"), use(req.ModelId, "ModelId");
+            string2point(type, boost::get<string>(out.value), out.value);            
+        }
+        else
+        {
+            throw DatabaseError("No Reading found!");
+        }
         return out;
     }
 

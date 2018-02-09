@@ -13,7 +13,7 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/variant.hpp>
 
-#include "srv/service/status.hpp"
+#include "Reading/Reading.hpp"
 
 namespace celeste
 {
@@ -49,6 +49,8 @@ namespace resource
 
         out = str;
     }
+
+    void string2point(int type, const std::string& str, Reading::point_type& out);
 
     /**
      * @brief      Compares two pairs of same types. This method assumes

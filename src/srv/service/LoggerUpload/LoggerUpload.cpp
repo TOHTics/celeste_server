@@ -8,11 +8,12 @@
 #include <soci/mysql/soci-mysql.h>
 #include <soci/error.h>
 
-#include "LoggerUpload.hpp"
+#include "srv/error.hpp"
 
-#include "srv/service/status.hpp"
 #include "srv/service/common.hpp"
 #include "srv/service/base64.h"
+
+#include "LoggerUpload.hpp"
 
 using namespace std;
 using namespace sunspec;
@@ -158,20 +159,17 @@ namespace resource
                session->close(restbed::OK, {{"Content-Length", "0"}, { "Connection",     "close" }});
             }
         }
-        catch (const data::XMLException& e)
+        catch (data::XMLException& e)
         {
             if (verbose)
-                session->close(status::XML_SYNTAX_ERROR, e.what());
+                session->close(restbed::BAD_REQUEST, XMLError(e.what()).what());
             else
-                throw status::XML_SYNTAX_ERROR;
-        } catch (const exception& e)
-        {
-            if (verbose)
-                session->close(status::UNHANDLED_EXCEPTION, e.what());
-            else
-                throw e;
+                session->close(restbed::BAD_REQUEST);
         }
-
+        catch (mysql_soci_error& e)
+        {
+            throw DatabaseError("Could not upload data with error code: " + to_string(e.err_num_));
+        }
     }
 }
 }

@@ -8,6 +8,7 @@
 #include "Reading/ReadingDispatcher.hpp"
 #include "DeviceModel/DeviceModel.hpp"
 #include "DeviceStatus/DeviceStatus.hpp"
+#include "APIUser/APIUser.hpp"
 
 
 #endif

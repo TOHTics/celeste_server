@@ -11,7 +11,7 @@ namespace celeste
     class CelesteSettings : public restbed::Settings
     {
     public:
-        CelesteSettings();
+        CelesteSettings() = default;
 
         void set_db_settings(const std::string& settings);
         std::string get_db_settings() const;

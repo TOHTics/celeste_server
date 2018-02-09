@@ -1,9 +1,10 @@
-#include "CelesteServer.hpp"
-#include "service/status.hpp"
+#include <memory>
+
+#include "error.hpp"
 #include "logging/Logger.hpp"
 
-#include <iostream>
-#include <memory>
+#include "CelesteServer.hpp"
+
 
 using namespace std;
 
@@ -16,12 +17,7 @@ namespace celeste
     using LoggerResource    = resource::LoggerUpload;
     using ReadingResource   = resource::ReadingDispatcher<nlohmann::json>;
     using DeviceStatusResource = resource::DeviceStatusService<nlohmann::json>;
-
-    CelesteSettings::CelesteSettings()
-        : restbed::Settings()
-    {
-        set_status_messages(status::STATUS_MAP);
-    }
+    using APIUserResource = resource::APIUsers<nlohmann::json>;
 
     void
     CelesteSettings::set_db_settings(const string& settings)
@@ -60,6 +56,7 @@ namespace celeste
         publish(make_shared<ReadingResource>(db_settings, worker_limit));
         publish(make_shared<DeviceModelAssocResource>(db_settings));
         publish(make_shared<DeviceStatusResource>(db_settings));
+        publish(make_shared<APIUserResource>(db_settings));
 
         // fill the auth pool
         for (uint16_t i = 0; i < worker_limit; ++i)
@@ -80,13 +77,12 @@ namespace celeste
         auth.resource       = request->get_path();
 
         if (auth.authorisation.empty())
-            throw runtime_error("No authorisation specified.");
+            throw AuthError("No authorisation credentials specified.");
 
         auto authenticator = m_auth_pool.acquire_wait();
         AuthStatus status;
         authenticator->auth(auth, status); // performs authorization and authenticaton
 
-        cout << "status: " << status << endl;
         if (status == SUCCESS)
             callback(session);
         else

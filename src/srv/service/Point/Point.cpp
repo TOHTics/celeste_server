@@ -6,8 +6,12 @@
  * @file
  */
 #include <soci/mysql/soci-mysql.h>
-#include "Point.hpp"
+
+#include "srv/error.hpp"
 #include "srv/service/common.hpp"
+
+#include "Point.hpp"
+
 
 using namespace std;
 using namespace soci;
@@ -37,7 +41,52 @@ namespace resource
         if (sql.got_data())
             return point;
         else
-            throw status::POINT_NOT_FOUND;
+            throw runtime_error("Point not found!");
+    }
+
+    std::vector<Point>
+    Points<nlohmann::json>
+    ::get(const std::string& modelId)
+    {
+        session sql(mysql, m_db_settings);
+        
+        int count;
+        sql 
+            << "select count(*) from Point where Model_id = :ModelId",
+            into(count),
+            use(modelId);
+
+        vector<Point> points;
+        points.reserve(count);
+
+        rowset<Point> res = (sql.prepare << "select * from Point where Model_id = :ModelId");
+
+        for (auto it = res.begin(); it != res.end(); ++it)
+            points.push_back(*it);
+
+        return points;
+    }
+
+    std::vector<Point>
+    Points<nlohmann::json>
+    ::get_all()
+    {
+        session sql(mysql, m_db_settings);
+        
+        int count;
+        sql 
+            << "select count(*) from Point",
+            into(count);
+
+        vector<Point> points;
+        points.reserve(count);
+
+        rowset<Point> res = (sql.prepare << "select * from Point");
+
+        for (auto it = res.begin(); it != res.end(); ++it)
+            points.push_back(*it);
+
+        return points;
     }
 
     void Points<nlohmann::json>::insert(const value_type& point)
@@ -85,23 +134,37 @@ namespace resource
         // get json from parameters
         json_type data = request->get_query_parameters();
 
-        // validate data
-        if (data["PointId"].is_null())
-            throw status::MISSING_FIELD_POINTID;
+        try
+        {
+            json_type response;
 
-        if (data["ModelId"].is_null())
-            throw status::MISSING_FIELD_MODELID;
+            if (data["PointId"].is_null())
+            {
+                if (data["ModelId"].is_null())
+                    response = this->get_all();
+                else
+                    response = this->get(data["ModelId"]);
+            }
+            else
+            {
+                if (data["ModelId"].is_null())
+                    throw MissingFieldError("ModelId");
+                else
+                    response = this->get(data["PointId"], data["ModelId"]);
+            }
 
-        // get Point from db
-        json_type response = this->get(data["PointId"], data["ModelId"]);
-
-        // close
-        session->close(restbed::OK,
-                       response.dump(),
-                       {
-                            { "Content-Length", to_string(response.dump().size()) },
-                            { "Connection",     "close" }
-                       });
+            // close
+            session->close(restbed::OK,
+                           response.dump(),
+                           {
+                                { "Content-Length", to_string(response.dump().size()) },
+                                { "Connection",     "close" }
+                           });
+        }
+        catch (mysql_soci_error& e)
+        {
+            throw DatabaseError("Could not fetch Point");
+        }
     }
 
     void Points<nlohmann::json>::POST(const std::shared_ptr<restbed::Session> session)
@@ -120,13 +183,13 @@ namespace resource
 
         // validate data
         if (data["PointId"].is_null())
-            throw status::MISSING_FIELD_POINTID;
+            throw MissingFieldError("PointId");
 
         if (data["ModelId"].is_null())
-            throw status::MISSING_FIELD_MODELID;
+            throw MissingFieldError("ModelId");
 
         if (data["type"].is_null())
-            throw status::MISSING_FIELD_TYPE;
+            throw MissingFieldError("type");
 
         if (data["u"].is_null())
             data["u"] = nullptr;
@@ -134,7 +197,17 @@ namespace resource
         if (data["d"].is_null())
             data["d"] = nullptr;
 
-        this->insert(data.get<Point>());
+        try
+        {
+            this->insert(data.get<Point>());
+        }
+        catch (mysql_soci_error& e)
+        {
+            if (e.err_num_ == 1062)
+                throw DatabaseError("Point already exists!");
+            else
+                throw DatabaseError("Could not insert Point");
+        }
 
         // close
         session->close(restbed::OK);
@@ -150,16 +223,20 @@ namespace resource
 
         // validate data
         if (data["PointId"].is_null())
-            throw status::MISSING_FIELD_POINTID;
+            throw MissingFieldError("PointId");
 
         if (data["ModelId"].is_null())
-            throw status::MISSING_FIELD_MODELID;
+            throw MissingFieldError("ModelId");
 
-        // remove Point from DB.
-        this->remove(data["PointId"], data["ModelId"]);
+        try
+        {
+            this->remove(data["PointId"], data["ModelId"]);
+            session->close(restbed::OK);            
+        } catch (mysql_soci_error& e)
+        {
+            throw DatabaseError("Could not remove Point");
+        }
 
-        // close
-        session->close(restbed::OK);
     }
 }
 }

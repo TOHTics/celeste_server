@@ -26,7 +26,6 @@ void CelesteLogger::start(const shared_ptr<const restbed::Settings>& settings)
 
 void CelesteLogger::log(const restbed::Logger::Level level, const char *format, ...)
 {
-
     va_list arguments;
     va_start(arguments, format);
     char* buf = new char[MAX_MESSAGE_SIZE];

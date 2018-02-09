@@ -1,42 +1,12 @@
-#include "Reading.hpp"
+#include <string>
+
 #include "srv/service/common.hpp"
 
-#include <string>
+#include "Reading.hpp"
+
 
 using namespace celeste::resource;
 using namespace std;
-
-namespace celeste
-{
-namespace resource
-{
-    void string2point(int type, const std::string& str, Reading::point_type& out)
-    {
-        switch (type)
-        {
-            case point_type_index::INTEGER:
-            {
-                out = stoi(str);
-                return;
-            }
-            case point_type_index::FLOAT:
-            {
-                out = stof(str);
-                return;
-            }
-            case point_type_index::STRING:
-            {
-                out = str;
-                return;
-            }
-            default:
-            {
-                throw std::runtime_error("No type conversion");
-            }
-        }
-    }   
-}
-}
 
 
 namespace nlohmann

@@ -31,8 +31,6 @@ namespace resource
         boost::optional<boost::posix_time::ptime>   t;          ///< timestamp
         point_type                                  value;      ///< value
     };
-
-     void string2point(int type, const std::string& str, Reading::point_type& out);
 }
 }
 

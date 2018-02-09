@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS `celestesensordata`.`Point` (
   CONSTRAINT `fk_Point_Model1`
     FOREIGN KEY (`Model_id`)
     REFERENCES `celestesensordata`.`Model` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS `celestesensordata`.`DeviceRecord` (
   CONSTRAINT `fk_DeviceRecord_Device1`
     FOREIGN KEY (`Device_id`)
     REFERENCES `celestesensordata`.`Device` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
@@ -72,17 +72,17 @@ CREATE TABLE IF NOT EXISTS `celestesensordata`.`ModelRecord` (
   CONSTRAINT `fk_ModelRecord_Device_Model1`
     FOREIGN KEY (`Model_idx`)
     REFERENCES `celestesensordata`.`Device_Model` (`idx`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_ModelRecord_Model1`
     FOREIGN KEY (`Model_id`)
     REFERENCES `celestesensordata`.`Model` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_ModelRecord_DeviceRecord1`
     FOREIGN KEY (`DeviceRecord_idx` , `Device_id`)
     REFERENCES `celestesensordata`.`DeviceRecord` (`idx` , `Device_id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
@@ -103,12 +103,12 @@ CREATE TABLE IF NOT EXISTS `celestesensordata`.`PointRecord` (
   CONSTRAINT `fk_PointRecord_Point1`
     FOREIGN KEY (`Point_id`)
     REFERENCES `celestesensordata`.`Point` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_PointRecord_ModelRecord1`
     FOREIGN KEY (`Model_idx` , `Model_id` , `DeviceRecord_idx` , `Device_id`)
     REFERENCES `celestesensordata`.`ModelRecord` (`Model_idx` , `Model_id` , `DeviceRecord_idx` , `Device_id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
@@ -124,12 +124,12 @@ CREATE TABLE IF NOT EXISTS `celestesensordata`.`Device_Model` (
   CONSTRAINT `fk_Device_Model_Model1`
     FOREIGN KEY (`Model_id`)
     REFERENCES `celestesensordata`.`Model` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_Device_Model_Device1`
     FOREIGN KEY (`Device_id`)
     REFERENCES `celestesensordata`.`Device` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
@@ -142,12 +142,12 @@ CREATE TABLE IF NOT EXISTS `celestesensordata`.`DeviceStatus` (
   CONSTRAINT `fk_DeviceStatus_Device1`
     FOREIGN KEY (`Device_id`)
     REFERENCES `celestesensordata`.`Device` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
-CREATE TABLE IF NOT EXISTS `celestesensordata`.`APIUsers` (
+CREATE TABLE IF NOT EXISTS `celestesensordata`.`APIUser` (
   `id` VARCHAR(100) NOT NULL,
   `salt` VARCHAR(100) NOT NULL,
   `pwd` VARCHAR(100) NOT NULL,

@@ -6,8 +6,11 @@
  * @file
  */
 #include <soci/mysql/soci-mysql.h>
-#include "Model.hpp"
+
+#include "srv/error.hpp"
 #include "srv/service/common.hpp"
+
+#include "Model.hpp"
 
 using namespace std;
 using namespace soci;
@@ -32,27 +35,29 @@ namespace resource
         Model model;
         sql    << "select * from Model where id = :ModelId",
                 use(modelId), into(model);
-
-        if (! sql.got_data())
-            throw status::MODEL_NOT_FOUND;
-
-        indicator ind;
-        string pointId;
-        statement stmt = (sql.prepare << "select * from Point where Model_id = :ModelId",
-                          into(pointId, ind), use(modelId)
-                          );
-
-        vector<string> pointIds;
-        stmt.execute(true);
-        pointIds.reserve(50);     
-        
-        do
-        {
-            pointIds.push_back(pointId);
-        } while (stmt.fetch());
-        model.PointIds = move(pointIds);
-
         return model;
+    }
+
+    std::vector<Model>
+    Models<nlohmann::json>
+    ::get_all()
+    {
+        session sql(mysql, m_db_settings);
+        
+        int count;
+        sql 
+            << "select count(*) from Model",
+            into(count);
+
+        vector<Model> mod;
+        mod.reserve(count);
+
+        rowset<Model> res = (sql.prepare << "select * from Model");
+
+        for (auto it = res.begin(); it != res.end(); ++it)
+            mod.push_back(*it);
+
+        return mod;
     }
 
     void Models<nlohmann::json>::insert(const value_type& model)
@@ -77,20 +82,27 @@ namespace resource
         // get json from parameters
         json_type data = request->get_query_parameters();
 
-        // validate data
-        if (data["ModelId"].is_null())
-            throw status::MISSING_FIELD_MODELID;
+        try
+        {
+            json_type response;
 
-        // get model from db
-        json_type response = this->get(data["ModelId"]);
+            if (data["ModelId"].is_null())
+                response = this->get_all();
+            else
+                response = this->get(data["ModelId"]);
 
-        // close
-        session->close(restbed::OK,
-                       response.dump(),
-                       {
-                            { "Content-Length", to_string(response.dump().size()) },
-                            { "Connection",     "close" }
-                       });
+            // close
+            session->close(restbed::OK,
+                           response.dump(),
+                           {
+                                { "Content-Length", to_string(response.dump().size()) },
+                                { "Connection",     "close" }
+                           });
+        }
+        catch (mysql_soci_error& e)
+        {
+            throw DatabaseError("Could not fetch Model");
+        }
     }
 
     void Models<nlohmann::json>::POST(const std::shared_ptr<restbed::Session> session)
@@ -109,15 +121,22 @@ namespace resource
 
         // validate data
         if (data["ModelId"].is_null())
-                throw status::MISSING_FIELD_MODELID;
+                throw MissingFieldError("ModelId");
 
         if (data["ns"].is_null())
             data["ns"] = nullptr;
 
-        if (data["Points"].is_null())
-            data["Points"] = vector<string>{};
-
-        this->insert(data.get<Model>());
+        try
+        {
+            this->insert(data.get<Model>());
+        }
+        catch (mysql_soci_error& e)
+        {
+            if (e.err_num_ == 1062)
+                throw runtime_error("Device already exists!");
+            else
+                throw DatabaseError("code" + to_string(e.err_num_));
+        }
 
         // close
         session->close(restbed::OK);
@@ -133,13 +152,22 @@ namespace resource
 
         // validate data
         if (data["ModelId"].is_null())
-            throw status::MISSING_FIELD_MODELID;
+            throw MissingFieldError("ModelId");
 
-        // remove model from DB.
-        this->remove(data["ModelId"]);
-
-        // close
-        session->close(restbed::OK);
+        try
+        {
+            // remove model from DB.
+            this->remove(data["ModelId"]);
+            // close
+            session->close(restbed::OK);
+        }
+        catch (mysql_soci_error& e)
+        {
+            if (e.err_num_ == 1062)
+                throw DatabaseError("Model already exists!");
+            else
+                throw DatabaseError("Could not remove Model");
+        }
     }
 }
 }
@@ -171,8 +199,7 @@ namespace nlohmann
     {
         j = json {
             {"ModelId", obj.ModelId},
-            {"ns",      obj.ns},
-            {"Points",  obj.PointIds}
+            {"ns",      obj.ns}
         };
     }
 
@@ -180,6 +207,5 @@ namespace nlohmann
     {
         obj.ModelId    = j.at("ModelId");
         obj.ns         = j.at("ns").get<decltype(obj.ns)>();
-        obj.PointIds   = j.at("Points").get<decltype(obj.PointIds)>();
     }
 }

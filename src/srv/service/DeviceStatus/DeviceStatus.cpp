@@ -2,8 +2,11 @@
 #include <soci/mysql/soci-mysql.h>
 #include <boost/date_time/posix_time/posix_time.hpp>
 
-#include "DeviceStatus.hpp"
+#include "srv/error.hpp"
 #include "srv/service/common.hpp"
+
+#include "DeviceStatus.hpp"
+
 
 using namespace std;
 using namespace soci;
@@ -15,7 +18,7 @@ namespace resource
     DeviceStatusService<nlohmann::json>::DeviceStatusService(const string& dbSettings)
         : m_dbSettings(dbSettings)
     {
-        set_paths({"/device/status", "/device/status/arduino"});
+        set_paths({"/device/status"});
         set_method_handler("GET", [this] (const shared_ptr<restbed::Session> session) {GET(session);});
         set_method_handler("PUT", [this] (const shared_ptr<restbed::Session> session) {PUT(session);});
     }
@@ -70,10 +73,21 @@ namespace resource
         // get json from request
         json_type data = get_json<json_type>(*request);
 
-        update_status(data["DeviceId"], data["status"]);
+        if (data["DeviceId"].is_null())
+            throw MissingFieldError("DeviceId");
 
-        // close
-        session->close(restbed::OK);
+        if (data["DeviceId"].is_null())
+            throw runtime_error("status field cannot be null");
+
+        try
+        {
+            update_status(data["DeviceId"], data["status"]);
+            session->close(restbed::OK);
+        }
+        catch (mysql_soci_error& e)
+        {
+            throw DatabaseError("Could not update Device status.");
+        }
     }
 
     void DeviceStatusService<nlohmann::json>::GET(const shared_ptr<restbed::Session> session)
@@ -86,21 +100,27 @@ namespace resource
 
         // validate data
         if (data["DeviceId"].is_null())
-            throw status::MISSING_FIELD_DEVICEID;
+            throw MissingFieldError("DeviceId");
 
-        // get device from db
-        json_type response;
-        response = get_status(data["DeviceId"]);
+        try
+        {
+            // get device from db
+            json_type response;
+            response = get_status(data["DeviceId"]);
+            string body = response.dump();
 
-        string body = response.dump();
-
-        // close
-        session->close(restbed::OK,
-                       body,
-                       {
-                            { "Content-Length", to_string(body.size()) },
-                            { "Connection",     "close" }
-                       });
+            // close
+            session->close(restbed::OK,
+                           body,
+                           {
+                                { "Content-Length", to_string(body.size()) },
+                                { "Connection",     "close" }
+                           });
+        }
+        catch (mysql_soci_error& e)
+        {
+            throw DatabaseError("Could not fetch Device status");
+        }
     }
 }
 }

@@ -7,10 +7,13 @@
  */
 #include <soci/mysql/soci-mysql.h>
 
-#include "DeviceModel.hpp"
+#include "srv/error.hpp"
 #include "srv/service/common.hpp"
 #include "srv/service/Device/Device.hpp"
 #include "srv/service/Model/Model.hpp"
+
+#include "DeviceModel.hpp"
+
 
 using namespace std;
 using namespace soci;
@@ -34,10 +37,15 @@ namespace resource
     {
         session sql(mysql, m_dbSettings);
 
+        int count;
+        sql 
+            << "select count(*) from Device_Model where Device_id = :DeviceId",
+            into(count);
+
         rowset<DeviceModelAssoc> res = (sql.prepare << "select * from Device_Model where Device_id = :DeviceId", use(deviceId));
         
         std::vector<DeviceModelAssoc> assocs;
-        assocs.reserve(50);
+        assocs.reserve(count);
         for (auto it = res.begin(); it != res.end(); ++it)
             assocs.push_back(*it);
         return assocs;
@@ -47,12 +55,17 @@ namespace resource
     {
         session sql(mysql, m_dbSettings);
 
+        int count;
+        sql 
+            << "select count(*) from Device_Model where Device_id = :DeviceId and Model_id = :ModelId",
+            into(count);
+
         rowset<DeviceModelAssoc> res = (sql.prepare 
                                         << "select * from Device_Model where Device_id = :DeviceId and Model_id = :ModelId",
                                         use(deviceId), use(modelId));
         
         std::vector<DeviceModelAssoc> assocs;
-        assocs.reserve(50);
+        assocs.reserve(count);
         for (auto it = res.begin(); it != res.end(); ++it)
             assocs.push_back(*it);
         return assocs;
@@ -71,7 +84,7 @@ namespace resource
         if (sql.got_data())
             return assoc;
         else
-            throw status::DEVICE_MODEL_NOT_FOUND;
+            throw runtime_error("Device not found!");
     }
 
     void DeviceModelAssocs<nlohmann::json>::associate(const DeviceModelAssoc& assoc)
@@ -100,31 +113,31 @@ namespace resource
 
         // validate data
         if (data["DeviceId"].is_null())
-            throw status::MISSING_FIELD_DEVICEID; // DeviceId is required for any request
+            throw MissingFieldError("DeviceId");
 
         // get device from db
         json_type response;
 
-        if (data["idx"].is_null() && data["ModelId"].is_null())
+        try
         {
-            response = this->get(data["DeviceId"]);
-        }
-        else if (data["idx"].is_null())
-        {
-            response = this->get(data["DeviceId"], data["ModelId"]);
-        }
-        else
-        {
-            response = this->get(data["DeviceId"], data["ModelId"], data["idx"]);
-        }
+            if (data["idx"].is_null() && data["ModelId"].is_null())
+                response = get(data["DeviceId"]);
+            else if (data["idx"].is_null())
+                response = get(data["DeviceId"], data["ModelId"]);
+            else
+                response = get(data["DeviceId"], data["ModelId"], data["idx"]);
 
-        // close
-        session->close(restbed::OK,
+            session->close(restbed::OK,
                        response.dump(),
                        {
                             { "Content-Length", to_string(response.dump().size()) },
                             { "Connection",     "close" }
                        });
+        }
+        catch (mysql_soci_error& e)
+        {
+            throw DatabaseError("Could not fetch associated models!");
+        }
     }
 
     void DeviceModelAssocs<nlohmann::json>::POST(const std::shared_ptr<restbed::Session> session)
@@ -143,10 +156,10 @@ namespace resource
 
         // validate data
         if (data["DeviceId"].is_null())
-            throw status::MISSING_FIELD_DEVICEID;
+            throw MissingFieldError("DeviceId");
 
         if (data["ModelId"].is_null())
-            throw status::MISSING_FIELD_MODELID;
+            throw MissingFieldError("ModelId");
 
         if (data["note"].is_null())
             data["note"] = nullptr;
@@ -155,7 +168,17 @@ namespace resource
             data["idx"] = 0;
 
         DeviceModelAssoc dm = data.get<DeviceModelAssoc>();
-        this->associate(dm);
+
+        try
+        {
+            this->associate(dm);
+        } catch (mysql_soci_error& e)
+        {
+            if (e.err_num_ == 1062)
+                throw DatabaseError("Model association already exists!");
+            else
+                throw DatabaseError("Could not associate Model to Device");
+        }
 
         // close
         session->close(restbed::OK);
@@ -171,19 +194,24 @@ namespace resource
 
         // validate data
         if (data["DeviceId"].is_null())
-            throw status::MISSING_FIELD_DEVICEID;
+            throw MissingFieldError("DeviceId");
 
         if (data["ModelId"].is_null())
-            throw status::MISSING_FIELD_MODELID;
+            throw MissingFieldError("ModelId");
 
         if (data["idx"].is_null())
-            throw status::MISSING_FIELD_IDX;
+            throw MissingFieldError("DeviceId");
 
-        // dissasociate the device and the model
-        this->dissasociate(data["DeviceId"], data["ModelId"], data["idx"]);
-
-        // close
-        session->close(restbed::OK);
+        try
+        {
+            // dissasociate the device and the model
+            this->dissasociate(data["DeviceId"], data["ModelId"], data["idx"]);
+            session->close(restbed::OK);
+        }
+        catch (mysql_soci_error& e)
+        {
+            throw DatabaseError("Could not dissasociate Model from Device");
+        }
     }
 }
 }

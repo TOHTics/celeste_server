@@ -15,8 +15,6 @@
 #include <soci.h>
 #include <object_pool.hpp>
 
-#include "../DeviceModel/DeviceModel.hpp"
-#include "srv/authenticator/CelesteAuth.hpp"
 
 namespace celeste
 {   
@@ -74,6 +72,8 @@ namespace resource
          */
         Device get(const std::string& deviceId);
 
+        std::vector<Device> get_all();
+
         /**
          * @brief      Inserts a Device into the DB.
          *
@@ -88,7 +88,7 @@ namespace resource
          * @param[in]  device  Device to be inserted
          * @param[in]  models  Vector of the ids of the Models
          */
-        void insert(const value_type& device, const std::string& pwd, std::vector<std::string>models);
+        void insert(const value_type& device, const std::string& pwd, const std::vector<std::string>& models);
 
         /**
          * @brief      Removes a model from the DB.

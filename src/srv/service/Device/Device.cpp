@@ -5,18 +5,17 @@
  * 
  * @file
  */
-#include <mutex>
-#include <soci/mysql/soci-mysql.h>
 #include <ctime>
 #include <chrono>
 #include <sstream>
 #include <cstdlib>
+#include <soci/mysql/soci-mysql.h>
 
-#include "Device.hpp"
-
-#include "srv/service/status.hpp"
+#include "srv/error.hpp"
 #include "srv/service/common.hpp"
 #include "srv/crypt/CelesteEncrypter.hpp"
+
+#include "Device.hpp"
 
 using namespace std;
 using namespace soci;
@@ -47,7 +46,29 @@ namespace resource
         if (sql.got_data())
             return dev;
         else
-            throw status::DEVICE_NOT_FOUND;        
+            throw runtime_error("Device not found!");        
+    }
+
+    std::vector<Device>
+    Devices<nlohmann::json>
+    ::get_all()
+    {
+        session sql(mysql, m_db_settings);
+        
+        int count;
+        sql 
+            << "select count(*) from Device",
+            into(count);
+
+        vector<Device> dev;
+        dev.reserve(count);
+
+        rowset<Device> res = (sql.prepare << "select * from Device");
+
+        for (auto it = res.begin(); it != res.end(); ++it)
+            dev.push_back(*it);
+
+        return dev;
     }
 
     void
@@ -55,10 +76,6 @@ namespace resource
     ::insert(const value_type& device, const string& pwd)
     {
         session sql(mysql, m_db_settings);
-        transaction tr(sql);
-
-        sql << "insert into Device(id, man, model, sn) values(:DeviceId, :man, :mod, :sn)",
-            use(device);
 
         // Generate salt
         string salt;
@@ -73,25 +90,26 @@ namespace resource
         std::string encrypted_pwd;
         crypt.encrypt(salt + pwd, encrypted_pwd);
 
+        transaction tr(sql);
+        
         // Register Device
-        sql << "insert into APIUsers(id, pwd, salt, ugroup) values(:DeviceId, :pwd, :salt, :ugroup)",
+        sql << "insert into APIUser(id, pwd, salt, ugroup) values(:DeviceId, :pwd, :salt, :ugroup)",
             use(device.DeviceId),
             use(encrypted_pwd),
             use(salt),
             use(string("Device"));
+
+        sql << "insert into Device(id, APIUser_id, man, model, sn) values(:DeviceId, :DeviceId, :man, :mod, :sn)",
+            use(device);
 
         tr.commit();
     }
 
     void
     Devices<nlohmann::json>
-    ::insert(const value_type& device, const string& pwd, vector<string> models)
+    ::insert(const value_type& device, const std::string& pwd, const std::vector<std::string>& models)
     {
         session sql(mysql, m_db_settings);
-        
-        transaction tr(sql);
-        sql << "insert into Device(id, man, model, sn) values(:DeviceId, :man, :mod, :sn)",
-            use(device);
 
         // Generate salt
         string salt;
@@ -106,12 +124,17 @@ namespace resource
         std::string encrypted_pwd;
         crypt.encrypt(salt + pwd, encrypted_pwd);
 
+        transaction tr(sql);
+
         // Register Device
-        sql << "insert into APIUsers(id, pwd, salt, ugroup) values(:DeviceId, :pwd, :salt, :ugroup)",
+        sql << "insert into APIUser(id, pwd, salt, ugroup) values(:DeviceId, :pwd, :salt, :ugroup)",
             use(device.DeviceId),
             use(encrypted_pwd),
             use(salt),
             use(string("Device"));
+
+        sql << "insert into Device(id, APIUser_id, man, model, sn) values(:DeviceId, :DeviceId, :man, :mod, :sn)",
+            use(device);
 
         // insert models
         string modelId;
@@ -133,8 +156,14 @@ namespace resource
     void Devices<nlohmann::json>::remove(const string& deviceId)
     {
         session sql(mysql, m_db_settings);
+
+        transaction tr(sql);
         sql << "delete from Device where id = :DeviceId",
             use(deviceId);
+
+        sql << "delete from APIUser where id = :DeviceId",
+            use(deviceId);
+        tr.commit();
     }
 
     void
@@ -147,12 +176,11 @@ namespace resource
         // get json from parameters
         json_type data = request->get_query_parameters();
 
-        // validate data
+        json_type response;
         if (data["DeviceId"].is_null())
-            throw status::MISSING_FIELD_DEVICEID;
-
-        // get device from db
-        json_type response = this->get(data["DeviceId"]);
+            response = this->get_all();
+        else
+            response = this->get(data["DeviceId"]);   
 
         // close
         session->close(restbed::OK,
@@ -181,30 +209,40 @@ namespace resource
 
         // validate data
         if (data["DeviceId"].is_null())
-            throw runtime_error("Missing DeviceId field.");
+            throw MissingFieldError("DeviceId");
 
         if (data["man"].is_null())
-            throw status::MISSING_FIELD_MAN;
+            throw MissingFieldError("man");
 
         if (data["mod"].is_null())
-            throw status::MISSING_FIELD_MOD;
+            throw MissingFieldError("mod");
 
         if (data["sn"].is_null())
-            throw status::MISSING_FIELD_SN;
+            data["sn"] = data["DeviceId"];
 
         if (data["pwd"].is_null())
-            throw 400;
+            throw MissingFieldError("pwd");
 
-        if (data["pwd"].get<string>().size() < 4)
-            throw runtime_error("Password must be at least 4 characters.");
+        if ((data["pwd"].get<string>().size() < 4) || data["pwd"].get<string>().size() >= 100)
+            throw runtime_error("Password must be at least 4 characters and less than 100.");
 
-        if (! data["models"].is_null())
-            this->insert(data.get<Device>(), data["pwd"], data["models"].get<vector<string>>());
-        else
-            this->insert(data.get<Device>(), data["pwd"]);
+        try
+        {
+            if (! data["models"].is_null())
+                this->insert(data.get<Device>(), data["pwd"], data["models"].get<vector<string>>());
+            else
+                this->insert(data.get<Device>(), data["pwd"]);
 
-        // close
-        session->close(restbed::OK);
+            // close
+            session->close(restbed::OK);
+        } catch (mysql_soci_error& e)
+        {
+            if (e.err_num_ == 1062)
+                throw DatabaseError("Device already exists!");
+            else
+                throw DatabaseError("Could not insert Device with code: " + to_string(e.err_num_));
+
+        }
     }
 
     void
@@ -219,13 +257,16 @@ namespace resource
 
         // validate data
         if (data["DeviceId"].is_null())
-            throw status::MISSING_FIELD_DEVICEID;
+            throw MissingFieldError("DeviceId");
 
-        // remove device from DB.
-        this->remove(data["DeviceId"]);
-
-        // close
-        session->close(restbed::OK);
+        try
+        {
+            this->remove(data["DeviceId"]);
+            session->close(restbed::OK);
+        } catch (mysql_soci_error& e)
+        {
+            throw DatabaseError("Could not remove Device.");
+        }
     }
 }
 }

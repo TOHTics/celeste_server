@@ -13,6 +13,7 @@
 #include "ReadingDispatcher.hpp"
 #include "ReadRequest.hpp"
 
+#include "srv/error.hpp"
 #include "srv/service/common.hpp"
 
 using namespace std;
@@ -266,13 +267,13 @@ namespace resource
         json data = json::parse(req_body);
 
         if (data["DeviceId"].is_null())
-            throw status::MISSING_FIELD_DEVICEID;
+            throw MissingFieldError("DeviceId");
         if (data["ModelId"].is_null())
-            throw status::MISSING_FIELD_MODELID;
+            throw MissingFieldError("ModelId");
         if (data["PointId"].is_null())
-            throw status::MISSING_FIELD_POINTID;
+            throw MissingFieldError("PointId");
         if (data["method"].is_null())
-            throw status::MISSING_FIELD_METHOD;
+            throw MissingFieldError("method");
 
         // method name
         string method = data["method"].get<string>();
@@ -290,8 +291,7 @@ namespace resource
         }
         else
         {
-            code = restbed::BAD_REQUEST;
-            response = "Error: Unknown method.";
+            throw runtime_error("Unknown method.");
         }
 
         // to string

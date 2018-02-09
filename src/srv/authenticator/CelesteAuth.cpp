@@ -1,12 +1,11 @@
-#include <exception>
+#include <fstream>
 #include <soci/mysql/soci-mysql.h>
 
-#include <fstream>
+#include "srv/service/base64.h"
+#include "srv/crypt/CelesteEncrypter.hpp"
 
 #include "CelesteAuth.hpp"
 
-#include "srv/crypt/CelesteEncrypter.hpp"
-#include "srv/service/base64.h"
 
 namespace celeste
 {
@@ -35,6 +34,7 @@ namespace celeste
     void
     CelesteAuth
     ::auth(const BasicAuthRequest& auth, AuthStatus& status)
+    const
     {
         try
         {
@@ -60,7 +60,7 @@ namespace celeste
         std::string db_pwd;
         std::string salt;
         std::string group;
-        m_sql << "select salt, pwd, ugroup from APIUsers where id = :userid",
+        m_sql << "select salt, pwd, ugroup from APIUser where id = :userid",
                 into(salt),
                 into(db_pwd),
                 into(group),
@@ -87,12 +87,10 @@ namespace celeste
     ::authorize(const std::string& group,
                 const std::string& resource,
                 const std::string& method)
+    const
     {
-        cout << resource << endl;
-        cout << method << endl;
-        auto allowed_resources = m_permissions.find(group); 
-        cout << *allowed_resources << endl;
-        if (allowed_resources == m_permissions.end())
+        auto allowed_resources = m_permissions.at("groups").find(group); 
+        if (allowed_resources == m_permissions.at("groups").end())
         {
             return false;
         }
@@ -103,7 +101,6 @@ namespace celeste
         else if (allowed_resources->is_object())
         {
             auto allowed_methods = allowed_resources->find(resource);
-            cout << *allowed_methods << endl;
             if (allowed_methods == allowed_resources->end())
             {
                 return false;

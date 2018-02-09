@@ -76,6 +76,22 @@ namespace resource
         Point get(const std::string& pointId, const std::string& modelId);
 
         /**
+         * @brief      Gets all the Points belonging to a particular Model.
+         *
+         * @param[in]  modelId  The model identifier
+         *
+         * @return     A vector of all Points associated with the Model.
+         */
+        std::vector<Point> get(const std::string& modelId);
+
+        /**
+         * @brief      Gets all Points currently stored.
+         *
+         * @return     A vector of all Points.
+         */
+        std::vector<Point> get_all();
+
+        /**
          * @brief      Inserts a Point into the DB.
          *
          * @param[in]  Point   Point to be inserted.
