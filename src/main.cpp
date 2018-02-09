@@ -15,7 +15,8 @@ int main( const int argc, const char** argv)
     if (argc == 1)
     {
         cout << "\e[37mNo arguments passed. "
-                "Will attempt to start with default parameters.\n\e[m";
+                "Will attempt to start with default parameters.\n"
+                "For a list of options, please use -h\e[m";
     }
 
     try

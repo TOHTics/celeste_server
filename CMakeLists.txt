@@ -109,13 +109,13 @@ endif()
 
 if (NOT soci_LIBRARY)
     add_subdirectory("dependency/soci/")
-    set(SOCI_TESTS OFF)
     target_link_libraries(celeste_server soci_core )
     target_link_libraries(celeste_server soci_mysql )
 else()
     target_link_libraries(celeste_server ${soci_LIBRARY})
     target_link_libraries(celeste_server ${soci_mysql_LIBRARY})
 endif()
+set(SOCI_TESTS OFF)
 
 target_link_libraries(celeste_server ${Boost_LIBRARIES})
 
