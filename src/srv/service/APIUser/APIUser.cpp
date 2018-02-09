@@ -262,14 +262,6 @@ namespace resource
         // close
         session->close(restbed::OK);
     }
-
-    void
-    APIUsers<nlohmann::json> 
-    ::AUTH(const std::shared_ptr<restbed::Session> session,
-           const std::function<void(const std::shared_ptr<restbed::Session>)>& callback)
-    {
-
-    }
 }
 }
 
