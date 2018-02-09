@@ -1,0 +1,25 @@
+{
+    "groups" : {
+        "God" : "all",
+
+        "Device" : {
+            "APIUser" : "all",
+            "LoggerUpload" : ["POST"],
+            "DeviceStatus" : ["GET", "POST"]
+        },
+
+        "Administrator" : {
+            "Device" : "all",
+            "APIUser" : "all",
+            "DeviceStatus" : ["GET"],
+            "DeviceModel" : "all",
+            "Model" : "all",
+            "Point" : "all",
+            "Reading" : "all"
+        },
+        "Client" : {
+            "Reading" : ["GET"],
+            "APIUser" : ["GET", "PUT"]
+        }
+    }
+}
