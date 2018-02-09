@@ -3,23 +3,23 @@
         "God" : "all",
 
         "Device" : {
-            "APIUser" : "all",
-            "LoggerUpload" : ["POST"],
-            "DeviceStatus" : ["GET", "POST"]
+            "/celeste/api/user/" : "all",
+            "/celeste/logger/upload/" : ["POST"],
+            "/celeste/device/status/" : ["GET", "POST"]
         },
 
         "Administrator" : {
-            "Device" : "all",
-            "APIUser" : "all",
-            "DeviceStatus" : ["GET"],
-            "DeviceModel" : "all",
-            "Model" : "all",
-            "Point" : "all",
-            "Reading" : "all"
+            "/celeste/device/" : "all",
+            "/celeste/api/user/" : "all",
+            "/celeste/device/status/" : ["GET"],
+            "/celeste/device_model/" : "all",
+            "/celeste/model/" : "all",
+            "/celeste/point/" : "all",
+            "/celeste/reading/" : "all"
         },
         "Client" : {
-            "Reading" : ["GET"],
-            "APIUser" : ["GET", "PUT"]
+            "/celeste/reading/" : ["GET"],
+            "/celeste/api/user/" : ["GET", "PUT"]
         }
     }
 }
