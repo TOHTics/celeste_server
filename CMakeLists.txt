@@ -120,3 +120,4 @@ endif()
 target_link_libraries(celeste_server ${Boost_LIBRARIES})
 
 configure_file("${CMAKE_SOURCE_DIR}/logger-conf.conf" "${CMAKE_BINARY_DIR}/logger-conf.conf" COPYONLY)
+configure_file("${CMAKE_SOURCE_DIR}/config.json" "${CMAKE_BINARY_DIR}/config.json" COPYONLY)
