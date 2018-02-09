@@ -162,9 +162,8 @@ namespace celeste
 
         cout << "Registering " << id << " as a God...\n"; 
         transaction tr(sql);
-        sql << "insert into APIUser(id, ugroup, salt, pwd) values(:UserId, :ugroup, :salt, :pwd)",
+        sql << "insert into APIUser(id, ugroup, salt, pwd) values(:UserId, \'God\', :salt, :pwd)",
             use(id),
-            use(string("God")),
             use(salt),
             use(encrypted_pwd);
         tr.commit();
