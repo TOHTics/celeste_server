@@ -26,6 +26,8 @@ namespace celeste
         void start(const std::shared_ptr<const CelesteSettings> settings);
 
     private:
+        void create_god_if_not_exists(const std::string& dbSettings);
+
         void AUTH(const std::shared_ptr<restbed::Session> session,
                   const std::function<void(const std::shared_ptr<restbed::Session>)>& callback);
 

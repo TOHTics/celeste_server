@@ -59,11 +59,12 @@ namespace resource
         vector<Point> points;
         points.reserve(count);
 
-        rowset<Point> res = (sql.prepare << "select * from Point where Model_id = :ModelId");
+        rowset<Point> res = (sql.prepare << "select * from Point where Model_id = :ModelId",
+                                use(modelId)
+                            );
 
         for (auto it = res.begin(); it != res.end(); ++it)
             points.push_back(*it);
-
         return points;
     }
 
