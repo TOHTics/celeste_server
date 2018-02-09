@@ -81,8 +81,8 @@ namespace celeste
         session sql(mysql, dbSettings);
 
         int count;
-        sql << "select count(*) from APIUser where ugroup = :god_group",
-            into(count), use(string("God"));
+        sql << "select count(*) from APIUser where ugroup = \'God\'",
+            into(count);
 
         if (count > 0)
             return;
@@ -163,10 +163,10 @@ namespace celeste
         cout << "Registering " << id << " as a God...\n"; 
         transaction tr(sql);
         sql << "insert into APIUser(id, ugroup, salt, pwd) values(:UserId, :ugroup, :salt, :pwd)",
-            use(id, "UserId"),
-            use(string("God"), "ugroup"),
-            use(salt, "salt"),
-            use(encrypted_pwd, "pwd");
+            use(id),
+            use(string("God")),
+            use(salt),
+            use(encrypted_pwd);
         tr.commit();
         cout << "\e[32mSuccess!\n";
         cout << "\e[39m";
