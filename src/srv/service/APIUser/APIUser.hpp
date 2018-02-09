@@ -56,7 +56,7 @@ namespace resource
          * @param[in]  dbSettings  DB settings for connection.
          * @param[in]  max_connections  max DB connections.
          */
-        APIUsers(const std::string& dbSettings, const std::string& config_filename = "config.json");
+        APIUsers(const std::string& dbSettings);
 
         // ==== Public methods =============================
 
@@ -100,7 +100,6 @@ namespace resource
 
         // ==== Member attributes =========================
         std::string     m_db_settings;
-        int             m_auth_level;
     };
 }
 }

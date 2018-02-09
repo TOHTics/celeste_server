@@ -31,7 +31,7 @@ namespace resource
 {   
     // --- CLASS DEFINITIONS ---------
     APIUsers<nlohmann::json>
-    ::APIUsers(const string& dbSettings, const std::string& config_filename)
+    ::APIUsers(const string& dbSettings)
         : m_db_settings(dbSettings)
     {
         set_path("/api/user");
@@ -39,19 +39,6 @@ namespace resource
         set_method_handler("PUT", [this] (const shared_ptr<restbed::Session> session) {PUT(session);});
         set_method_handler("POST",   [this] (const shared_ptr<restbed::Session> session) {POST(session);});
         set_method_handler("DELETE", [this] (const shared_ptr<restbed::Session> session) {DELETE(session);});
-    
-        ifstream i(config_filename);
-        if (!i.is_open())
-            throw runtime_error("Could not open permissions file: " + string(config_filename));
-
-        json_type j;
-        try
-        {
-            i >> j;
-        } catch (exception& e)
-        {
-            throw runtime_error("Malformed permissions file: " + string(e.what()));
-        }
     }
 
     APIUser
