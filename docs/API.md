@@ -1176,45 +1176,6 @@ The Device is free to post whatever it wants. The document that gets posted, wil
 ```
 
 
-# HTTP Status Codes
-----
-
-| Status                            | Code    | Description                            |
-|----------------------------------|:-------:|----------------------------------------|
-|  `DEVICE_NOT_FOUND `             | 4000    | The requested Device was not found.    |
-| `MODEL_NOT_FOUND`                | 4001    | The requested Model was not found. |
-| `POINT_NOT_FOUND`                | 4002    | The requested Point was not found. |
-| `READING_NOT_FOUND`              | 4003    | A Reading matching the parameters you passed could not be found. |
-| `UPLOAD_FAILED`                  | 4050    | The upload of Data has failed and no records have been saved.    |
-| `EMPTY_ARRAY`                    | 4051    | The selected method requires to be sent a non-empty array.       |
-| `JSON_SYNTAX_ERROR`              | 4100    | There has been a JSON syntax error. This can be a missing `,` or `}`, etc. |
-| `XML_SYNTAX_ERROR`               | 4101    | There has been an XML syntax error. |
-| `CELESTERN_SYNTAX_ERROR`         | 4102    | There has been a CelesteRB syntax error. |
-| `MISSING_FIELD_DEVICEID`         | 4200    | You did not pass the field `DeviceId`. |
-| `MISSING_FIELD_MAN`              | 4201    | You did not passs the field `man`. |
-| `MISSING_FIELD_MOD`              | 4202    | You did not pass the field `mod`. |
-| `MISSING_FIELD_SN`               | 4203    | You did not pass the field `sn`. |
-| `MISSING_FIELD_IDX`              | 4204    | You did not pass the field `idx`.  |
-| `MISSING_FIELD_MODELID`          | 4220    | You did not pass the field `ModelId`.  |
-| `MISSING_FIELD_NS`               | 4221    | You did not pass the field `ns`.  |
-| `MISSING_FIELD_POINTID`          | 4240    | You did not pass the field `PointId`.  |
-| `MISSING_FIELD_TYPE`             | 4241    | You did not pass the field `type`.  |
-| `MISSING_FIELD_U`                | 4242    | You did not pass the field `u`.  |
-| `MISSING_FIELD_D`                | 4243    | You did not pass the field `d`.  |
-| `MISSING_FIELD_NOTE`             | 4260    | You did not pass the field `note`.  |
-| `READING_MISSING_FIELD`          | 4300    | You did not pass a required field.  |
-| `MISSING_FIELD_METHOD`           | 4301    | You did not pass the field `method`.  |
-| `MISSING_FIELD_START`            | 4302    | You did not pass the field `start`.  |
-| `MISSING_FIELD_END`              | 4303    | You did not pass the field `end`.  |
-| `MISSING_FIELD_DEVICEIDS`        | 4304    | You did not pass the field `DeviceIds`.  |
-| `READING_METHOD_NOT_FOUND`       | 4301    | The method passed could not be found. |
-| `READING_METHOD_NOT_SUPPORTED`   | 4302    | The method passed is not supported as of yet. |
-| `READING_METHOD_INVALID_ARGS`    | 4303    | The arguments passed to the method are invalid. |
-| `UNHANDLED_EXCEPTION`            | 8000    | An unhandled exception. Must be reported to [issues](https://github.com/TOHTics/celeste_server/issues). |
-
-
-
-
 # Notes
 
 - All the timestamps must be in UTC Posix: `YYYY-MM-DD HH:MM:SS`.
