@@ -80,7 +80,7 @@ namespace celeste
     {
         session sql(mysql, dbSettings);
 
-        int count;
+        int count = 1;
         sql << "select count(*) from APIUser where ugroup = \'God\'",
             into(count);
 

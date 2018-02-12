@@ -37,10 +37,11 @@ namespace resource
     {
         session sql(mysql, m_dbSettings);
 
-        int count;
+        int count = 1;
         sql 
             << "select count(*) from Device_Model where Device_id = :DeviceId",
-            into(count);
+            into(count),
+            use(deviceId);
 
         rowset<DeviceModelAssoc> res = (sql.prepare << "select * from Device_Model where Device_id = :DeviceId", use(deviceId));
         
@@ -55,10 +56,12 @@ namespace resource
     {
         session sql(mysql, m_dbSettings);
 
-        int count;
+        int count = 1;
         sql 
             << "select count(*) from Device_Model where Device_id = :DeviceId and Model_id = :ModelId",
-            into(count);
+            into(count),
+            use(deviceId),
+            use(modelId);
 
         rowset<DeviceModelAssoc> res = (sql.prepare 
                                         << "select * from Device_Model where Device_id = :DeviceId and Model_id = :ModelId",

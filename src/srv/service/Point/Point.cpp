@@ -74,7 +74,7 @@ namespace resource
     {
         session sql(mysql, m_db_settings);
         
-        int count;
+        int count = 1;
         sql 
             << "select count(*) from Point",
             into(count);

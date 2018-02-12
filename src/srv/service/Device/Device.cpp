@@ -42,7 +42,8 @@ namespace resource
         session sql(mysql, m_db_settings);
         Device dev;
         sql << "select * from Device where id = :DeviceId",
-            into(dev), use(deviceId);
+            into(dev),
+            use(deviceId);
         if (sql.got_data())
             return dev;
         else
@@ -55,7 +56,7 @@ namespace resource
     {
         session sql(mysql, m_db_settings);
         
-        int count;
+        int count = 1;
         sql 
             << "select count(*) from Device",
             into(count);
