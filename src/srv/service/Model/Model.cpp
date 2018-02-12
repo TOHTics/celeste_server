@@ -133,7 +133,7 @@ namespace resource
         catch (mysql_soci_error& e)
         {
             if (e.err_num_ == 1062)
-                throw runtime_error("Device already exists!");
+                throw DatabaseError("Model already exists!");
             else
                 throw DatabaseError("code" + to_string(e.err_num_));
         }

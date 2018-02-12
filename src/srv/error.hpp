@@ -3,6 +3,7 @@
 
 #include <exception>
 #include <string>
+#include <stdexcept>
 
 namespace celeste
 {
@@ -25,6 +26,18 @@ namespace celeste
         MissingFieldError(const std::string& field_name)
             : celeste::BadRequest("Missing field: " + field_name)
         {}
+    };
+
+    struct BadFieldError : public BadRequest
+    {
+        BadFieldError(const std::string& msg, const std::string& field)
+            : celeste::BadRequest("Bad field: \'" + field + "\': " + msg)
+        {}
+
+        BadFieldError(const std::string& msg)
+            : celeste::BadRequest("Bad field: " + msg)
+        {}
+
     };
 
     struct DatabaseError : public std::runtime_error

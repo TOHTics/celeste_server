@@ -52,7 +52,7 @@ namespace resource
         if (sql.got_data())
             return dev;
         else
-            throw runtime_error("User not found!");        
+            throw DatabaseError("User not found!");        
     }
 
     void
@@ -174,7 +174,7 @@ namespace resource
             throw MissingFieldError("pwd");
 
         if ((data["pwd"].get<string>().size() < 4) || data["pwd"].get<string>().size() >= 100)
-            throw runtime_error("Password must be at least 4 characters and less than 100.");
+            throw BadFieldError("Password must be at least 4 characters and less than 100.");
 
         try
         {
