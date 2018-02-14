@@ -116,12 +116,14 @@ namespace resource
 
         vector<Reading> readings;
         readings.reserve(req.limit);
-        while (stmt.fetch())
+        if (sql.got_data())
         {
-            string2point(type, boost::get<string>(read.value), read.value);
-            readings.push_back(read);
+            do 
+            {
+                string2point(type, boost::get<string>(read.value), read.value);
+                readings.push_back(read);
+            } while (stmt.fetch());
         }
-
         return readings;
     }
 
@@ -193,12 +195,18 @@ namespace resource
         {
             deviceId = id;
 
-            stmt.execute(true);
+            try
+            {
+               stmt.execute(true); 
+            } catch (mysql_soci_error&)
+            {
+                sql.reconnect();
+            }
 
             vector<pair<int, double>> avgs;
             if (sql.got_data())
             {
-                avgs.reserve(24); // capacity is numberof hours in a day
+                avgs.reserve(24); // capacity is number of hours in a day
                 do 
                 {
                     avgs.push_back(avg);
