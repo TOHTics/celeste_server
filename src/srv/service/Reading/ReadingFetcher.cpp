@@ -128,10 +128,10 @@ namespace resource
             {
                 try {
                     string2point(type, boost::get<string>(read.value), read.value);
+                    readings.push_back(read);
                 } catch (boost::bad_get& e) {
                     // no op
                 }
-                readings.push_back(read);
             } while (stmt.fetch());
         }
         return readings;
