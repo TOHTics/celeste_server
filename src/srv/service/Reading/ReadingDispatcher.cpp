@@ -257,8 +257,7 @@ namespace resource
         // get headers
         size_t content_length = (size_t) request->get_header("Content-Length", 0);
 
-        if (content_length == 0)
-            content_length = (size_t) request->get_header("content-length", 0);
+        cout << "Content length: " << content_length << endl;
 
         // fetch data to access later
         string req_body;
