@@ -105,7 +105,6 @@ Build fails on macOS Sierra using clang-3.5
 
 The body of the ticket **should contain the error log and a description of the error**.
 
-# Installing
 
 
 
