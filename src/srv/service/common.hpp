@@ -42,7 +42,8 @@ namespace resource
         size_t size = bytes.size() + 1;
 
         char *char_arr = (char *) malloc(size);
-        strncpy(char_arr, bytes.data(), (int) size);
+        memcpy(char_arr, bytes.data(), (int) size);
+        char_arr[size - 1] = '\0';
 
         // Convert char* to string
         std::basic_string<CharT, Traits, Allocator> str = char_arr;
