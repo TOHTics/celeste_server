@@ -257,8 +257,6 @@ namespace resource
         // get headers
         size_t content_length = (size_t) request->get_header("Content-Length", 0);
 
-        cout << "Content length: " << content_length << endl;
-
         // fetch data to access later
         string req_body;
         session->fetch(content_length, [&req_body] (const shared_ptr<restbed::Session> session, const restbed::Bytes &bytes) {

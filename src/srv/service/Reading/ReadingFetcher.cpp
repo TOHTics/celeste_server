@@ -62,14 +62,20 @@ namespace resource
             use(req.ModelId, "ModelId"),
             use(req.PointId, "PointId");
 
-        if (m_sql.got_data())
+        try
         {
-            int type;
-            m_sql << "select type from Point where id = :PointId and Model_id = :ModelId",
-            into(type), use(req.PointId, "PointId"), use(req.ModelId, "ModelId");
-            string2point(type, boost::get<string>(out.value), out.value);            
-        }
-        else
+            if (m_sql.got_data())
+            {
+                int type;
+                m_sql << "select type from Point where id = :PointId and Model_id = :ModelId",
+                into(type), use(req.PointId, "PointId"), use(req.ModelId, "ModelId");
+                string2point(type, boost::get<string>(out.value), out.value);            
+            }
+            else
+            {
+                throw DatabaseError("No Reading found!");
+            }
+        } catch (boost::bad_get& e)
         {
             throw DatabaseError("No Reading found!");
         }
@@ -120,7 +126,11 @@ namespace resource
         {
             do 
             {
-                string2point(type, boost::get<string>(read.value), read.value);
+                try {
+                    string2point(type, boost::get<string>(read.value), read.value);
+                } catch (boost::bad_get& e) {
+                    // no op
+                }
                 readings.push_back(read);
             } while (stmt.fetch());
         }
