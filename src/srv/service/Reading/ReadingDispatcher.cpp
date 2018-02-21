@@ -119,6 +119,7 @@ namespace resource
         set_path("/reading");
 
         set_method_handler("POST", [this] (const std::shared_ptr<restbed::Session> session) {POST(session);});
+        set_method_handler("GET", [this] (const std::shared_ptr<restbed::Session> session) {GET(session);});
     
 
         dispatch_map = dispatch_map_type{
