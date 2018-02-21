@@ -249,6 +249,67 @@ namespace resource
             fetcherPool.emplace(dbSettings);
     }
 
+    void ReadingDispatcher<nlohmann::json>::GET(const std::shared_ptr<restbed::Session> session)
+    {
+        // POST request
+        const auto request = session->get_request();
+
+        // get query params as json from request
+        json data = json(request->get_query_parameters());
+
+        if (data["DeviceId"].is_null())
+            throw MissingFieldError("DeviceId");
+        if (data["ModelId"].is_null())
+            throw MissingFieldError("ModelId");
+        if (data["PointId"].is_null())
+            throw MissingFieldError("PointId");
+        if (data["method"].is_null())
+            throw MissingFieldError("method");
+
+        // method name
+        string method = data["method"].get<string>();
+
+        // response
+        response_type response;
+        int code = restbed::INTERNAL_SERVER_ERROR;
+        
+        // dispatch people to find the reading
+        auto search = dispatch_map.find(method);
+        if (search != dispatch_map.end())
+        {
+            auto dispatch = search->second;
+            response = dispatch(data, code);
+        }
+        else
+        {
+            throw runtime_error("Unknown method.");
+        }
+
+        // to string
+        string body = response.dump();
+
+        // close
+        if (request->get_header("Connection", "close") == "keep-alive")
+        {
+            session->yield(code,
+                           body,
+                           {
+                            { "Content-Length", to_string(body.size()) },
+                            { "Connection",     "keep-alive" },
+                        });
+        }
+        else
+        {
+            session->close(code,
+                           body,
+                           {
+                            { "Content-Length", to_string(body.size()) },
+                            { "Connection",     "close" },
+                        });
+        }
+        
+    }
+
     void ReadingDispatcher<nlohmann::json>::POST(const std::shared_ptr<restbed::Session> session)
     {
         // POST request

@@ -53,6 +53,8 @@ namespace resource
         // ==== PRIVATE METHODS ==========================
         void POST(const std::shared_ptr<restbed::Session> session);
 
+        void GET(const std::shared_ptr<restbed::Session> session);
+
         // ==== MEMBER ATTRIBUTES ========================
         mutable fetcher_pool_type   fetcherPool;
         dispatch_map_type           dispatch_map;
