@@ -146,6 +146,7 @@ namespace resource
         {
             bytes2string(bytes, body);
         });
+
         try
         {
             // Persist records

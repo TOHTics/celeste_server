@@ -38,17 +38,7 @@ namespace resource
     > void bytes2string(const restbed::Bytes& bytes,
                         std::basic_string<CharT, Traits, Allocator>& out)
     {
-        // Read n bytes of data into a char* 
-        size_t size = bytes.size() + 1;
-
-        char *char_arr = (char *) malloc(size);
-        memcpy(char_arr, bytes.data(), (int) size);
-        char_arr[size - 1] = '\0';
-
-        // Convert char* to string
-        std::basic_string<CharT, Traits, Allocator> str = char_arr;
-
-        out = str;
+        out.assign(bytes.begin(), bytes.end());
     }
 
     void string2point(int type, const std::string& str, Reading::point_type& out);
