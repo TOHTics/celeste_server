@@ -135,6 +135,9 @@ namespace resource
         // get headers
         size_t content_length = (size_t) request->get_header("Content-Length", 0);
 
+        if (content_length == 0)
+            throw MissingHeaderError("Content-Length");
+
         // fetch body
         string body;
         session->fetch(content_length,
@@ -157,6 +160,10 @@ namespace resource
             {
                session->close(restbed::OK, {{"Content-Length", "0"}, { "Connection",     "close" }});
             }
+        }
+        catch (data::XMLException& e)
+        {
+            throw XMLError(e.what());
         }
         catch (mysql_soci_error& e)
         {
