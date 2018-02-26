@@ -27,7 +27,7 @@ namespace resource
     LoggerUpload::LoggerUpload(const string& dbSettings, size_t max_connections)
         : m_db_settings(dbSettings)
     {
-        set_paths({"/logger/upload/verbose/", "/logger/upload"});
+        set_path("/logger/upload");
         set_method_handler("POST", [this] (const shared_ptr<restbed::Session> session) {POST(session);});
 
         for (int i = 0; i < max_connections; ++i)
@@ -143,7 +143,6 @@ namespace resource
         {
             bytes2string(bytes, body);
         });
-        bool verbose = ("/logger/upload/verbose/" == request->get_path());
         try
         {
             // Persist records
@@ -158,13 +157,6 @@ namespace resource
             {
                session->close(restbed::OK, {{"Content-Length", "0"}, { "Connection",     "close" }});
             }
-        }
-        catch (data::XMLException& e)
-        {
-            if (verbose)
-                session->close(restbed::BAD_REQUEST, XMLError(e.what()).what());
-            else
-                session->close(restbed::BAD_REQUEST);
         }
         catch (mysql_soci_error& e)
         {

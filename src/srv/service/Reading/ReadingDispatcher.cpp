@@ -138,6 +138,10 @@ namespace resource
         { "range",
             [this](json data, int& code)
             {
+                if (data["start"].is_null())
+                    throw MissingFieldError("start");
+                if (data["end"].is_null())
+                    throw MissingFieldError("end");
                 if (data["limit"].is_null())
                 data["limit"] = 200;
 
