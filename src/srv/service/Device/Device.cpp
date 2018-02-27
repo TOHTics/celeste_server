@@ -93,12 +93,14 @@ namespace resource
 
         transaction tr(sql);
         
+        string group = "Device";
+
         // Register Device
         sql << "insert into APIUser(id, pwd, salt, ugroup) values(:DeviceId, :pwd, :salt, :ugroup)",
             use(device.DeviceId),
             use(encrypted_pwd),
             use(salt),
-            use(string("Device"));
+            use(group);
 
         sql << "insert into Device(id, APIUser_id, man, model, sn) values(:DeviceId, :DeviceId, :man, :mod, :sn)",
             use(device);
@@ -126,13 +128,15 @@ namespace resource
         crypt.encrypt(salt + pwd, encrypted_pwd);
 
         transaction tr(sql);
+        
+        string group = "Device";
 
         // Register Device
         sql << "insert into APIUser(id, pwd, salt, ugroup) values(:DeviceId, :pwd, :salt, :ugroup)",
             use(device.DeviceId),
             use(encrypted_pwd),
             use(salt),
-            use(string("Device"));
+            use(group);
 
         sql << "insert into Device(id, APIUser_id, man, model, sn) values(:DeviceId, :DeviceId, :man, :mod, :sn)",
             use(device);
