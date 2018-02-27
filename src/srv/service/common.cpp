@@ -74,23 +74,6 @@ namespace resource
             // must explicitly log that on the server
         }
     }
-
-    template<>
-    nlohmann::json
-    get_json<nlohmann::json, restbed::Request>(const restbed::Request& request)
-    {
-        // get bytes
-        restbed::Bytes bytes = request.get_body();
-        
-        // convert to string
-        string body;
-        bytes2string(bytes, body);
-
-        // convert to json
-        nlohmann::json j = nlohmann::json::parse(body);
-
-        return j;
-    }
 }
 }
 

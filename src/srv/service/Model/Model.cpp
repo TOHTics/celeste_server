@@ -114,32 +114,37 @@ namespace resource
         size_t content_length = (size_t) request->get_header("Content-Length", 0);
 
         // fetch data to access later
-        session->fetch(content_length, [] (const shared_ptr<restbed::Session> session, const restbed::Bytes &bytes) {});
+        session->fetch(content_length,
+        [this] (const shared_ptr<restbed::Session> session, const restbed::Bytes &bytes) {
+            // convert to string
+            string body;
+            bytes2string(bytes, body);
 
-        // get json from request
-        json_type data = get_json<json_type>(*request);
+            // convert to json
+            nlohmann::json data = nlohmann::json::parse(body);
 
-        // validate data
-        if (data["ModelId"].is_null())
-                throw MissingFieldError("ModelId");
+            // validate data
+            if (data["ModelId"].is_null())
+                    throw MissingFieldError("ModelId");
 
-        if (data["ns"].is_null())
-            data["ns"] = nullptr;
+            if (data["ns"].is_null())
+                data["ns"] = nullptr;
 
-        try
-        {
-            this->insert(data.get<Model>());
-        }
-        catch (mysql_soci_error& e)
-        {
-            if (e.err_num_ == 1062)
-                throw DatabaseError("Model already exists!");
-            else
-                throw DatabaseError("code" + to_string(e.err_num_));
-        }
+            try
+            {
+                this->insert(data.get<Model>());
+            }
+            catch (mysql_soci_error& e)
+            {
+                if (e.err_num_ == 1062)
+                    throw DatabaseError("Model already exists!");
+                else
+                    throw DatabaseError("code" + to_string(e.err_num_));
+            }
 
-        // close
-        session->close(restbed::OK);
+            // close
+            session->close(restbed::OK);
+        });        
     }
 
     void Models<nlohmann::json>::DELETE(const std::shared_ptr<restbed::Session> session)

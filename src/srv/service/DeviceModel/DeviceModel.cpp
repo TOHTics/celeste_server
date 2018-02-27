@@ -33,7 +33,7 @@ namespace resource
         set_method_handler("DELETE", [this] (const std::shared_ptr<restbed::Session> session) {DELETE(session);});
     }
 
-    std::vector<DeviceModelAssoc> DeviceModelAssocs<nlohmann::json>::get(const std::string& deviceId)
+    std::vector<DeviceModelAssoc> DeviceModelAssocs<nlohmann::json>::get_assoc(const std::string& deviceId)
     {
         session sql(mysql, m_dbSettings);
 
@@ -52,7 +52,7 @@ namespace resource
         return assocs;
     }
 
-    std::vector<DeviceModelAssoc> DeviceModelAssocs<nlohmann::json>::get(const std::string& deviceId, const std::string& modelId)
+    std::vector<DeviceModelAssoc> DeviceModelAssocs<nlohmann::json>::get_assoc(const std::string& deviceId, const std::string& modelId)
     {
         session sql(mysql, m_dbSettings);
 
@@ -75,7 +75,7 @@ namespace resource
     }
 
 
-    DeviceModelAssoc DeviceModelAssocs<nlohmann::json>::get(const std::string& deviceId, const std::string& modelId, const std::string& idx)
+    DeviceModelAssoc DeviceModelAssocs<nlohmann::json>::get_assoc(const std::string& deviceId, const std::string& modelId, const std::string& idx)
     {   
         session sql(mysql, m_dbSettings);
         
@@ -124,11 +124,11 @@ namespace resource
         try
         {
             if (data["idx"].is_null() && data["ModelId"].is_null())
-                response = get(data["DeviceId"]);
+                response = get_assoc(data["DeviceId"]);
             else if (data["idx"].is_null())
-                response = get(data["DeviceId"], data["ModelId"]);
+                response = get_assoc(data["DeviceId"], data["ModelId"]);
             else
-                response = get(data["DeviceId"], data["ModelId"], data["idx"]);
+                response = get_assoc(data["DeviceId"], data["ModelId"], data["idx"]);
 
             session->close(restbed::OK,
                        response.dump(),
@@ -152,39 +152,44 @@ namespace resource
         size_t content_length = (size_t) request->get_header("Content-Length", 0);
 
         // fetch data to access later
-        session->fetch(content_length, [] (const shared_ptr<restbed::Session> session, const restbed::Bytes &bytes) {});
+        session->fetch(content_length,
+        [this] (const shared_ptr<restbed::Session> session, const restbed::Bytes &bytes) {
+            // convert to string
+            string body;
+            bytes2string(bytes, body);
 
-        // get json from request
-        json_type data = get_json<json_type>(*request);
+            // convert to json
+            nlohmann::json data = nlohmann::json::parse(body);
 
-        // validate data
-        if (data["DeviceId"].is_null())
-            throw MissingFieldError("DeviceId");
+            // validate data
+            if (data["DeviceId"].is_null())
+                throw MissingFieldError("DeviceId");
 
-        if (data["ModelId"].is_null())
-            throw MissingFieldError("ModelId");
+            if (data["ModelId"].is_null())
+                throw MissingFieldError("ModelId");
 
-        if (data["note"].is_null())
-            data["note"] = nullptr;
+            if (data["note"].is_null())
+                data["note"] = nullptr;
 
-        if (data["idx"].is_null())
-            data["idx"] = 0;
+            if (data["idx"].is_null())
+                data["idx"] = 0;
 
-        DeviceModelAssoc dm = data.get<DeviceModelAssoc>();
+            DeviceModelAssoc dm = data.get<DeviceModelAssoc>();
 
-        try
-        {
-            this->associate(dm);
-        } catch (mysql_soci_error& e)
-        {
-            if (e.err_num_ == 1062)
-                throw DatabaseError("Model association already exists!");
-            else
-                throw DatabaseError("Could not associate Model to Device");
-        }
+            try
+            {
+                this->associate(dm);
+            } catch (mysql_soci_error& e)
+            {
+                if (e.err_num_ == 1062)
+                    throw DatabaseError("Model association already exists!");
+                else
+                    throw DatabaseError("Could not associate Model to Device");
+            }
 
-        // close
-        session->close(restbed::OK);
+            // close
+            session->close(restbed::OK);
+        });
     }
 
     void DeviceModelAssocs<nlohmann::json>::DELETE(const std::shared_ptr<restbed::Session> session)

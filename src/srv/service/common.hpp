@@ -89,31 +89,6 @@ namespace resource
     handle_error(const int code,
                  std::string message,
                  const std::shared_ptr<restbed::Session> session);
-
-    /**
-     * @brief      Gets the body of a request as a JSON object.
-     *
-     * @param[in]  request  Request.
-     *
-     * @tparam     Json     JSON type.
-     * @tparam     Request  Request type.
-     *
-     * @return     Body of request as JSON object.
-     */
-    template <class Json, class Request>
-    Json get_json(const Request& request);
-
-    /**
-     * @brief      Function template specialization. It specializes for
-     * `Json = nlohmann::json` and `Request = restbed::Request`
-     *
-     * @param[in]  request  The request
-     *
-     * @return     { description_of_the_return_value }
-     */
-    template<>
-    nlohmann::json
-    get_json<nlohmann::json, restbed::Request>(const restbed::Request& request);
 }
 }
 

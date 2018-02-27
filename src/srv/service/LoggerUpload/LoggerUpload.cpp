@@ -138,38 +138,38 @@ namespace resource
         if (content_length == 0)
             throw MissingHeaderError("Content-Length");
 
-        // fetch body
-        string body;
         session->fetch(content_length,
-        [request, &body] (const shared_ptr<restbed::Session> session,
-                          const restbed::Bytes &bytes)
+        [this, request] (const shared_ptr<restbed::Session> session,
+                          const restbed::Bytes& bytes)
         {
+            // fetch body
+            string body;
             bytes2string(bytes, body);
-        });
 
-        try
-        {
-            // Persist records
-            persist_data(data::SunSpecData::from_xml(body));
-            
-            // close
-            if (request->get_header("Connection", "close") == "keep-alive")
+            try
             {
-                session->yield(restbed::OK, {{"Content-Length", "0"}, { "Connection",     "keep-alive" }});
+                // Persist records
+                persist_data(data::SunSpecData::from_xml(body));
+                
+                // close
+                if (request->get_header("Connection", "close") == "keep-alive")
+                {
+                    session->yield(restbed::OK, {{"Content-Length", "0"}});
+                }
+                else
+                {
+                   session->close(restbed::OK, {{"Content-Length", "0"}});
+                }
             }
-            else
+            catch (data::XMLException& e)
             {
-               session->close(restbed::OK, {{"Content-Length", "0"}, { "Connection",     "close" }});
+                throw XMLError(e.what());
             }
-        }
-        catch (data::XMLException& e)
-        {
-            throw XMLError(e.what());
-        }
-        catch (mysql_soci_error& e)
-        {
-            throw DatabaseError("Could not upload data with error code: " + to_string(e.err_num_));
-        }
+            catch (mysql_soci_error& e)
+            {
+                throw DatabaseError("Could not upload data with error code: " + to_string(e.err_num_));
+            }
+        });
     }
 }
 }

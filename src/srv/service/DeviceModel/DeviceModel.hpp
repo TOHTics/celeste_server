@@ -67,7 +67,7 @@ namespace resource
          *
          * @return     Vector of associations.
          */
-        std::vector<DeviceModelAssoc> get(const std::string& deviceId);
+        std::vector<DeviceModelAssoc> get_assoc(const std::string& deviceId);
 
         /**
          * @brief      Gets the list of models associated with the Device.
@@ -79,7 +79,7 @@ namespace resource
          *
          * @return     Vector of associations.
          */
-        std::vector<DeviceModelAssoc> get(const std::string& deviceId, const std::string& modelId);
+        std::vector<DeviceModelAssoc> get_assoc(const std::string& deviceId, const std::string& modelId);
 
         /**
          * @brief      Gets a single association on the Device and the Model with aggregated index.
@@ -90,7 +90,7 @@ namespace resource
          *
          * @return     { description_of_the_return_value }
          */
-        DeviceModelAssoc get(const std::string& deviceId, const std::string& modelId, const std::string& idx);
+        DeviceModelAssoc get_assoc(const std::string& deviceId, const std::string& modelId, const std::string& idx);
 
         /**
          * @brief      Associates a Model to a Device using a `DeviceModelAssoc` object.

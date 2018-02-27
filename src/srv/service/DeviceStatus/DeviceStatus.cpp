@@ -68,26 +68,31 @@ namespace resource
         size_t content_length = (size_t) request->get_header("Content-Length", 0);
 
         // fetch data to access later
-        session->fetch(content_length, [] (const shared_ptr<restbed::Session> session, const restbed::Bytes &bytes) {});
+        session->fetch(content_length,
+        [this] (const shared_ptr<restbed::Session> session, const restbed::Bytes &bytes) {
+            // convert to string
+            string body;
+            bytes2string(bytes, body);
 
-        // get json from request
-        json_type data = get_json<json_type>(*request);
+            // convert to json
+            nlohmann::json data = nlohmann::json::parse(body);
 
-        if (data["DeviceId"].is_null())
-            throw MissingFieldError("DeviceId");
+            if (data["DeviceId"].is_null())
+                throw MissingFieldError("DeviceId");
 
-        if (data["DeviceId"].is_null())
-            throw runtime_error("status field cannot be null");
+            if (data["DeviceId"].is_null())
+                throw runtime_error("status field cannot be null");
 
-        try
-        {
-            update_status(data["DeviceId"], data["status"]);
-            session->close(restbed::OK);
-        }
-        catch (mysql_soci_error& e)
-        {
-            throw DatabaseError("Could not update Device status.");
-        }
+            try
+            {
+                update_status(data["DeviceId"], data["status"]);
+                session->close(restbed::OK);
+            }
+            catch (mysql_soci_error& e)
+            {
+                throw DatabaseError("Could not update Device status.");
+            }
+        });
     }
 
     void DeviceStatusService<nlohmann::json>::GET(const shared_ptr<restbed::Session> session)

@@ -158,35 +158,40 @@ namespace resource
         size_t content_length = (size_t) request->get_header("Content-Length", 0);
 
         // fetch data to access later
-        session->fetch(content_length, [] (const shared_ptr<restbed::Session> session, const restbed::Bytes &bytes) {});
+        session->fetch(content_length,
+        [this] (const shared_ptr<restbed::Session> session, const restbed::Bytes &bytes) {
+            // convert to string
+            string body;
+            bytes2string(bytes, body);
 
-        // get json from request
-        json_type data = get_json<json_type>(*request);
+            // convert to json
+            nlohmann::json data = nlohmann::json::parse(body);
 
-        // validate data
-        if (data["UserId"].is_null())
-            throw MissingFieldError("DeviceId");
+            // validate data
+            if (data["UserId"].is_null())
+                throw MissingFieldError("DeviceId");
 
-        if (data["group"].is_null())
-            throw MissingFieldError("group");
+            if (data["group"].is_null())
+                throw MissingFieldError("group");
 
-        if (data["pwd"].is_null())
-            throw MissingFieldError("pwd");
+            if (data["pwd"].is_null())
+                throw MissingFieldError("pwd");
 
-        if ((data["pwd"].get<string>().size() < 4) || data["pwd"].get<string>().size() >= 100)
-            throw BadFieldError("Password must be at least 4 characters and less than 100.");
+            if ((data["pwd"].get<string>().size() < 4) || data["pwd"].get<string>().size() >= 100)
+                throw BadFieldError("Password must be at least 4 characters and less than 100.");
 
-        try
-        {
-            this->insert(data.get<APIUser>(), data["pwd"]);
-            session->close(restbed::OK);
-        } catch (mysql_soci_error& e)
-        {
-            if (e.err_num_ == 1062)
-                throw DatabaseError("User already exists!");
-            else
-                throw DatabaseError("Could not insert User with code: " + to_string(e.err_num_));
-        }
+            try
+            {
+                this->insert(data.get<APIUser>(), data["pwd"]);
+                session->close(restbed::OK);
+            } catch (mysql_soci_error& e)
+            {
+                if (e.err_num_ == 1062)
+                    throw DatabaseError("User already exists!");
+                else
+                    throw DatabaseError("Could not insert User with code: " + to_string(e.err_num_));
+            }
+            });
     }
 
     void
@@ -200,27 +205,32 @@ namespace resource
         size_t content_length = (size_t) request->get_header("Content-Length", 0);
 
         // fetch data to access later
-        session->fetch(content_length, [] (const shared_ptr<restbed::Session> session, const restbed::Bytes &bytes) {});
+        session->fetch(content_length,
+        [this] (const shared_ptr<restbed::Session> session, const restbed::Bytes &bytes) {
+            // convert to string
+            string body;
+            bytes2string(bytes, body);
 
-        // get json from request
-        json_type data = get_json<json_type>(*request);
+            // convert to json
+            nlohmann::json data = nlohmann::json::parse(body);
 
-        // validate data
-        if (data["UserId"].is_null())
-            throw MissingFieldError("UserId");
+            // validate data
+            if (data["UserId"].is_null())
+                throw MissingFieldError("UserId");
 
-        if (data["group"].is_null())
-            throw MissingFieldError("group");
+            if (data["group"].is_null())
+                throw MissingFieldError("group");
 
-        try
-        {
-            this->update(data.get<APIUser>());
-            session->close(restbed::OK);
-        }
-        catch (mysql_soci_error& e)
-        {
-            throw DatabaseError("Could not update User");
-        }
+            try
+            {
+                this->update(data.get<APIUser>());
+                session->close(restbed::OK);
+            }
+            catch (mysql_soci_error& e)
+            {
+                throw DatabaseError("Could not update User");
+            }
+        });
     }
 
     void

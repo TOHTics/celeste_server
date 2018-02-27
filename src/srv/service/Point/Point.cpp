@@ -177,41 +177,46 @@ namespace resource
         size_t content_length = (size_t) request->get_header("Content-Length", 0);
 
         // fetch data to access later
-        session->fetch(content_length, [] (const shared_ptr<restbed::Session> session, const restbed::Bytes &bytes) {});
+        session->fetch(content_length,
+        [this] (const shared_ptr<restbed::Session> session, const restbed::Bytes &bytes) {
+            // convert to string
+            string body;
+            bytes2string(bytes, body);
 
-        // get json from request
-        json_type data = get_json<json_type>(*request);
+            // convert to json
+            nlohmann::json data = nlohmann::json::parse(body);
 
-        // validate data
-        if (data["PointId"].is_null())
-            throw MissingFieldError("PointId");
+            // validate data
+            if (data["PointId"].is_null())
+                throw MissingFieldError("PointId");
 
-        if (data["ModelId"].is_null())
-            throw MissingFieldError("ModelId");
+            if (data["ModelId"].is_null())
+                throw MissingFieldError("ModelId");
 
-        if (data["type"].is_null())
-            throw MissingFieldError("type");
+            if (data["type"].is_null())
+                throw MissingFieldError("type");
 
-        if (data["u"].is_null())
-            data["u"] = nullptr;
+            if (data["u"].is_null())
+                data["u"] = nullptr;
 
-        if (data["d"].is_null())
-            data["d"] = nullptr;
+            if (data["d"].is_null())
+                data["d"] = nullptr;
 
-        try
-        {
-            this->insert(data.get<Point>());
-        }
-        catch (mysql_soci_error& e)
-        {
-            if (e.err_num_ == 1062)
-                throw DatabaseError("Point already exists!");
-            else
-                throw DatabaseError("Could not insert Point");
-        }
+            try
+            {
+                this->insert(data.get<Point>());
+            }
+            catch (mysql_soci_error& e)
+            {
+                if (e.err_num_ == 1062)
+                    throw DatabaseError("Point already exists!");
+                else
+                    throw DatabaseError("Could not insert Point");
+            }
 
-        // close
-        session->close(restbed::OK);
+            // close
+            session->close(restbed::OK);
+        });
     }
 
     void Points<nlohmann::json>::DELETE(const std::shared_ptr<restbed::Session> session)

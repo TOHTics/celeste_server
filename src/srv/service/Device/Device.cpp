@@ -203,47 +203,52 @@ namespace resource
         size_t content_length = (size_t) request->get_header("Content-Length", 0);
 
         // fetch data to access later
-        session->fetch(content_length, [] (const shared_ptr<restbed::Session> session, const restbed::Bytes &bytes) {});
+        session->fetch(content_length,
+        [this] (const shared_ptr<restbed::Session> session, const restbed::Bytes &bytes) {
+            // convert to string
+            string body;
+            bytes2string(bytes, body);
 
-        // get json from request
-        json_type data = get_json<json_type>(*request);
+            // convert to json
+            nlohmann::json data = nlohmann::json::parse(body);
 
-        // validate data
-        if (data["DeviceId"].is_null())
-            throw MissingFieldError("DeviceId");
+            // validate data
+            if (data["DeviceId"].is_null())
+                throw MissingFieldError("DeviceId");
 
-        if (data["man"].is_null())
-            throw MissingFieldError("man");
+            if (data["man"].is_null())
+                throw MissingFieldError("man");
 
-        if (data["mod"].is_null())
-            throw MissingFieldError("mod");
+            if (data["mod"].is_null())
+                throw MissingFieldError("mod");
 
-        if (data["sn"].is_null())
-            data["sn"] = data["DeviceId"];
+            if (data["sn"].is_null())
+                data["sn"] = data["DeviceId"];
 
-        if (data["pwd"].is_null())
-            throw MissingFieldError("pwd");
+            if (data["pwd"].is_null())
+                throw MissingFieldError("pwd");
 
-        if ((data["pwd"].get<string>().size() < 4) || data["pwd"].get<string>().size() >= 100)
-            throw runtime_error("Password must be at least 4 characters and less than 100.");
+            if ((data["pwd"].get<string>().size() < 4) || data["pwd"].get<string>().size() >= 100)
+                throw runtime_error("Password must be at least 4 characters and less than 100.");
 
-        try
-        {
-            if (! data["models"].is_null())
-                this->insert(data.get<Device>(), data["pwd"], data["models"].get<vector<string>>());
-            else
-                this->insert(data.get<Device>(), data["pwd"]);
+            try
+            {
+                if (! data["models"].is_null())
+                    this->insert(data.get<Device>(), data["pwd"], data["models"].get<vector<string>>());
+                else
+                    this->insert(data.get<Device>(), data["pwd"]);
 
-            // close
-            session->close(restbed::OK);
-        } catch (mysql_soci_error& e)
-        {
-            if (e.err_num_ == 1062)
-                throw DatabaseError("Device already exists!");
-            else
-                throw DatabaseError("Could not insert Device with code: " + to_string(e.err_num_));
+                // close
+                session->close(restbed::OK);
+            } catch (mysql_soci_error& e)
+            {
+                if (e.err_num_ == 1062)
+                    throw DatabaseError("Device already exists!");
+                else
+                    throw DatabaseError("Could not insert Device with code: " + to_string(e.err_num_));
 
-        }
+            }
+        });
     }
 
     void

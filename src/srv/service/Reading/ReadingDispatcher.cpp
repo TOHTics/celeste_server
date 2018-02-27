@@ -324,65 +324,66 @@ namespace resource
         size_t content_length = (size_t) request->get_header("Content-Length", 0);
 
         // fetch data to access later
-        string req_body;
-        session->fetch(content_length, [&req_body] (const shared_ptr<restbed::Session> session, const restbed::Bytes &bytes) {
-            bytes2string(bytes, req_body);
-        });
+        session->fetch(content_length,
+        [this, request] (const shared_ptr<restbed::Session> session, const restbed::Bytes &bytes) {
+            // convert to string
+            string body;
+            bytes2string(bytes, body);
 
-        // get json_type from request
-        json data = json::parse(req_body);
+            // convert to json
+            nlohmann::json data = nlohmann::json::parse(body);
 
-        if (data["DeviceId"].is_null())
+            if (data["DeviceId"].is_null())
             throw MissingFieldError("DeviceId");
-        if (data["ModelId"].is_null())
-            throw MissingFieldError("ModelId");
-        if (data["PointId"].is_null())
-            throw MissingFieldError("PointId");
-        if (data["method"].is_null())
-            throw MissingFieldError("method");
+            if (data["ModelId"].is_null())
+                throw MissingFieldError("ModelId");
+            if (data["PointId"].is_null())
+                throw MissingFieldError("PointId");
+            if (data["method"].is_null())
+                throw MissingFieldError("method");
 
-        // method name
-        string method = data["method"].get<string>();
+            // method name
+            string method = data["method"].get<string>();
 
-        // response
-        response_type response;
-        int code = restbed::INTERNAL_SERVER_ERROR;
-        
-        // dispatch people to find the reading
-        auto search = dispatch_map.find(method);
-        if (search != dispatch_map.end())
-        {
-            auto dispatch = search->second;
-            response = dispatch(data, code);
-        }
-        else
-        {
-            throw runtime_error("Unknown method.");
-        }
+            // response
+            response_type response;
+            int code = restbed::INTERNAL_SERVER_ERROR;
+            
+            // dispatch people to find the reading
+            auto search = dispatch_map.find(method);
+            if (search != dispatch_map.end())
+            {
+                auto dispatch = search->second;
+                response = dispatch(data, code);
+            }
+            else
+            {
+                throw runtime_error("Unknown method.");
+            }
 
-        // to string
-        string body = response.dump();
+            // to string
+            string serialized = response.dump();
 
-        // close
-        if (request->get_header("Connection", "close") == "keep-alive")
-        {
-            session->yield(code,
-                           body,
-                           {
-                            { "Content-Length", to_string(body.size()) },
-                            { "Connection",     "keep-alive" },
-                        });
-        }
-        else
-        {
-            session->close(code,
-                           body,
-                           {
-                            { "Content-Length", to_string(body.size()) },
-                            { "Connection",     "close" },
-                        });
-        }
-        
+            // close
+            if (request->get_header("Connection", "close") == "keep-alive")
+            {
+                session->yield(code,
+                               serialized,
+                               {
+                                { "Content-Length", to_string(serialized.size()) },
+                                { "Connection",     "keep-alive" },
+                            });
+            }
+            else
+            {
+                session->close(code,
+                               body,
+                               {
+                                { "Content-Length", to_string(body.size()) },
+                                { "Connection",     "close" },
+                            });
+            }
+        });
     }
 }
 }
