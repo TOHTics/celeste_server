@@ -377,9 +377,9 @@ namespace resource
             else
             {
                 session->close(code,
-                               body,
+                               serialized,
                                {
-                                { "Content-Length", to_string(body.size()) },
+                                { "Content-Length", to_string(serialized.size()) },
                                 { "Connection",     "close" },
                             });
             }
