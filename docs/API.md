@@ -433,7 +433,7 @@ The API offers the following operations:
 |:-----------:|:-------:|-----------------------|---------------------------------------|
 |   `get`     | GET     | `/celeste/point/`   | Gets a point and its information.    |
 |   `insert`  | POST    | `/celeste/point/`   | Inserts a new point into the DB.     |
-|   `remove`  | DELETE  | `/celeste/point/`   | Deletes a point on the DB along with its associated records. |
+|   `remove`  | DELETE  | `/celeste/model/`   | Deletes a point on the DB along with its associated records. |
 
 
 ## `get`
